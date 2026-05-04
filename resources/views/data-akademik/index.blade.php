@@ -1,74 +1,173 @@
 @extends('layouts.app')
 
-@section('title', 'Data Akademik')
-@section('header-title', 'Data Akademik')
+@section('title', 'Input Data Akademik')
+@section('page-title', 'Input Data')
+
+@push('styles')
+<style>
+.content-wrapper{
+    padding:30px 45px;
+}
+
+.page-title-custom{
+    font-size:30px;
+    font-weight:800;
+    color:#3D2C6B;
+    margin-bottom:35px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px 40px;
+}
+
+.form-group label{
+    display:block;
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:#111;
+}
+
+.form-control{
+    width:100%;
+    height:46px;
+    border:1.5px solid #8b84ff;
+    border-radius:12px;
+    padding:0 15px;
+    font-size:15px;
+    background:white;
+    outline:none;
+}
+
+.form-control:focus{
+    border-color:#3D2C6B;
+    box-shadow:0 0 0 2px rgba(61,44,107,.1);
+}
+
+.btn-area{
+    display:flex;
+    justify-content:flex-end;
+    gap:14px;
+    margin-top:45px;
+}
+
+.btn-cancel{
+    width:125px;
+    height:45px;
+    border:none;
+    border-radius:12px;
+    background:#e5e5e5;
+    color:#666;
+    font-size:17px;
+    font-weight:700;
+}
+
+.btn-save{
+    width:130px;
+    height:45px;
+    border:none;
+    border-radius:12px;
+    background:#3D2C6B;
+    color:white;
+    font-size:17px;
+    font-weight:700;
+}
+
+.btn-save:hover{
+    background:#2e2058;
+}
+
+@media(max-width:1200px){
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+@endpush
 
 @section('content')
-<div class="bg-white rounded-xl shadow-sm p-6">
-    <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-semibold text-primary">Daftar Data Akademik</h3>
-        <a href="{{ route('data-akademik.create') }}" class="bg-primary hover:bg-secondary text-white px-6 py-2.5 rounded-lg font-medium transition flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            Tambah Data
-        </a>
+
+<div class="content-wrapper">
+
+    <div class="page-title-custom">
+        Input Data sesuai dengan kondisi
     </div>
 
-    @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
-        {{ session('success') }}
-    </div>
-    @endif
+    <form action="{{ route('data-akademik.store') }}" method="POST">
+        @csrf
 
-    <div class="overflow-x-auto">
-        <table class="w-full">
-            <thead>
-                <tr class="bg-gray-50 text-left">
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-600">No</th>
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-600">Jam Belajar</th>
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-600">Jam Tidur</th>
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-600">Motivasi</th>
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-600">Nilai Ujian</th>
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-600">Gangguan</th>
-                    <th class="px-4 py-3 text-sm font-semibold text-gray-600">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                @forelse($dataAkademik as $index => $item)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 text-sm text-gray-700">{{ $index + 1 }}</td>
-                    <td class="px-4 py-3 text-sm text-gray-700">{{ $item['jam_belajar'] }} jam</td>
-                    <td class="px-4 py-3 text-sm text-gray-700">{{ $item['jam_tidur'] }} jam</td>
-                    <td class="px-4 py-3 text-sm text-gray-700">{{ $item['motivasi_belajar'] }}</td>
-                    <td class="px-4 py-3 text-sm text-gray-700">{{ $item['nilai_ujian_terakhir'] }}</td>
-                    <td class="px-4 py-3 text-sm text-gray-700">{{ $item['gangguan_belajar'] }}</td>
-                    <td class="px-4 py-3 text-sm">
-                        <div class="flex gap-2">
-                            <a href="{{ route('data-akademik.edit', $item['id']) }}" class="text-blue-600 hover:text-blue-800">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                            </a>
-                            <form action="{{ route('data-akademik.destroy', $item['id']) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-800">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="px-4 py-8 text-center text-gray-500">Belum ada data</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Jam Belajar</label>
+                <input type="number" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Gangguan Belajar</label>
+                <select class="form-control">
+                    <option></option>
+                    <option>Ya</option>
+                    <option>Tidak</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Jam Tidur</label>
+                <input type="number" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Keterlibatan Orang Tua</label>
+                <select class="form-control">
+                    <option></option>
+                    <option>Rendah</option>
+                    <option>Sedang</option>
+                    <option>Tinggi</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Motivasi Belajar</label>
+                <select class="form-control">
+                    <option></option>
+                    <option>Rendah</option>
+                    <option>Sedang</option>
+                    <option>Tinggi</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Akses Pembelajaran</label>
+                <select class="form-control">
+                    <option></option>
+                    <option>Online</option>
+                    <option>Offline</option>
+                    <option>Keduanya</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nilai Ujian Terakhir</label>
+                <input type="number" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Kelas Tambahan</label>
+                <input type="number" class="form-control">
+            </div>
+
+        </div>
+
+        <div class="btn-area">
+            <button type="button" class="btn-cancel">Batal</button>
+            <button type="submit" class="btn-save">Simpan</button>
+        </div>
+
+    </form>
+
 </div>
+
 @endsection
