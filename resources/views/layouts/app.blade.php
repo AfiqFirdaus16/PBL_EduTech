@@ -48,7 +48,7 @@
 
             <!-- Text Logo -->
             <h1 class="text-[38px] font-extrabold leading-none">
-                <span class="text-primary">edu</span><span class="text-[#F59E0B]">Trace</span>
+                <span class="text-primary">Edu</span><span class="text-[#F59E0B]">Trace</span>
             </h1>
 
             <p class="text-[9px] text-gray-500 leading-tight mt-1 max-w-[150px]">
