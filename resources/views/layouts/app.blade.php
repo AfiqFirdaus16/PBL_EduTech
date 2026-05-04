@@ -36,110 +36,214 @@
 
 <div class="flex min-h-screen">
 
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-[#ECEAF8] flex flex-col">
+<!-- SIDEBAR -->
+<aside class="w-[248px] bg-[#ECEAF8] min-h-screen border-r border-[#ddd8f3] flex flex-col">
 
-        <!-- LOGO -->
-        <div class="p-6">
-            <div class="text-center">
-                <h1 class="text-4xl font-extrabold">
-                    <span class="text-primary">edu</span><span class="text-orange-400">Trace</span>
-                </h1>
-                <p class="text-[10px] text-gray-500 mt-1">
-                    Transforming Learning Habits, Ensuring Success
-                </p>
-            </div>
+    <!-- LOGO -->
+    <div class="pt-4 pb-5 px-5 border-b border-[#ddd8f3]">
+        <div class="flex flex-col items-center text-center">
+
+            <!-- Icon Buku -->
+           <img src="{{ asset('images/edutrace.png') }}" alt="Logo" class="w-28 mb-2">
+
+            <!-- Text Logo -->
+            <h1 class="text-[38px] font-extrabold leading-none">
+                <span class="text-primary">edu</span><span class="text-[#F59E0B]">Trace</span>
+            </h1>
+
+            <p class="text-[9px] text-gray-500 leading-tight mt-1 max-w-[150px]">
+                Transforming Learning Habits, Ensuring Success
+            </p>
+        </div>
+    </div>
+
+    <!-- MENU -->
+    <nav class="px-4 py-5 flex-1 text-[14px]">
+
+        <!-- HOME -->
+        <div class="mb-6">
+            <h3 class="font-bold text-black mb-2">Home</h3>
+
+            <a href="{{ route('dashboard') }}"
+               class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white transition">
+
+                <!-- icon -->
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
+                </svg>
+
+                Dashboard
+            </a>
         </div>
 
-        <!-- MENU -->
-        <nav class="px-4 pb-8 flex-1">
+        <!-- DATA -->
+        <div class="mb-6">
+            <h3 class="font-bold text-black mb-2">Data</h3>
 
-            <!-- HOME -->
-            <div class="mb-7">
-                <h3 class="font-bold text-black mb-3">Home</h3>
+            <a href="{{ route('data-akademik.index') }}"
+               class="flex items-center gap-3 px-4 py-2 rounded-full bg-primary text-white font-semibold shadow-sm">
 
-                <a href="{{ route('dashboard') }}"
-                   class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white">
-                    <span>⬛</span>
-                    Dashboard
-                </a>
-            </div>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
+                </svg>
 
-            <!-- DATA -->
-            <div class="mb-7">
-                <h3 class="font-bold text-black mb-3">Data</h3>
+                Input Data Akademik
+            </a>
+        </div>
 
-                <!-- FIXED ERROR HERE -->
-                <a href="{{ route('data-akademik.index') }}"
-                   class="flex items-center gap-3 px-4 py-2 rounded-full bg-primary text-white font-semibold">
-                    <span>⬛</span>
-                    Input Data Akademik
-                </a>
-            </div>
+        <!-- REKOMENDASI -->
+        <div class="mb-6">
+            <h3 class="font-bold text-black mb-2">Rekomendasi</h3>
 
-            <!-- REKOMENDASI -->
-            <div class="mb-7">
-                <h3 class="font-bold text-black mb-3">Rekomendasi</h3>
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white transition mb-1">
 
-                <a href="#"
-                   class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white mb-2">
-                    <span>⬛</span>
-                    Hasil Resiko Belajar
-                </a>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
+                </svg>
 
-                <a href="#"
-                   class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white">
-                    <span>⬛</span>
-                    Teknik Belajar
-                </a>
-            </div>
+                Hasil Resiko Belajar
+            </a>
 
-            <!-- LAINNYA -->
-            <div>
-                <h3 class="font-bold text-black mb-3">Lainnya</h3>
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white transition">
 
-                <a href="#"
-                   class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white">
-                    <span>⬛</span>
-                    Riwayat
-                </a>
-            </div>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
+                </svg>
 
-        </nav>
+                Teknik Belajar
+            </a>
+        </div>
+
+        <!-- LAINNYA -->
+        <div>
+            <h3 class="font-bold text-black mb-2">Lainnya</h3>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white transition">
+
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
+                </svg>
+
+                Riwayat
+            </a>
+        </div>
+
+    </nav>
+    
     </aside>
+
+
 
 
     <!-- CONTENT -->
     <main class="flex-1 flex flex-col">
 
         <!-- HEADER -->
-        <header class="bg-primary text-white px-8 py-4 flex items-center justify-between">
+        <header class="bg-primary h-[56px] px-6 flex items-center justify-between border-b border-[#2f2253] relative">
 
-            <h2 class="text-4xl font-bold">
-                @yield('page-title','Input Data')
+            <!-- LEFT TITLE -->
+            <h2 class="text-white text-[26px] font-bold whitespace-nowrap">
+                Input Data
             </h2>
 
-            <!-- SEARCH -->
-            <div class="w-[430px] mx-8">
-                <input type="text"
-                       placeholder="Cari"
-                       class="w-full px-5 py-3 rounded-full text-gray-700 outline-none">
-            </div>
+            <!-- SEARCH CENTER -->
+            <div class="absolute left-1/2 -translate-x-1/2 w-[320px]">
+                <div class="relative">
+                    <input
+                        type="text"
+                        placeholder="Cari"
+                        class="w-full h-[38px] rounded-full bg-white pl-11 pr-4 text-[14px] text-gray-700 placeholder-gray-400 focus:outline-none"
+                    >
 
-            <!-- USER -->
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-white"></div>
-
-                <div class="leading-tight">
-                    <p class="font-bold text-xl">Kartika Tri Juliana</p>
-                    <p class="text-sm text-gray-200">Tingkat SMA</p>
+                    <!-- Search Icon -->
+                    <svg class="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0a7 7 0 0114 0z"/>
+                    </svg>
                 </div>
-
-                <span>⌄</span>
             </div>
 
+            <!-- RIGHT PROFILE -->
+            <div class="relative">
+
+                <!-- BUTTON -->
+                <button onclick="toggleDropdown()"
+                    class="flex items-center gap-3 text-white hover:bg-white/10 px-3 py-1.5 rounded-xl transition">
+
+                    <!-- Avatar -->
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-primary font-bold text-sm">
+                        K
+                    </div>
+
+                    <!-- Name -->
+                    <div class="text-left leading-tight">
+                        <p class="text-[14px] font-semibold">Kartika Tri Juliana</p>
+                        <p class="text-[12px] text-gray-200">Tingkat SMA</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <svg class="w-4 h-4"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div id="profileDropdown"
+                    class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl overflow-hidden z-50">
+
+                    <a href="#"
+                    class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+
+                        <svg class="w-4 h-4 text-primary"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5.121 17.804A9 9 0 1118.88 17.804M15 11a3 3 0 11-6 0a3 3 0 016 0z"/>
+                        </svg>
+
+                        Profile
+                    </a>
+
+                    <form action="#" method="POST">
+                        @csrf
+                        <button type="submit"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50">
+
+                            <svg class="w-4 h-4"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1"/>
+                            </svg>
+
+                            Logout
+                        </button>
+                    </form>
+
+                </div>
+            </div>
         </header>
 
+        <!-- SCRIPT -->
+        <script>
+        function toggleDropdown() {
+            const menu = document.getElementById('profileDropdown');
+            menu.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('profileDropdown');
+            const button = e.target.closest('button');
+
+            if (!e.target.closest('.relative')) {
+                dropdown.classList.add('hidden');
+            }
+        });
+        </script>
         <!-- PAGE -->
         <section class="flex-1 p-8 bg-[#F4F4F4]">
             @yield('content')
