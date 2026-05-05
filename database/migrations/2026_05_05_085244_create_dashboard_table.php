@@ -11,18 +11,23 @@ return new class extends Migration
         Schema::create('dashboard', function (Blueprint $table) {
             $table->id('dashboard_id');
 
-            $table->foreignId('rekomendasi_id')
-                  ->constrained('rekomendasi')
+            $table->unsignedBigInteger('rekomendasi_id');
+            $table->unsignedBigInteger('siswa_id');
+
+            $table->foreign('rekomendasi_id')
+                  ->references('rekomendasi_id') // <-- FIX
+                  ->on('rekomendasi')
                   ->onDelete('cascade');
 
-            $table->foreignId('siswa_id')
-                  ->constrained('siswa')
+            $table->foreign('siswa_id')
+                  ->references('siswa_id') // <-- FIX
+                  ->on('siswa')
                   ->onDelete('cascade');
 
             $table->text('ringkasan_performa');
-            $table->json('grafik_data'); // lebih fleksibel
+            $table->json('grafik_data');
 
-            $table->timestamps(); // wajib
+            $table->timestamps();
         });
     }
 

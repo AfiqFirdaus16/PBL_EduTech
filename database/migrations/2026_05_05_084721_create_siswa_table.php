@@ -10,17 +10,21 @@ return new class extends Migration
     {
         Schema::create('siswa', function (Blueprint $table) {
             $table->id('siswa_id');
-            $table->foreignId('user_id')
-                  ->unique()
-                  ->constrained('users')
+
+            $table->unsignedBigInteger('user_id');
+            $table->unique('user_id'); // karena 1 user = 1 siswa
+
+            $table->foreign('user_id')
+                  ->references('user_id') // <-- ini yang penting
+                  ->on('users')
                   ->onDelete('cascade');
 
             $table->integer('umur');
             $table->date('tgl_lahir');
             $table->enum('jenjang', ['SD', 'SMP', 'SMA']);
             $table->enum('tingkat', ['rendah', 'sedang', 'tinggi']);
-            
-            $table->timestamps(); // <-- penting
+
+            $table->timestamps();
         });
     }
 

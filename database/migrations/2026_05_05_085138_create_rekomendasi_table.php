@@ -11,14 +11,17 @@ return new class extends Migration
         Schema::create('rekomendasi', function (Blueprint $table) {
             $table->id('rekomendasi_id');
 
-            $table->foreignId('analisis_id')
-                  ->constrained('analisis_resiko')
+            $table->unsignedBigInteger('analisis_id');
+
+            $table->foreign('analisis_id')
+                  ->references('analisis_id') // <-- FIX
+                  ->on('analisis_resiko')
                   ->onDelete('cascade');
 
             $table->text('teknik_belajar');
             $table->text('deskripsi');
 
-            $table->timestamps(); // <-- wajib
+            $table->timestamps();
         });
     }
 

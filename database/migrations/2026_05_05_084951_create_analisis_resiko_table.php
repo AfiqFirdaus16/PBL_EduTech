@@ -11,15 +11,18 @@ return new class extends Migration
         Schema::create('analisis_resiko', function (Blueprint $table) {
             $table->id('analisis_id');
 
-            $table->foreignId('data_siswa_id')
-                  ->constrained('data_siswa')
+            $table->unsignedBigInteger('data_siswa_id');
+
+            $table->foreign('data_siswa_id')
+                  ->references('data_siswa_id') // <-- FIX di sini
+                  ->on('data_siswa')
                   ->onDelete('cascade');
 
             $table->enum('tingkat_resiko', ['rendah', 'sedang', 'tinggi']);
             $table->text('hasil_analisis');
             $table->text('solusi_resiko');
 
-            $table->timestamps(); // <-- penting
+            $table->timestamps();
         });
     }
 

@@ -11,8 +11,11 @@ return new class extends Migration
         Schema::create('data_siswa', function (Blueprint $table) {
             $table->id('data_siswa_id');
             
-            $table->foreignId('siswa_id')
-                  ->constrained('siswa')
+            $table->unsignedBigInteger('siswa_id');
+
+            $table->foreign('siswa_id')
+                  ->references('siswa_id') // <-- FIX di sini
+                  ->on('siswa')
                   ->onDelete('cascade');
 
             $table->integer('jam_belajar');
@@ -24,7 +27,7 @@ return new class extends Migration
             $table->enum('akses_pembelajaran', ['baik', 'cukup', 'kurang']);
             $table->integer('kelas_tambahan');
 
-            $table->timestamps(); // <-- wajib
+            $table->timestamps();
         });
     }
 
