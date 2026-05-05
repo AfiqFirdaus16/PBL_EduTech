@@ -33,7 +33,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // RELASI: User punya 1 Siswa
+    // RELASI: 1 user punya 1 siswa
     public function siswa()
     {
         return $this->hasOne(Siswa::class, 'user_id', 'user_id');

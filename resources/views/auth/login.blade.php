@@ -104,7 +104,13 @@
 
     <h2>Login</h2>
 
-    <form method="POST" action="#">
+    @if(session('error'))
+        <p style="color:red; text-align:center;">
+            {{ session('error') }}
+        </p>
+    @endif
+    
+    <form method="POST" action="{{ route('login.process') }}">
         @csrf
 
         <div class="form-group">
