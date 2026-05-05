@@ -1,0 +1,29 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('rekomendasi', function (Blueprint $table) {
+            $table->id('rekomendasi_id');
+
+            $table->foreignId('analisis_id')
+                  ->constrained('analisis_resiko')
+                  ->onDelete('cascade');
+
+            $table->text('teknik_belajar');
+            $table->text('deskripsi');
+
+            $table->timestamps(); // <-- wajib
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('rekomendasi');
+    }
+};
