@@ -100,7 +100,7 @@
 
 <div class="login-card">
     <!-- Logo -->
-    <img src="#" alt="logo">
+    <img src="{{ asset('images/edutrace.png') }}" alt="logo">
 
     <h2>Login</h2>
 
