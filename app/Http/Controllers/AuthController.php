@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -47,5 +48,39 @@ class AuthController extends Controller
         // REDIRECT KE LOGIN
         return redirect()->route('login')
             ->with('success', 'Registrasi berhasil, silakan login');
+    }
+
+    // PROSES KIRIM LINK RESET PASSWORD (sementara dummy)
+    public function sendResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $token = Str::random(60);
+
+        return redirect()->route('password.reset', $token);
+    }
+    
+    // PROSES UPDATE PASSWORD
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->with('error', 'Email tidak ditemukan');
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        return redirect()->route('login')
+            ->with('success', 'Password berhasil diubah');
     }
 }
