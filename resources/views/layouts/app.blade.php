@@ -1,3 +1,5 @@
+@section('page-title', 'Dashboard')
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -65,7 +67,10 @@
             <h3 class="font-bold text-black mb-2">Home</h3>
 
             <a href="{{ route('dashboard') }}"
-               class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white transition">
+            class="flex items-center gap-3 px-4 py-2 rounded-full font-semibold transition
+            {{ request()->routeIs('dashboard')
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-primary hover:bg-white' }}">
 
                 <!-- icon -->
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -81,7 +86,10 @@
             <h3 class="font-bold text-black mb-2">Data</h3>
 
             <a href="{{ route('data-akademik.index') }}"
-               class="flex items-center gap-3 px-4 py-2 rounded-full bg-primary text-white font-semibold shadow-sm">
+            class="flex items-center gap-3 px-4 py-2 rounded-full font-semibold transition
+            {{ request()->routeIs('data-akademik.*')
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-primary hover:bg-white' }}">
 
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
@@ -95,8 +103,11 @@
         <div class="mb-6">
             <h3 class="font-bold text-black mb-2">Rekomendasi</h3>
 
-            <a href="#"
-               class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white transition mb-1">
+            <a href="{{ route('hasil-resiko.index') }}"
+            class="flex items-center gap-3 px-4 py-2 rounded-full font-semibold transition mb-1
+            {{ request()->routeIs('hasil-resiko.*')
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-primary hover:bg-white' }}">
 
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
@@ -105,8 +116,11 @@
                 Hasil Resiko Belajar
             </a>
 
-            <a href="#"
-               class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white transition">
+            <a href="{{ route('teknik-belajar.index') }}"
+            class="flex items-center gap-3 px-4 py-2 rounded-full font-semibold transition
+            {{ request()->routeIs('teknik-belajar.*')
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-primary hover:bg-white' }}">
 
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
@@ -120,8 +134,11 @@
         <div>
             <h3 class="font-bold text-black mb-2">Lainnya</h3>
 
-            <a href="#"
-               class="flex items-center gap-3 px-4 py-2 rounded-full text-primary font-semibold hover:bg-white transition">
+            <a href="{{ route('riwayat.index') }}"
+            class="flex items-center gap-3 px-4 py-2 rounded-full font-semibold transition
+            {{ request()->routeIs('riwayat.*')
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-primary hover:bg-white' }}">
 
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
@@ -145,9 +162,9 @@
         <header class="bg-primary h-[56px] px-6 flex items-center justify-between border-b border-[#2f2253] relative">
 
             <!-- LEFT TITLE -->
-            <h2 class="text-white text-[26px] font-bold whitespace-nowrap">
-                Input Data
-            </h2>
+        <h2 class="text-white text-[26px] font-bold whitespace-nowrap">
+            @yield('page-title', 'Dashboard')
+        </h2>
 
             <!-- SEARCH CENTER -->
             <div class="absolute left-1/2 -translate-x-1/2 w-[320px]">

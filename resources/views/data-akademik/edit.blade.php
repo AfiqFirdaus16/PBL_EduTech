@@ -72,7 +72,7 @@
             </div>
 
             <div>
-                <label>Akses Pembelajaran</label>
+                <label>Akses</label>
                 <select name="akses_pembelajaran">
                     <option value="baik" {{ $data->akses_pembelajaran=='baik' ? 'selected' : '' }}>Online</option>
                     <option value="cukup" {{ $data->akses_pembelajaran=='cukup' ? 'selected' : '' }}>Offline</option>

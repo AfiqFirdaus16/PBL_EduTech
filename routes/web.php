@@ -15,8 +15,8 @@ Route::view('/dashboard', 'dashboard')
     ->middleware('auth');
 
 // DATA AKADEMIK (WAJIB LOGIN)
-Route::middleware(['auth'])->group(function () {
-
+//Route::middleware(['auth'])->group(function () {
+//});
     // halaman input
     Route::view('/data-akademik', 'data-akademik.index')
         ->name('data-akademik.index');
@@ -33,4 +33,14 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/data-akademik/{id}', [DataAkademikController::class, 'update'])
         ->name('data-akademik.update');
 
-});
+    Route::get('/hasil-resiko', function () {
+    return view('hasil-resiko');
+    })->name('hasil-resiko.index');
+
+    Route::get('/teknik-belajar', function () {
+        return view('teknik-belajar');
+    })->name('teknik-belajar.index');
+
+    Route::get('/riwayat', function () {
+        return view('riwayat');
+    })->name('riwayat.index');
