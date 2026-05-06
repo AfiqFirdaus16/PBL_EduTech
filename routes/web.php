@@ -8,6 +8,23 @@ use App\Http\Controllers\DataAkademikController;
 Route::view('/login', 'auth.login')->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::view('/register', 'auth.register')->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.process');
+
+// form input email
+Route::view('/forgot-password', 'auth.forgot-password')->name('password.request');
+
+// proses kirim email (sementara dummy dulu)
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])
+    ->name('password.email');
+
+// form reset password
+Route::get('/reset-password/{token}', function ($token) {
+    return view('auth.reset-password', ['token' => $token]);
+})->name('password.reset');
+
+// proses update password
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+    ->name('password.update');
 
 // DASHBOARD (WAJIB LOGIN)
 Route::view('/dashboard', 'dashboard')
