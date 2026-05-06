@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('umur');
             $table->date('tgl_lahir');
             $table->enum('jenjang', ['SD', 'SMP', 'SMA']);
-            $table->enum('tingkat', ['rendah', 'sedang', 'tinggi']);
+            $table->enum('tingkat', ['1', '2', '3']);
 
             $table->timestamps();
         });

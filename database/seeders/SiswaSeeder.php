@@ -16,7 +16,7 @@ class SiswaSeeder extends Seeder
                 'umur' => 17,
                 'tgl_lahir' => '2007-01-01',
                 'jenjang' => 'SMA',
-                'tingkat' => 'sedang',
+                'tingkat' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]
