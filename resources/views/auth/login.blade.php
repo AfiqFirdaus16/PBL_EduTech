@@ -103,7 +103,14 @@
     <img src="{{ asset('images/edutrace.png') }}" alt="logo">
 
     <h2>Login</h2>
+    <!--menampilkan pesan sukses-->
+    @if(session('success'))
+        <p style="color:green; text-align:center;">
+            {{ session('success') }}
+        </p>
+    @endif
 
+    <!--menampilkan pesan error-->
     @if(session('error'))
         <p style="color:red; text-align:center;">
             {{ session('error') }}

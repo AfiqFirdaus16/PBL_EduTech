@@ -8,6 +8,7 @@ use App\Http\Controllers\DataAkademikController;
 Route::view('/login', 'auth.login')->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::view('/register', 'auth.register')->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.process');
 
 // DASHBOARD (WAJIB LOGIN)
 Route::view('/dashboard', 'dashboard')

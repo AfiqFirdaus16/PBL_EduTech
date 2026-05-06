@@ -93,7 +93,7 @@
 <div class="card">
     <h2>Register</h2>
 
-    <form onsubmit="event.preventDefault(); window.location.href='{{ route('login') }}';">
+    <form method="POST" action="{{ route('register.process') }}">
         @csrf
 
         <div class="form-group">
