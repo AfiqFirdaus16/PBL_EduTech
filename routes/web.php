@@ -26,10 +26,15 @@ Route::get('/reset-password/{token}', function ($token) {
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])
     ->name('password.update');
 
-// DASHBOARD (WAJIB LOGIN)
+// DASHBOARD USER (WAJIB LOGIN)
 Route::view('/dashboard', 'dashboard')
     ->name('dashboard')
     ->middleware('auth');
+
+//DASHBOARD ADMIN
+Route::get('/dashboard-admin', function () {
+    return view('admin.dashboard-admin');
+})->name('admin.dashboard-admin');
 
 // DATA AKADEMIK (WAJIB LOGIN)
 //Route::middleware(['auth'])->group(function () {
@@ -51,13 +56,18 @@ Route::view('/dashboard', 'dashboard')
         ->name('data-akademik.update');
 
     Route::get('/hasil-resiko', function () {
-    return view('hasil-resiko');
+    return view('siswa.hasil-resiko');
     })->name('hasil-resiko.index');
 
     Route::get('/teknik-belajar', function () {
-        return view('teknik-belajar');
+        return view('siswa.teknik-belajar');
     })->name('teknik-belajar.index');
 
     Route::get('/riwayat', function () {
-        return view('riwayat');
+        return view('siswa.riwayat');
     })->name('riwayat.index');
+
+    //Laman Admin
+    Route::get('/data-pengguna', function () {
+        return view('admin.data-pengguna');
+    })->name('data-pengguna.index');
