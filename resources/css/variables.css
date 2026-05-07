@@ -1,0 +1,10 @@
+/* CSS Variables for EduTrace */
+:root {
+    --primary-color: #3D2C6B;
+    --secondary-color: #5B4A8A;
+    --accent-color: #F5A623;
+    --background-color: #F4F4F4;
+    --text-color: #333333;
+    --sidebar-bg: #ECEAF8;
+    --border-color: #ddd8f3;
+}
