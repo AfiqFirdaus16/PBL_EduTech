@@ -29,6 +29,10 @@
     <link rel="stylesheet" href="{{ asset('css/variables.css') }}">
     <link rel="stylesheet" href="{{ asset('css/global.css') }}">
 
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="{{ asset('css/variables.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}">
+
     <style>
         body{
             font-family:'Inter',sans-serif;
@@ -36,6 +40,7 @@
     </style>
 
     @stack('styles')
+    @yield('page-css')
     @yield('page-css')
 </head>
 
@@ -275,6 +280,7 @@
 
 </div>
 
+@yield('page-js')
 @yield('page-js')
 @stack('scripts')
 </body>
