@@ -25,6 +25,14 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="{{ asset('css/variables.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}">
+
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="{{ asset('css/variables.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}">
+
     <style>
         body{
             font-family:'Inter',sans-serif;
@@ -32,6 +40,8 @@
     </style>
 
     @stack('styles')
+    @yield('page-css')
+    @yield('page-css')
 </head>
 
 <body class="bg-gray-100 min-h-screen">
@@ -270,6 +280,8 @@
 
 </div>
 
+@yield('page-js')
+@yield('page-js')
 @stack('scripts')
 </body>
 </html>

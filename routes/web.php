@@ -1,14 +1,33 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DataAkademikController;
 
+// Landing Page
+Route::get('/', function () {
+    return view('page.landing.index');
+})->name('landing');
+
 // AUTH
 Route::view('/login', 'auth.login')->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
-Route::view('/register', 'auth.register')->name('register');
-Route::post('/register', [AuthController::class, 'register'])->name('register.process');
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+
+Route::post('/register', function (Request $request) {
+    $request->session()->put('authenticated', true);
+    $request->session()->put('name', $request->input('nama', 'Siswa'));
+    return redirect()->route('dashboard');
+})->name('register.submit');
+
+Route::get('/logout', function (Request $request) {
+    $request->session()->flush();
+    return redirect()->route('landing');
+})->name('logout');
 
 // form input email
 Route::view('/forgot-password', 'auth.forgot-password')->name('password.request');
