@@ -1,6 +1,6 @@
 @extends('layouts.app-siswa')
 
-@section('page-title', 'Profil Saya')
+@section('page-title', 'Edit Profil')
 
 @section('content')
 
@@ -41,12 +41,15 @@
                         <span class="px-4 py-1 rounded-full bg-primary text-white text-sm font-semibold shadow">
                             {{ $user->siswa->jenjang ?? '-' }}
                         </span>
+
                     </div>
                 </div>
             </div>
 
             <!-- FORM -->
-            <form class="mt-10">
+            <form action="{{ route('profile.update') }}" method="POST" class="mt-10">
+                @csrf
+                @method('PUT')
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -58,8 +61,9 @@
 
                         <input
                             type="text"
-                            value="{{ $user->nama }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
+                            name="nama"
+                            value="{{ old('nama', $user->nama) }}"
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
                     </div>
 
                     <!-- USERNAME -->
@@ -71,7 +75,8 @@
                         <input
                             type="text"
                             value="{{ $user->username }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
+                            disabled
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100 text-gray-500 cursor-not-allowed">
                     </div>
 
                     <!-- EMAIL -->
@@ -83,7 +88,8 @@
                         <input
                             type="email"
                             value="{{ $user->email }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
+                            disabled
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100 text-gray-500 cursor-not-allowed">
                     </div>
 
                     <!-- PASSWORD -->
@@ -95,7 +101,8 @@
                         <input
                             type="password"
                             value="password"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
+                            disabled
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100 text-gray-500 cursor-not-allowed">
                     </div>
 
                     <!-- TGL LAHIR -->
@@ -106,8 +113,9 @@
 
                         <input
                             type="date"
-                            value="{{ $user->siswa->tgl_lahir ?? '' }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
+                            name="tgl_lahir"
+                            value="{{ old('tgl_lahir', $user->siswa->tgl_lahir ?? '') }}"
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
                     </div>
 
                     <!-- JENJANG -->
@@ -116,10 +124,23 @@
                             Jenjang
                         </label>
 
-                        <input
-                            type="text"
-                            value="{{ $user->siswa->jenjang ?? '-' }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
+                        <select
+                            name="jenjang"
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+
+                            <option value="SD" {{ ($user->siswa->jenjang ?? '') == 'SD' ? 'selected' : '' }}>
+                                SD
+                            </option>
+
+                            <option value="SMP" {{ ($user->siswa->jenjang ?? '') == 'SMP' ? 'selected' : '' }}>
+                                SMP
+                            </option>
+
+                            <option value="SMA" {{ ($user->siswa->jenjang ?? '') == 'SMA' ? 'selected' : '' }}>
+                                SMA
+                            </option>
+
+                        </select>
                     </div>
 
                     <!-- TINGKAT -->
@@ -128,10 +149,23 @@
                             Tingkat
                         </label>
 
-                        <input
-                            type="text"
-                            value="{{ $user->siswa->tingkat ?? '-' }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
+                        <select
+                            name="tingkat"
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+
+                            <option value="1" {{ ($user->siswa->tingkat ?? '') == '1' ? 'selected' : '' }}>
+                                1
+                            </option>
+
+                            <option value="2" {{ ($user->siswa->tingkat ?? '') == '2' ? 'selected' : '' }}>
+                                2
+                            </option>
+
+                            <option value="3" {{ ($user->siswa->tingkat ?? '') == '3' ? 'selected' : '' }}>
+                                3
+                            </option>
+
+                        </select>
                     </div>
 
                 </div>
@@ -139,17 +173,18 @@
                 <!-- BUTTON -->
                 <div class="flex justify-end gap-3 mt-8">
 
-                    <a href="{{ route('dashboard') }}"
+                    <a href="{{ route('profile') }}"
                         class="px-5 py-3 rounded-xl bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition">
 
-                        Kembali
+                        Batal
                     </a>
 
-                    <a href="{{ route('profile.edit') }}"
-                        class="px-5 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-secondary transition inline-block">
+                    <button
+                        type="submit"
+                        class="px-5 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-secondary transition">
 
-                        Edit Profil
-                    </a>
+                        Simpan Perubahan
+                    </button>
 
                 </div>
             </form>
