@@ -163,8 +163,6 @@
     </aside>
 
 
-
-
     <!-- CONTENT -->
     <main class="flex-1 flex flex-col">
 
@@ -229,7 +227,7 @@
                 <div id="profileDropdown"
                     class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl overflow-hidden z-50">
 
-                    <a href="#"
+                    <a href="{{ route('profile') }}"
                     class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
 
                         <svg class="w-4 h-4 text-primary"
@@ -275,8 +273,14 @@
         </script>
         <!-- PAGE -->
         <section class="flex-1 p-8 bg-[#F4F4F4]">
-            @yield('content')
-        </section>
+            @if(session('success'))
+                <div class="mb-6 rounded-xl border border-green-300 bg-green-100 px-5 py-4 text-green-700 font-medium shadow-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+    @yield('content')
+</section>
 
     </main>
 
