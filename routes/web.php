@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DataAkademikController;
+use App\Http\Controllers\ProfileController;
 
 // Landing Page
 Route::get('/', function () {
@@ -89,3 +90,6 @@ Route::get('/dashboard-admin', function () {
     Route::get('/data-pengguna', function () {
         return view('admin.data-pengguna');
     })->name('data-pengguna.index');
+
+    //User Profile
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
