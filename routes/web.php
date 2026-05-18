@@ -13,9 +13,7 @@ Route::get('/', function () {
 // AUTH
 Route::view('/login', 'auth.login')->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+Route::view('/register', 'page.auth.register')->name('register');
 
 Route::post('/register', function (Request $request) {
     $request->session()->put('authenticated', true);
