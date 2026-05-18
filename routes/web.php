@@ -14,12 +14,7 @@ Route::get('/', function () {
 Route::view('/login', 'auth.login')->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::view('/register', 'auth.register')->name('register');
-
-Route::post('/register', function (Request $request) {
-    $request->session()->put('authenticated', true);
-    $request->session()->put('name', $request->input('nama', 'Siswa'));
-    return redirect()->route('dashboard');
-})->name('register.process');
+Route::post('/register', [AuthController::class, 'register'])->name('register.process');
 
 Route::get('/logout', function (Request $request) {
     $request->session()->flush();

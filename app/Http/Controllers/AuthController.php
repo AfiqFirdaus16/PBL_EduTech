@@ -42,7 +42,6 @@ class AuthController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password), 
-            'role' => 'siswa' 
         ]);
 
         // REDIRECT KE LOGIN
