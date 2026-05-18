@@ -16,31 +16,37 @@
         <!-- CONTENT -->
         <div class="px-8 pb-8 relative">
 
-            <!-- FOTO PROFILE -->
-            <div class="-mt-14">
+            <!-- PROFILE -->
+            <div class="-mt-10 flex items-center gap-5">
+
+                <!-- FOTO -->
                 <div class="w-28 h-28 rounded-full border-4 border-white overflow-hidden shadow-md bg-gray-200">
 
                     <img
-                        src="https://i.pinimg.com/736x/89/63/43/8963434f4ad83f2b5f4cb9f8c9f4c5df.jpg"
+                        src="https://ui-avatars.com/api/?name={{ urlencode($user->nama) }}"
                         alt="Profile"
-                        class="w-full h-full object-cover"
-                    >
+                        class="w-full h-full object-cover">
+                </div>
+
+                <!-- NAMA -->
+                <div class="mt-8">
+
+                    <div class="flex items-center gap-3">
+
+                        <h2 class="text-2xl font-bold text-gray-900">
+                            {{ $user->nama }}
+                        </h2>
+
+                        <!-- BADGE -->
+                        <span class="px-4 py-1 rounded-full bg-primary text-white text-sm font-semibold shadow">
+                            {{ $user->siswa->jenjang ?? '-' }}
+                        </span>
+                    </div>
                 </div>
             </div>
 
-            <!-- NAMA -->
-            <div class="mt-4">
-                <h2 class="text-xl font-bold text-gray-900">
-                    {{ $user->nama }}
-                </h2>
-
-                <span class="inline-block mt-2 px-4 py-1 rounded-full bg-primary text-white text-sm font-medium">
-                    {{ $user->siswa->jenjang ?? '-' }}
-                </span>
-            </div>
-
             <!-- FORM -->
-            <form class="mt-8">
+            <form class="mt-10">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -53,8 +59,7 @@
                         <input
                             type="text"
                             value="{{ $user->nama }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
                     </div>
 
                     <!-- USERNAME -->
@@ -66,8 +71,7 @@
                         <input
                             type="text"
                             value="{{ $user->username }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
                     </div>
 
                     <!-- EMAIL -->
@@ -79,8 +83,7 @@
                         <input
                             type="email"
                             value="{{ $user->email }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none"
-                        >
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
                     </div>
 
                     <!-- PASSWORD -->
@@ -92,8 +95,7 @@
                         <input
                             type="password"
                             value="password"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none"
-                        >
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
                     </div>
 
                     <!-- TGL LAHIR -->
@@ -105,8 +107,7 @@
                         <input
                             type="date"
                             value="{{ $user->siswa->tgl_lahir ?? '' }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
                     </div>
 
                     <!-- JENJANG -->
@@ -118,8 +119,7 @@
                         <input
                             type="text"
                             value="{{ $user->siswa->jenjang ?? '-' }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none"
-                        >
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
                     </div>
 
                     <!-- TINGKAT -->
@@ -131,8 +131,7 @@
                         <input
                             type="text"
                             value="{{ $user->siswa->tingkat ?? '-' }}"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none"
-                        >
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
                     </div>
 
                 </div>

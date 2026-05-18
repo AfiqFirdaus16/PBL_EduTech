@@ -91,5 +91,6 @@ Route::get('/dashboard-admin', function () {
         return view('admin.data-pengguna');
     })->name('data-pengguna.index');
 
-    //User Profile
+//User Profile
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
