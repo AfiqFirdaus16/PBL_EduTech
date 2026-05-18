@@ -163,8 +163,6 @@
     </aside>
 
 
-
-
     <!-- CONTENT -->
     <main class="flex-1 flex flex-col">
 
@@ -273,8 +271,14 @@
         </script>
         <!-- PAGE -->
         <section class="flex-1 p-8 bg-[#F4F4F4]">
-            @yield('content')
-        </section>
+            @if(session('success'))
+                <div class="mb-6 rounded-xl border border-green-300 bg-green-100 px-5 py-4 text-green-700 font-medium shadow-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+    @yield('content')
+</section>
 
     </main>
 
