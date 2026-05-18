@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DataAkademikController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TeknikBelajarController;
 
 // Landing Page
 Route::get('/', function () {
@@ -71,9 +72,8 @@ Route::get('/dashboard-admin', function () {
     return view('siswa.hasil-resiko');
     })->name('hasil-resiko.index');
 
-    Route::get('/teknik-belajar', function () {
-        return view('siswa.teknik-belajar');
-    })->name('teknik-belajar.index');
+    Route::get('/teknik-belajar', [TeknikBelajarController::class, 'index'])->name('teknik-belajar.index');
+    Route::get('/teknik-belajar/teknik-belajar', [TeknikBelajarController::class, 'teknikBelajar'])->name('teknik-belajar.teknikBelajar');
 
     Route::get('/riwayat', function () {
         return view('siswa.riwayat');
