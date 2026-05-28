@@ -6,11 +6,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DataAkademikController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeknikBelajarController;
+use App\Http\Controllers\AnalisaController;
 
-// Landing Page
-Route::get('/', function () {
-    return view('page.landing.index');
-})->name('landing');
+// // Landing Page
+// Route::get('/', function () {
+//     return view('page.landing.index');
+// })->name('landing');
 
 // AUTH
 Route::view('/login', 'auth.login')->name('login');
@@ -88,3 +89,23 @@ Route::get('/dashboard-admin', function () {
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+//reAnalisa
+Route::get('/reAnalisa', function () {
+    return view('page.reAnalisa');
+})->name('reAnalisa');
+
+//KUIS
+Route::get('/kuis', function () {
+    return view('page.kuis');
+});
+
+//hasil analisa
+Route::get('/hasil', function () {
+    return view('page.hasil');
+})->name('hasil');
