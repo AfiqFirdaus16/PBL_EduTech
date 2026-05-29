@@ -332,6 +332,7 @@
             src="{{ asset('images/edutrace2.png') }}"
             alt="Logo"
             class="analisa-logo"
+            style="display:block; margin:0 auto 20px;"
         >
 
         {{-- TITLE --}}
