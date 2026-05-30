@@ -141,7 +141,7 @@
                     <!-- BUTTON -->
                     <div class="flex justify-end gap-3 mt-8">
 
-                        <a href="{{ route('dashboard') }}"
+                        <a href="{{ route('welcome') }}"
                             class="px-5 py-3 rounded-xl bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition">
 
                             Kembali

@@ -1,4 +1,4 @@
-{{-- resources/views/welcome.blade.php --}}
+{{-- resources/views/landing.blade.php --}}
 
 <!DOCTYPE html>
 <html lang="id">
@@ -111,6 +111,174 @@
 
         .nav-menu a:hover{
             color:#3C3489;
+        }
+
+        /* ================= NAVBAR GUEST BUTTONS ================= */
+
+        .btn-daftar{
+            color:#3C3489;
+            font-size:13px;
+            font-weight:700;
+            padding:9px 20px;
+            border-radius:8px;
+            border:2px solid #3C3489;
+            transition:0.3s;
+            display:inline-block;
+        }
+
+        .btn-daftar:hover{
+            background:#3C3489;
+            color:#FFFFFF;
+        }
+
+        .btn-masuk{
+            background:#3C3489;
+            color:#FFFFFF;
+            font-size:13px;
+            font-weight:700;
+            padding:9px 20px;
+            border-radius:8px;
+            border:2px solid #3C3489;
+            transition:0.3s;
+            display:inline-block;
+        }
+
+        .btn-masuk:hover{
+            background:#2a2468;
+            border-color:#2a2468;
+        }
+
+        /* ================= NAVBAR PROFILE DROPDOWN ================= */
+
+        .nav-auth{
+            position:absolute;
+            right:0;
+            display:flex;
+            align-items:center;
+        }
+
+        .profile-trigger{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            cursor:pointer;
+            padding:6px 10px;
+            border-radius:10px;
+            transition:0.2s;
+            position:relative;
+            user-select:none;
+        }
+
+        .profile-trigger:hover{
+            background:#F3F2FF;
+        }
+
+        .profile-avatar{
+            width:38px;
+            height:38px;
+            border-radius:50%;
+            background:#3C3489;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-shrink:0;
+        }
+
+        .profile-avatar i{
+            color:#FFFFFF;
+            font-size:18px;
+        }
+
+        .profile-info{
+            display:flex;
+            flex-direction:column;
+            line-height:1.3;
+        }
+
+        .profile-name{
+            font-size:13px;
+            font-weight:700;
+            color:#222;
+        }
+
+        .profile-level{
+            font-size:11px;
+            color:#888;
+            font-weight:500;
+        }
+
+        .profile-trigger .fa-chevron-down{
+            font-size:11px;
+            color:#888;
+            transition:0.3s;
+        }
+
+        .profile-trigger.open .fa-chevron-down{
+            transform:rotate(180deg);
+        }
+
+        /* Dropdown */
+
+        .profile-dropdown{
+            position:absolute;
+            top:calc(100% + 10px);
+            right:0;
+            width:200px;
+            background:#FFFFFF;
+            border-radius:14px;
+            box-shadow:0 8px 28px rgba(0,0,0,0.13);
+            border:1px solid #EFEFEF;
+            padding:10px;
+            opacity:0;
+            pointer-events:none;
+            transform:translateY(-8px);
+            transition:0.25s ease;
+            z-index:99999;
+        }
+
+        .profile-dropdown.show{
+            opacity:1;
+            pointer-events:all;
+            transform:translateY(0);
+        }
+
+        .dropdown-item{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:11px 14px;
+            border-radius:10px;
+            font-size:14px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.2s;
+            text-decoration:none;
+        }
+
+        .dropdown-item.edit{
+            background:#EEEDFE;
+            color:#3C3489;
+            margin-bottom:2px;
+        }
+
+        .dropdown-item.edit:hover{
+            background:#dddcfc;
+        }
+
+        .dropdown-item.keluar{
+            color:#E53535;
+            background:transparent;
+            margin-top:4px;
+        }
+
+        .dropdown-item.keluar:hover{
+            background:#FFF0F0;
+        }
+
+        .dropdown-divider{
+            height:1px;
+            background:#F0F0F0;
+            margin:6px 0;
         }
 
         /* ================= HERO ================= */
@@ -478,14 +646,6 @@
         .stat-bar-fill.blue { background:#E53535; width:85%; }
         .stat-bar-fill.gray { background:#EF9F27; width:50%; }
 
-        .stat-value{
-            font-size:11px;
-            font-weight:600;
-            color:#E53535;
-            text-align:center;
-            display:none; /* label sudah di atas */
-        }
-
         /* ===== RIWAYAT CARD ===== */
 
         .riwayat-card{
@@ -578,6 +738,7 @@
             font-weight:700;
             color:#111;
             margin-bottom:20px;
+            text-align:center;
         }
 
         .teknik-grid{
@@ -838,6 +999,10 @@
             .footer-wrapper{ flex-direction:column; }
             .faq h2{ font-size:34px; }
             .section-title{ font-size:22px; }
+            .profile-info{ display:none; }
+            .profile-trigger .fa-chevron-down{ display:none; }
+            .nav-auth-guest{ gap:6px; }
+            .btn-daftar, .btn-masuk{ font-size:11px; padding:7px 12px; }
         }
 
     </style>
@@ -857,8 +1022,65 @@
                 <li><a href="#beranda" class="nav-link active">Beranda</a></li>
                 <li><a href="#fitur" class="nav-link">Fitur</a></li>
                 <li><a href="#faq" class="nav-link">FAQ</a></li>
-                <li><a href="{{ route('reAnalisa') }}" class="nav-link">Hasil Analisa</a></li>
+                <li>
+                    @auth
+                        <a href="{{ route('hasil') }}" class="nav-link">Hasil Analisa</a>
+                    @else
+                        <a href="{{ route('reAnalisa') }}" class="nav-link">Hasil Analisa</a>
+                    @endauth
+                </li>
             </ul>
+
+            {{-- AUTH: sudah login --}}
+            @auth
+            <div class="nav-auth">
+                <div class="profile-trigger" id="profileTrigger">
+
+                    <div class="profile-avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+
+                    <div class="profile-info">
+                        <span class="profile-name">{{ Auth::user()->nama }}</span>
+                        <span class="profile-level">{{ Auth::user()->siswa->jenjang?? '-' }}</span>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-down"></i>
+
+                    <div class="profile-dropdown" id="profileDropdown">
+
+                        <a href="{{ route('profile.edit') }}" class="dropdown-item edit">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            Edit Profil
+                        </a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="dropdown-item keluar"
+                                style="width:100%;border:none;background:none;font-family:'Poppins',sans-serif;cursor:pointer;"
+                            >
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                Keluar
+                            </button>
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+            @endauth
+
+            {{-- GUEST: belum login --}}
+            @guest
+            <div class="nav-auth" style="gap:10px;">
+                <a href="{{ route('register') }}" class="btn-daftar">Daftar</a>
+                <a href="{{ route('login') }}" class="btn-masuk">Masuk</a>
+            </div>
+            @endguest
 
         </div>
 
@@ -882,7 +1104,11 @@
                 untuk peningkatan performa siswa SMP dan SMA sederajat.
             </p>
 
-            <a href="{{ route('login') }}" class="hero-btn">Mulai Test</a>
+            @auth
+                <a href="{{ route('kuis') }}" class="hero-btn">Mulai Test</a>
+            @else
+                <a href="{{ route('login') }}" class="hero-btn">Mulai Test</a>
+            @endauth
 
         </div>
 
@@ -946,74 +1172,74 @@
 
         <div class="container">
 
-            <div class="analisa-title">Analisa setelah tes</div>
+            <div class="analisa-title">Contoh Analisa Setelah Tes</div>
 
             <div class="analisa-grid">
 
                 <div class="analisa-left">
 
-                {{-- Hasil Resiko Belajar --}}
-                <div class="hasil-card">
+                    {{-- Hasil Resiko Belajar --}}
+                    <div class="hasil-card">
 
-                    <div class="hasil-top">
+                        <div class="hasil-top">
 
-                        {{-- Gauge / Donut SVG --}}
-                        <div class="risiko-gauge-wrap">
-                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                <circle class="gauge-bg" cx="50" cy="50" r="40"/>
-                                <circle class="gauge-fill" cx="50" cy="50" r="40"/>
-                            </svg>
-                            <div class="risiko-gauge-inner">
-                                <span class="risiko-sub">Level Resiko</span>
-                                <span class="risiko-main">HIGH</span>
+                            {{-- Gauge / Donut SVG --}}
+                            <div class="risiko-gauge-wrap">
+                                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+                                    <circle class="gauge-fill" cx="50" cy="50" r="40"/>
+                                </svg>
+                                <div class="risiko-gauge-inner">
+                                    <span class="risiko-sub">Level Resiko</span>
+                                    <span class="risiko-main">HIGH</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="hasil-desc-wrap">
-                            <h4>Hasil Resiko Belajar</h4>
-                            <div class="hasil-desc">
-                                Berdasarkan pola aktivitas Anda, tingkat risiko burnout berada
-                                pada level menengah. Disarankan untuk mengatur jadwal
-                                istirahat yang lebih konsisten untuk menjaga performa kognitif
-                                jangka panjang.
+                            <div class="hasil-desc-wrap">
+                                <h4>Hasil Resiko Belajar</h4>
+                                <div class="hasil-desc">
+                                    Berdasarkan pola aktivitas Anda, tingkat risiko burnout berada
+                                    pada level menengah. Disarankan untuk mengatur jadwal
+                                    istirahat yang lebih konsisten untuk menjaga performa kognitif
+                                    jangka panjang.
+                                </div>
                             </div>
+
                         </div>
 
                     </div>
 
-                </div>
+                    {{-- 3 Stat Card terpisah di bawah hasil card --}}
+                    <div class="stat-row">
 
-                {{-- 3 Stat Card terpisah di bawah hasil card --}}
-                <div class="stat-row">
-
-                    <div class="stat-item">
-                        <span class="stat-label">Jam Belajar</span>
-                        <div class="stat-icon-wrap red">
-                            <i class="fa-solid fa-clock"></i>
+                        <div class="stat-item">
+                            <span class="stat-label">Jam Belajar</span>
+                            <div class="stat-icon-wrap red">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div class="stat-bar"><div class="stat-bar-fill red"></div></div>
+                            <span style="font-size:11px;font-weight:600;color:#E53535;">Resiko Tinggi</span>
                         </div>
-                        <div class="stat-bar"><div class="stat-bar-fill red"></div></div>
-                        <span style="font-size:11px;font-weight:600;color:#E53535;">Resiko Tinggi</span>
-                    </div>
 
-                    <div class="stat-item">
-                        <span class="stat-label">Jam Tidur</span>
-                        <div class="stat-icon-wrap blue">
-                            <i class="fa-solid fa-moon"></i>
+                        <div class="stat-item">
+                            <span class="stat-label">Jam Tidur</span>
+                            <div class="stat-icon-wrap blue">
+                                <i class="fa-solid fa-moon"></i>
+                            </div>
+                            <div class="stat-bar"><div class="stat-bar-fill blue"></div></div>
+                            <span style="font-size:11px;font-weight:600;color:#E53535;">Resiko Tinggi</span>
                         </div>
-                        <div class="stat-bar"><div class="stat-bar-fill blue"></div></div>
-                        <span style="font-size:11px;font-weight:600;color:#E53535;">Resiko Tinggi</span>
-                    </div>
 
-                    <div class="stat-item">
-                        <span class="stat-label">Akses<br>Pembelajaran</span>
-                        <div class="stat-icon-wrap gray">
-                            <i class="fa-solid fa-book-open"></i>
+                        <div class="stat-item">
+                            <span class="stat-label">Akses<br>Pembelajaran</span>
+                            <div class="stat-icon-wrap gray">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <div class="stat-bar"><div class="stat-bar-fill gray"></div></div>
+                            <span style="font-size:11px;font-weight:600;color:#EF9F27;">Resiko Normal</span>
                         </div>
-                        <div class="stat-bar"><div class="stat-bar-fill gray"></div></div>
-                        <span style="font-size:11px;font-weight:600;color:#EF9F27;">Resiko Normal</span>
-                    </div>
 
-                </div>
+                    </div>
 
                 </div>{{-- end analisa-left --}}
 
@@ -1022,7 +1248,6 @@
 
                     <h4>Riwayat Test</h4>
 
-                    {{-- Item pertama: kuning (active) --}}
                     <div class="riwayat-item active-item">
                         <div class="riwayat-top-row">
                             <div class="riwayat-left">
@@ -1034,7 +1259,6 @@
                         <div class="riwayat-sub">Mulai Test : 12.00 WIB</div>
                     </div>
 
-                    {{-- Item putih --}}
                     <div class="riwayat-item">
                         <div class="riwayat-top-row">
                             <div class="riwayat-left">
@@ -1307,7 +1531,6 @@
         const navLinks = document.querySelectorAll('.nav-link');
         const sections = document.querySelectorAll('section[id]');
 
-        // Klik manual tetap berfungsi
         navLinks.forEach(link => {
             link.addEventListener('click', function(){
                 navLinks.forEach(nav => nav.classList.remove('active'));
@@ -1315,10 +1538,9 @@
             });
         });
 
-        // Scroll otomatis update navbar
         const observerOptions = {
             root: null,
-            rootMargin: '-50% 0px -50% 0px', // trigger saat section ada di tengah viewport
+            rootMargin: '-50% 0px -50% 0px',
             threshold: 0
         };
 
@@ -1338,6 +1560,30 @@
         }, observerOptions);
 
         sections.forEach(section => observer.observe(section));
+
+        // ================= PROFILE DROPDOWN =================
+
+        const profileTrigger = document.getElementById('profileTrigger');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        if (profileTrigger && profileDropdown) {
+
+            profileTrigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                profileTrigger.classList.toggle('open');
+                profileDropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', function() {
+                profileTrigger.classList.remove('open');
+                profileDropdown.classList.remove('show');
+            });
+
+            profileDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+        }
 
     </script>
 
