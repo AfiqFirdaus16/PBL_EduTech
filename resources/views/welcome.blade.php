@@ -1,5 +1,3 @@
-{{-- resources/views/landing.blade.php --}}
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
