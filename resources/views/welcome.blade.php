@@ -72,13 +72,11 @@
             width:100%;
             height:75px;
             position:relative;
-
             display:flex;
             align-items:center;
             justify-content:center;
         }
 
-        /* LOGO KIRI MENTOK */
         .logo{
             position:absolute;
             left:0;
@@ -91,7 +89,6 @@
             object-fit:contain;
         }
 
-        /* MENU TENGAH */
         .nav-menu{
             display:flex;
             align-items:center;
@@ -121,19 +118,15 @@
         .hero{
             width:100%;
             min-height:760px;
-
             background:
-            linear-gradient(rgba(60,52,137,0.82), rgba(60,52,137,0.82)),
-            url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1974&auto=format&fit=crop');
-
+                linear-gradient(rgba(60,52,137,0.82), rgba(60,52,137,0.82)),
+                url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1974&auto=format&fit=crop');
             background-size:cover;
             background-position:center;
-
             display:flex;
             align-items:center;
             justify-content:center;
             text-align:center;
-
             padding-top:75px;
         }
 
@@ -168,6 +161,7 @@
             font-size:22px;
             font-weight:700;
             cursor:pointer;
+            display:inline-block;
         }
 
         /* ================= FITUR ================= */
@@ -188,7 +182,12 @@
 
         .fiturSwiper{
             width:100%;
-            padding:20px 40px 70px 40px;
+            padding:20px 0 70px 0;
+            overflow:visible !important;
+        }
+
+        .fitur .container{
+            overflow:hidden;
         }
 
         .swiper-slide{
@@ -205,50 +204,75 @@
         }
 
         .fitur-card{
-            width:280px;
-            min-height:260px;
-
+            width:260px;
+            min-height:240px;
             border-radius:18px;
-
-            background:
-            linear-gradient(
-                to bottom,
-                #F4D29B,
-                #B4A5F5
-            );
-
-            padding:30px 24px;
-
+            background:#FFFFFF;
+            border:1.5px solid #E0DCFC;
+            padding:30px 22px;
             text-align:center;
-
-            box-shadow:
-            0 8px 20px rgba(0,0,0,0.08);
-
+            box-shadow:0 4px 16px rgba(0,0,0,0.06);
             transition:0.4s ease;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
         }
 
-        .fitur-card:hover{
-            transform:translateY(-8px);
+        .fitur-card .icon-wrap{
+            width:64px;
+            height:64px;
+            border-radius:50%;
+            background:#EEEDFE;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin:0 auto 18px;
         }
 
-        .fitur-card i{
-            font-size:60px;
+        .fitur-card .icon-wrap i{
+            font-size:30px;
             color:#3C3489;
-            margin-bottom:22px;
         }
 
         .fitur-card h3{
-            font-size:20px;
-            font-weight:800;
-            margin-bottom:14px;
-            line-height:1.5;
-            color:#000;
+            font-size:17px;
+            font-weight:700;
+            margin-bottom:10px;
+            line-height:1.4;
+            color:#222;
         }
 
         .fitur-card p{
-            font-size:14px;
-            line-height:1.8;
-            color:#222;
+            font-size:13px;
+            line-height:1.7;
+            color:#666;
+        }
+
+        .swiper-slide-active .fitur-card{
+            background:#3C3489;
+            border-color:#3C3489;
+            box-shadow:0 10px 30px rgba(60,52,137,0.35);
+        }
+
+        .swiper-slide-active .fitur-card .icon-wrap{
+            background:rgba(255,255,255,0.2);
+        }
+
+        .swiper-slide-active .fitur-card .icon-wrap i{
+            color:#FFFFFF;
+        }
+
+        .swiper-slide-active .fitur-card h3{
+            color:#FFFFFF;
+        }
+
+        .swiper-slide-active .fitur-card p{
+            color:rgba(255,255,255,0.8);
+        }
+
+        .fitur-card:hover{
+            transform:translateY(-5px);
         }
 
         .swiper-pagination-bullet{
@@ -264,17 +288,347 @@
             background:#3C3489;
         }
 
+        /* ================= ANALISA SETELAH TES ================= */
+
+        .analisa{
+            padding:70px 0 90px;
+            background:linear-gradient(180deg, #D8D3F4 0%, #CEC8F1 45%, #C4BDEB 100%);
+        }
+
+        .analisa-title{
+            font-size:22px;
+            font-weight:700;
+            color:#3C3489;
+            margin-bottom:30px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .analisa-title::before{
+            content:'';
+            display:inline-block;
+            width:6px;
+            height:28px;
+            background:#EF9F27;
+            border-radius:4px;
+        }
+
+        .analisa-grid{
+            display:grid;
+            grid-template-columns:1.4fr 1fr;
+            gap:20px;
+            margin-bottom:40px;
+            align-items:start;
+        }
+
+        .analisa-left{
+            display:flex;
+            flex-direction:column;
+            gap:14px;
+        }
+
+        /* ===== HASIL RESIKO CARD (atas) ===== */
+
+        .hasil-card{
+            background:#FFFFFF;
+            border-radius:16px;
+            padding:28px 28px 24px;
+            box-shadow:0 4px 16px rgba(0,0,0,0.07);
+        }
+
+        .hasil-top{
+            display:flex;
+            align-items:center;
+            gap:24px;
+        }
+
+        /* ===== GAUGE / DONUT ===== */
+
+        .risiko-gauge-wrap{
+            flex-shrink:0;
+            width:130px;
+            height:130px;
+            position:relative;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .risiko-gauge-wrap svg{
+            position:absolute;
+            top:0; left:0;
+            width:100%; height:100%;
+            transform:rotate(-210deg);
+        }
+
+        .gauge-bg{
+            fill:none;
+            stroke:#F0F0F0;
+            stroke-width:11;
+        }
+
+        .gauge-fill{
+            fill:none;
+            stroke:#E53535;
+            stroke-width:11;
+            stroke-linecap:round;
+            stroke-dasharray:251;
+            stroke-dashoffset:70;
+        }
+
+        .risiko-gauge-inner{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            z-index:1;
+        }
+
+        .risiko-gauge-inner .risiko-sub{
+            font-size:9px;
+            font-weight:500;
+            color:#888;
+            text-align:center;
+            line-height:1.3;
+        }
+
+        .risiko-gauge-inner .risiko-main{
+            font-size:18px;
+            font-weight:800;
+            color:#E53535;
+            text-align:center;
+            letter-spacing:0.5px;
+        }
+
+        /* ===== HASIL DESC ===== */
+
+        .hasil-desc-wrap{}
+
+        .hasil-desc-wrap h4{
+            font-size:20px;
+            font-weight:800;
+            color:#111;
+            margin-bottom:10px;
+        }
+
+        .hasil-desc{
+            font-size:13.5px;
+            line-height:1.75;
+            color:#555;
+        }
+
+        /* ===== STAT ROW (3 card bawah terpisah) ===== */
+
+        .stat-row{
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap:14px;
+            margin-top:16px;
+        }
+
+        .stat-item{
+            background:#FFFFFF;
+            border-radius:14px;
+            padding:16px 12px 14px;
+            box-shadow:0 4px 14px rgba(0,0,0,0.07);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:10px;
+        }
+
+        .stat-label{
+            font-size:12px;
+            font-weight:700;
+            color:#3C3489;
+            text-align:center;
+            line-height:1.3;
+        }
+
+        .stat-icon-wrap{
+            width:52px;
+            height:52px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#EEEDFE;
+        }
+
+        .stat-icon-wrap i{ font-size:24px; }
+        .stat-icon-wrap.red i{ color:#E53535; }
+        .stat-icon-wrap.blue i{ color:#3C3489; }
+        .stat-icon-wrap.gray i{ color:#888; }
+
+        .stat-bar{
+            width:100%;
+            height:7px;
+            border-radius:4px;
+            background:#F0F0F0;
+            overflow:hidden;
+        }
+
+        .stat-bar-fill{
+            height:100%;
+            border-radius:4px;
+        }
+
+        .stat-bar-fill.red  { background:#E53535; width:85%; }
+        .stat-bar-fill.blue { background:#E53535; width:85%; }
+        .stat-bar-fill.gray { background:#EF9F27; width:50%; }
+
+        .stat-value{
+            font-size:11px;
+            font-weight:600;
+            color:#E53535;
+            text-align:center;
+            display:none; /* label sudah di atas */
+        }
+
+        /* ===== RIWAYAT CARD ===== */
+
+        .riwayat-card{
+            background:#FFFFFF;
+            border-radius:16px;
+            padding:24px;
+            box-shadow:0 4px 16px rgba(0,0,0,0.07);
+        }
+
+        .riwayat-card h4{
+            font-size:18px;
+            font-weight:700;
+            margin-bottom:16px;
+            color:#111;
+        }
+
+        .riwayat-item{
+            border-radius:12px;
+            padding:12px 14px;
+            margin-bottom:10px;
+            background:#FFFFFF;
+            border:1px solid #F0F0F0;
+        }
+
+        .riwayat-item.active-item{
+            background:#FEF3C7;
+            border:1px solid #FDE68A;
+        }
+
+        .riwayat-item:last-child{
+            margin-bottom:0;
+        }
+
+        .riwayat-top-row{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:4px;
+        }
+
+        .riwayat-left{
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .riwayat-dot{
+            width:10px;
+            height:10px;
+            border-radius:50%;
+            flex-shrink:0;
+        }
+
+        .riwayat-dot.high  { background:#E53535; }
+        .riwayat-dot.low   { background:#22C55E; }
+        .riwayat-dot.medium{ background:#F59E0B; }
+
+        .riwayat-info span{
+            font-size:13px;
+            font-weight:700;
+            color:#111;
+        }
+
+        .riwayat-date{
+            font-size:11px;
+            color:#999;
+        }
+
+        .riwayat-sub{
+            font-size:11px;
+            color:#888;
+            padding-left:20px;
+        }
+
+        .riwayat-footer-note{
+            font-size:11px;
+            color:#aaa;
+            text-align:center;
+            margin-top:14px;
+        }
+
+        /* ===== TOP 3 TEKNIK ===== */
+
+        .teknik-section{
+            margin-top:40px;
+        }
+
+        .teknik-title{
+            font-size:22px;
+            font-weight:700;
+            color:#111;
+            margin-bottom:20px;
+        }
+
+        .teknik-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:20px;
+        }
+
+        .teknik-card{
+            background:linear-gradient(180deg, #6B63E7 0%, #5147C8 100%);
+            border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 8px 20px rgba(65,55,160,0.18);
+            transition:.3s ease;
+        }
+
+        .teknik-card:hover{
+            transform:translateY(-6px);
+        }
+
+        .teknik-img{
+            width:100%;
+            height:185px;
+            object-fit:cover;
+            display:block;
+        }
+
+        .teknik-content{
+            padding:14px 16px 18px;
+        }
+
+        .teknik-content h4{
+            color:#fff;
+            font-size:16px;
+            font-weight:700;
+            margin-bottom:8px;
+            text-align:center;
+        }
+
+        .teknik-content p{
+            color:#ECEBFF;
+            font-size:12px;
+            line-height:1.6;
+            text-align:center;
+        }
+
         /* ================= TUJUAN ================= */
 
         .tujuan{
             padding:90px 0;
-
-            background:linear-gradient(
-                180deg,
-                #D8D3F4 0%,
-                #CEC8F1 45%,
-                #C4BDEB 100%
-            );
+            background:linear-gradient(180deg, #D8D3F4 0%, #CEC8F1 45%, #C4BDEB 100%);
         }
 
         .tujuan-box{
@@ -305,15 +659,19 @@
             margin-bottom:18px;
         }
 
+        .tujuan-item:last-child{
+            margin-bottom:0;
+        }
+
         .tujuan-icon{
             width:48px;
             height:48px;
             border-radius:8px;
             background:linear-gradient(to bottom, #B5A8FF, #3C3489);
-
             display:flex;
             align-items:center;
             justify-content:center;
+            flex-shrink:0;
         }
 
         .tujuan-icon i{
@@ -458,23 +816,28 @@
             color:#FFFFFF;
         }
 
-        .fa-facebook-f{
-            background:#3461FF;
-        }
-
-        .fa-instagram{
-            background:#FF5C9D;
-        }
-
-        .fa-youtube{
-            background:#FF3131;
-        }
+        .fa-facebook-f{ background:#3461FF; }
+        .fa-instagram{ background:#FF5C9D; }
+        .fa-youtube{ background:#FF3131; }
 
         .footer-bottom{
             border-top:1px solid rgba(255,255,255,0.2);
             padding-top:18px;
             text-align:center;
             font-size:14px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width:768px){
+            .hero-content h1{ font-size:32px; }
+            .hero-content p{ font-size:15px; }
+            .hero-btn{ font-size:16px; padding:12px 36px; }
+            .analisa-grid{ grid-template-columns:1fr; }
+            .teknik-grid{ grid-template-columns:1fr; }
+            .footer-wrapper{ flex-direction:column; }
+            .faq h2{ font-size:34px; }
+            .section-title{ font-size:22px; }
         }
 
     </style>
@@ -486,38 +849,15 @@
 
         <div class="container nav-wrapper">
 
-            {{-- LOGO --}}
             <div class="logo">
                 <img src="{{ asset('images/edutrace.png') }}" alt="logo">
             </div>
 
-            {{-- MENU --}}
             <ul class="nav-menu">
-
-                <li>
-                    <a href="#beranda" class="nav-link active">
-                        Beranda
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#fitur" class="nav-link">
-                        Fitur
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#faq" class="nav-link">
-                        FAQ
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ url('/reAnalisa') }}" class="nav-link">
-                        Hasil Analisa
-                    </a>
-                </li>
-
+                <li><a href="#beranda" class="nav-link active">Beranda</a></li>
+                <li><a href="#fitur" class="nav-link">Fitur</a></li>
+                <li><a href="#faq" class="nav-link">FAQ</a></li>
+                <li><a href="{{ route('reAnalisa') }}" class="nav-link">Hasil Analisa</a></li>
             </ul>
 
         </div>
@@ -542,9 +882,7 @@
                 untuk peningkatan performa siswa SMP dan SMA sederajat.
             </p>
 
-            <button class="hero-btn">
-                Mulai Test
-            </button>
+            <a href="{{ route('login') }}" class="hero-btn">Mulai Test</a>
 
         </div>
 
@@ -555,89 +893,219 @@
 
         <div class="container">
 
-            <h2 class="section-title">
-                AKSES FITUR SISTEM REKOMENDASI
-            </h2>
+            <h2 class="section-title">AKSES FITUR SISTEM REKOMENDASI</h2>
 
             <div class="swiper fiturSwiper">
 
                 <div class="swiper-wrapper">
 
-                    {{-- CARD 1 --}}
                     <div class="swiper-slide">
-
                         <div class="fitur-card">
-
-                            <i class="fa-solid fa-stopwatch"></i>
-
+                            <div class="icon-wrap"><i class="fa-solid fa-stopwatch"></i></div>
                             <h3>Teknik Belajar</h3>
-
-                            <p>
-                                Teknik Belajar yang cocok
-                                sesuai kondisi dari siswa
-                            </p>
-
+                            <p>Teknik Belajar yang cocok sesuai kondisi dari siswa</p>
                         </div>
-
                     </div>
 
-                    {{-- CARD 2 --}}
                     <div class="swiper-slide">
-
                         <div class="fitur-card">
-
-                            <i class="fa-regular fa-face-smile"></i>
-
+                            <div class="icon-wrap"><i class="fa-regular fa-face-smile"></i></div>
                             <h3>Hasil Resiko Akademik</h3>
-
-                            <p>
-                                Meningkatkan kebiasaan akademik
-                                dari kebiasaan akademik yang beresiko
-                            </p>
-
+                            <p>Meningkatkan kebiasaan akademik dari kebiasaan akademik yang beresiko</p>
                         </div>
-
                     </div>
 
-                    {{-- CARD 3 --}}
                     <div class="swiper-slide">
-
                         <div class="fitur-card">
-
-                            <i class="fa-solid fa-chart-column"></i>
-
+                            <div class="icon-wrap"><i class="fa-solid fa-chart-column"></i></div>
                             <h3>Riwayat</h3>
-
-                            <p>
-                                Riwayat untuk mengetahui
-                                hasil tes dari terakhir
-                            </p>
-
+                            <p>Riwayat untuk mengetahui hasil tes dari terakhir</p>
                         </div>
-
                     </div>
 
-                    {{-- CARD 4 --}}
                     <div class="swiper-slide">
-
                         <div class="fitur-card">
-
-                            <i class="fa-solid fa-book"></i>
-
+                            <div class="icon-wrap"><i class="fa-solid fa-book"></i></div>
                             <h3>Evaluasi Belajar</h3>
+                            <p>Evaluasi pembelajaran siswa berdasarkan kebiasaan belajar</p>
+                        </div>
+                    </div>
 
-                            <p>
-                                Evaluasi pembelajaran siswa
-                                berdasarkan kebiasaan belajar
-                            </p>
+                </div>
 
+                <div class="swiper-pagination"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {{-- ================= ANALISA SETELAH TES ================= --}}
+    <section class="analisa">
+
+        <div class="container">
+
+            <div class="analisa-title">Analisa setelah tes</div>
+
+            <div class="analisa-grid">
+
+                <div class="analisa-left">
+
+                {{-- Hasil Resiko Belajar --}}
+                <div class="hasil-card">
+
+                    <div class="hasil-top">
+
+                        {{-- Gauge / Donut SVG --}}
+                        <div class="risiko-gauge-wrap">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+                                <circle class="gauge-fill" cx="50" cy="50" r="40"/>
+                            </svg>
+                            <div class="risiko-gauge-inner">
+                                <span class="risiko-sub">Level Resiko</span>
+                                <span class="risiko-main">HIGH</span>
+                            </div>
+                        </div>
+
+                        <div class="hasil-desc-wrap">
+                            <h4>Hasil Resiko Belajar</h4>
+                            <div class="hasil-desc">
+                                Berdasarkan pola aktivitas Anda, tingkat risiko burnout berada
+                                pada level menengah. Disarankan untuk mengatur jadwal
+                                istirahat yang lebih konsisten untuk menjaga performa kognitif
+                                jangka panjang.
+                            </div>
                         </div>
 
                     </div>
 
                 </div>
 
-                <div class="swiper-pagination"></div>
+                {{-- 3 Stat Card terpisah di bawah hasil card --}}
+                <div class="stat-row">
+
+                    <div class="stat-item">
+                        <span class="stat-label">Jam Belajar</span>
+                        <div class="stat-icon-wrap red">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class="stat-bar"><div class="stat-bar-fill red"></div></div>
+                        <span style="font-size:11px;font-weight:600;color:#E53535;">Resiko Tinggi</span>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Jam Tidur</span>
+                        <div class="stat-icon-wrap blue">
+                            <i class="fa-solid fa-moon"></i>
+                        </div>
+                        <div class="stat-bar"><div class="stat-bar-fill blue"></div></div>
+                        <span style="font-size:11px;font-weight:600;color:#E53535;">Resiko Tinggi</span>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Akses<br>Pembelajaran</span>
+                        <div class="stat-icon-wrap gray">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div class="stat-bar"><div class="stat-bar-fill gray"></div></div>
+                        <span style="font-size:11px;font-weight:600;color:#EF9F27;">Resiko Normal</span>
+                    </div>
+
+                </div>
+
+                </div>{{-- end analisa-left --}}
+
+                {{-- Riwayat Test --}}
+                <div class="riwayat-card">
+
+                    <h4>Riwayat Test</h4>
+
+                    {{-- Item pertama: kuning (active) --}}
+                    <div class="riwayat-item active-item">
+                        <div class="riwayat-top-row">
+                            <div class="riwayat-left">
+                                <div class="riwayat-dot high"></div>
+                                <div class="riwayat-info"><span>Level Resiko High</span></div>
+                            </div>
+                            <span class="riwayat-date">12 Mei 2025</span>
+                        </div>
+                        <div class="riwayat-sub">Mulai Test : 12.00 WIB</div>
+                    </div>
+
+                    {{-- Item putih --}}
+                    <div class="riwayat-item">
+                        <div class="riwayat-top-row">
+                            <div class="riwayat-left">
+                                <div class="riwayat-dot low"></div>
+                                <div class="riwayat-info"><span>Level Resiko Low</span></div>
+                            </div>
+                            <span class="riwayat-date">05 Mei 2025</span>
+                        </div>
+                        <div class="riwayat-sub">Mulai Test : 10.00 WIB</div>
+                    </div>
+
+                    <div class="riwayat-item">
+                        <div class="riwayat-top-row">
+                            <div class="riwayat-left">
+                                <div class="riwayat-dot low"></div>
+                                <div class="riwayat-info"><span>Level Resiko Low</span></div>
+                            </div>
+                            <span class="riwayat-date">21 Mei 2025</span>
+                        </div>
+                        <div class="riwayat-sub">Mulai Test : 09.00 WIB</div>
+                    </div>
+
+                    <div class="riwayat-item">
+                        <div class="riwayat-top-row">
+                            <div class="riwayat-left">
+                                <div class="riwayat-dot medium"></div>
+                                <div class="riwayat-info"><span>Level Resiko Medium</span></div>
+                            </div>
+                            <span class="riwayat-date">09 April 2025</span>
+                        </div>
+                        <div class="riwayat-sub">Mulai Test : 17.00 WIB</div>
+                    </div>
+
+                    <p class="riwayat-footer-note">Hanya tersimpan 30 hari terakhir yang ditampilkan diatas</p>
+
+                </div>
+
+            </div>
+
+            {{-- Top 3 Teknik --}}
+            <div class="teknik-section">
+
+                <h3 class="teknik-title">Top 3 Teknik Belajar Rekomendasi</h3>
+
+                <div class="teknik-grid">
+
+                    <div class="teknik-card">
+                        <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600" alt="Pomodoro" class="teknik-img">
+                        <div class="teknik-content">
+                            <h4>Pomodoro</h4>
+                            <p>Teknik Pomodoro adalah metode belajar atau bekerja dengan membagi waktu menjadi sesi fokus diselingi waktu istirahat.</p>
+                        </div>
+                    </div>
+
+                    <div class="teknik-card">
+                        <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600" alt="Feynman" class="teknik-img">
+                        <div class="teknik-content">
+                            <h4>Feynman</h4>
+                            <p>Metode belajar cepat untuk memahami konsep sulit dengan menjelaskan ulang menggunakan bahasa sederhana.</p>
+                        </div>
+                    </div>
+
+                    <div class="teknik-card">
+                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600" alt="Active Recall" class="teknik-img">
+                        <div class="teknik-content">
+                            <h4>Active Recall</h4>
+                            <p>Teknik belajar dengan mengingat informasi secara aktif, bukan hanya membaca ulang materi pembelajaran.</p>
+                        </div>
+                    </div>
+
+                </div>
 
             </div>
 
@@ -652,60 +1120,26 @@
 
             <div class="tujuan-box">
 
-                <div class="tujuan-title">
-                    TUJUAN
+                <div class="tujuan-title">TUJUAN</div>
+
+                <div class="tujuan-item">
+                    <div class="tujuan-icon"><i class="fa-solid fa-brain"></i></div>
+                    <p>Mengetahui cara belajar sesuai dengan kondisi dan kebiasaan dari siswa untuk meningkatkan performa akademik</p>
                 </div>
 
                 <div class="tujuan-item">
-
-                    <div class="tujuan-icon">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-
-                    <p>
-                        Mengetahui cara belajar sesuai dengan kondisi dan kebiasaan
-                        dari siswa untuk meningkatkan performa akademik
-                    </p>
-
+                    <div class="tujuan-icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <p>Meningkatkan kebiasaan siswa dari resiko kebiasaan yang dilakukan untuk mengurangi resiko akademik lainnya</p>
                 </div>
 
                 <div class="tujuan-item">
-
-                    <div class="tujuan-icon">
-                        <i class="fa-solid fa-briefcase"></i>
-                    </div>
-
-                    <p>
-                        Meningkatkan kebiasaan siswa dari resiko kebiasaan
-                        yang dilakukan untuk mengurangi resiko akademik lainnya
-                    </p>
-
+                    <div class="tujuan-icon"><i class="fa-solid fa-user-gear"></i></div>
+                    <p>Meningkatkan produktivitas pada siswa untuk termotivasi belajar dalam meningkatkan akademik</p>
                 </div>
 
                 <div class="tujuan-item">
-
-                    <div class="tujuan-icon">
-                        <i class="fa-solid fa-user-gear"></i>
-                    </div>
-
-                    <p>
-                        Meningkatkan produktivitas pada siswa untuk termotivasi
-                        belajar dalam meningkatkan akademik
-                    </p>
-
-                </div>
-
-                <div class="tujuan-item">
-
-                    <div class="tujuan-icon">
-                        <i class="fa-solid fa-book"></i>
-                    </div>
-
-                    <p>
-                        Mengetahui Teknik belajar yang cocok
-                        untuk dilakukan evaluasi pembelajaran
-                    </p>
-
+                    <div class="tujuan-icon"><i class="fa-solid fa-book"></i></div>
+                    <p>Mengetahui Teknik belajar yang cocok untuk dilakukan evaluasi pembelajaran</p>
                 </div>
 
             </div>
@@ -723,44 +1157,54 @@
 
             <div class="faq-wrapper">
 
-                <div class="faq-item active">
-
+                <div class="faq-item">
                     <div class="faq-question">
                         <span>1. Apa itu EduTrace?</span>
                         <i class="fa-solid fa-chevron-down"></i>
                     </div>
-
                     <div class="faq-answer">
-                        Akreditasi program studi adalah proses penilaian terhadap mutu
-                        dan kelayakan suatu program studi oleh lembaga yang berwenang.
+                        EduTrace adalah sistem berbasis AI yang dirancang untuk menganalisis kebiasaan belajar siswa, mendeteksi risiko akademik, dan memberikan rekomendasi teknik belajar yang dipersonalisasi.
                     </div>
-
                 </div>
 
                 <div class="faq-item">
-
                     <div class="faq-question">
                         <span>2. Bagaimana Jika lupa Password?</span>
                         <i class="fa-solid fa-chevron-down"></i>
                     </div>
-
                     <div class="faq-answer">
-                        Anda dapat melakukan reset password melalui halaman login.
+                        Anda dapat melakukan reset password melalui halaman login dengan menekan tombol "Lupa Password".
                     </div>
-
                 </div>
 
                 <div class="faq-item">
-
                     <div class="faq-question">
                         <span>3. Apakah hasil akan valid dan terjamin?</span>
                         <i class="fa-solid fa-chevron-down"></i>
                     </div>
-
                     <div class="faq-answer">
-                        Sistem menggunakan analisis AI untuk rekomendasi terbaik.
+                        Sistem menggunakan analisis AI mutakhir untuk memberikan rekomendasi terbaik berdasarkan data kebiasaan belajar Anda.
                     </div>
+                </div>
 
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>4. Apakah data aman?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Ya, seluruh data Anda disimpan secara aman dan terenkripsi. Kami tidak membagikan data pribadi kepada pihak ketiga.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>5. EduTech itu ngapain saja?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        EduTech membantu siswa mengenali pola belajar mereka, mendeteksi risiko akademik, dan memberikan strategi belajar yang paling efektif sesuai kondisi masing-masing.
+                    </div>
                 </div>
 
             </div>
@@ -777,57 +1221,23 @@
             <div class="footer-wrapper">
 
                 <div class="footer-brand">
-
                     <div class="footer-logo">
-
                         <img src="{{ asset('images/edutrace2.png') }}" alt="">
-
-                        <h2>
-                            edu<span>Trace</span>
-                        </h2>
-
+                        <h2>edu<span>Trace</span></h2>
                     </div>
-
-                    <p>
-                        Revolusi digital dalam pengelolaan kebiasaan belajar siswa
-                        dengan rekomendasi untuk masa depan pendidikan tinggi.
-                    </p>
-
+                    <p>Revolusi digital dalam pengelolaan kebiasaan belajar siswa dengan rekomendasi untuk masa depan pendidikan tinggi.</p>
                 </div>
 
                 <div class="footer-contact">
-
                     <h3>Informasi Kami</h3>
-
-                    <p>
-                        <i class="fa-solid fa-envelope"></i>
-                        EduTech@instansia.ac.id
-                    </p>
-
-                    <p>
-                        <i class="fa-solid fa-globe"></i>
-                        www.EduTecha.ac.id
-                    </p>
-
+                    <p><i class="fa-solid fa-envelope"></i> EduTech@instansia.ac.id</p>
+                    <p><i class="fa-solid fa-globe"></i> www.EduTecha.ac.id</p>
                 </div>
 
                 <div class="footer-social">
-
-                    <p>
-                        <i class="fa-brands fa-facebook-f"></i>
-                        Facebook
-                    </p>
-
-                    <p>
-                        <i class="fa-brands fa-instagram"></i>
-                        Instagram
-                    </p>
-
-                    <p>
-                        <i class="fa-brands fa-youtube"></i>
-                        Youtube
-                    </p>
-
+                    <p><i class="fa-brands fa-facebook-f"></i> Facebook</p>
+                    <p><i class="fa-brands fa-instagram"></i> Instagram</p>
+                    <p><i class="fa-brands fa-youtube"></i> Youtube</p>
                 </div>
 
             </div>
@@ -848,38 +1258,32 @@
         // ================= SWIPER =================
 
         var swiper = new Swiper(".fiturSwiper", {
-
             loop:true,
             centeredSlides:true,
             grabCursor:true,
-
             speed:900,
-
+            loopedSlides:4,
             autoplay:{
                 delay:2500,
                 disableOnInteraction:false,
             },
-
             pagination:{
                 el:".swiper-pagination",
                 clickable:true,
+                dynamicBullets:false,
             },
-
             breakpoints:{
-
                 0:{
-                    slidesPerView:1,
-                    spaceBetween:20,
+                    slidesPerView:1.2,
+                    spaceBetween:16,
                 },
-
                 768:{
-                    slidesPerView:2,
-                    spaceBetween:25,
+                    slidesPerView:2.2,
+                    spaceBetween:24,
                 },
-
                 1024:{
-                    slidesPerView:3,
-                    spaceBetween:35,
+                    slidesPerView:2.8,
+                    spaceBetween:32,
                 }
             }
         });
@@ -889,42 +1293,51 @@
         const faqItems = document.querySelectorAll('.faq-item');
 
         faqItems.forEach(item => {
-
             const question = item.querySelector('.faq-question');
-
             question.addEventListener('click', () => {
-
                 faqItems.forEach(faq => {
-
-                    if(faq !== item){
-                        faq.classList.remove('active');
-                    }
-
+                    if(faq !== item) faq.classList.remove('active');
                 });
-
                 item.classList.toggle('active');
-
             });
-
         });
 
-        // ================= ACTIVE NAVBAR =================
+        // ================= ACTIVE NAVBAR (SCROLL) =================
 
         const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section[id]');
 
+        // Klik manual tetap berfungsi
         navLinks.forEach(link => {
-
             link.addEventListener('click', function(){
-
-                navLinks.forEach(nav => {
-                    nav.classList.remove('active');
-                });
-
+                navLinks.forEach(nav => nav.classList.remove('active'));
                 this.classList.add('active');
-
             });
-
         });
+
+        // Scroll otomatis update navbar
+        const observerOptions = {
+            root: null,
+            rootMargin: '-50% 0px -50% 0px', // trigger saat section ada di tengah viewport
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(nav => {
+                        nav.classList.remove('active');
+                        const href = nav.getAttribute('href');
+                        if (href === '#' + id) {
+                            nav.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
 
     </script>
 

@@ -31,6 +31,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/reAnalisa', function () {
+    return view('page.reAnalisa');  
+    })->name('reAnalisa');
+
+
 // ROUTE SISWA (wajib login + role siswa)
 Route::middleware(['auth', 'user'])->group(function () {
 
@@ -48,8 +53,7 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/riwayat', fn() => view('siswa.riwayat'))->name('riwayat.index');
     Route::get('/kuis', fn() => view('page.kuis'))->name('kuis');
     Route::get('/hasil', fn() => view('page.hasil'))->name('hasil');
-    Route::get('/reAnalisa', fn() => view('page.reAnalisa'))->name('reAnalisa');
-
+    
     // Teknik Belajar
     Route::get('/teknik-belajar', [TeknikBelajarController::class, 'index'])->name('teknik-belajar.index');
     Route::get('/teknik-belajar/teknik-belajar', [TeknikBelajarController::class, 'teknikBelajar'])->name('teknik-belajar.teknikBelajar');
