@@ -18,6 +18,8 @@ Route::get('/logout', function (Request $request) {
     return redirect()->route('login'); // ← diperbaiki, sebelumnya 'landing' tidak ada
 })->name('logout');
 
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 // FORGOT & RESET PASSWORD
 Route::view('/forgot-password', 'auth.forgot-password')->name('password.request');
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
@@ -26,10 +28,11 @@ Route::get('/reset-password/{token}', function ($token) {
 })->name('password.reset');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
-// LANDING
+
+//landing page 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::get('/reAnalisa', function () {
     return view('page.reAnalisa');  
