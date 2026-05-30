@@ -738,6 +738,7 @@
             font-weight:700;
             color:#111;
             margin-bottom:20px;
+            text-align:center;
         }
 
         .teknik-grid{
@@ -1171,7 +1172,7 @@
 
         <div class="container">
 
-            <div class="analisa-title">Analisa setelah tes</div>
+            <div class="analisa-title">Contoh Analisa Setelah Tes</div>
 
             <div class="analisa-grid">
 
