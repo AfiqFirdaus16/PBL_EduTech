@@ -46,7 +46,7 @@
         <div class="flex flex-col items-center text-center">
 
             <!-- Icon Buku -->
-           <img src="{{ asset('images/edutrace.png') }}" alt="Logo" class="w-28 mb-2">
+           <img src="{{ asset('images/edutrace2.png') }}" alt="Logo" class="w-28 mb-2">
 
             <!-- Text Logo -->
             <h1 class="text-[38px] font-extrabold leading-none">
@@ -66,9 +66,9 @@
         <div class="mb-6">
             <h3 class="font-bold text-black mb-2">Home</h3>
 
-            <a href="{{ route('admin.dashboard-admin') }}"
+            <a href="{{ route('admin.dashboard') }}"
             class="flex items-center gap-3 px-4 py-2 rounded-full font-semibold transition
-            {{ request()->routeIs('admin.dashboard-admin')
+            {{ request()->routeIs('admin.dashboard')
                     ? 'bg-primary text-white shadow-sm'
                     : 'text-primary hover:bg-white' }}">
 
@@ -85,7 +85,7 @@
         <div class="mb-6">
             <h3 class="font-bold text-black mb-2">Data</h3>
 
-            <a href="{{ route('data-pengguna.index') }}"
+            <a href="{{ route('admin.data-pengguna.index') }}"
             class="flex items-center gap-3 px-4 py-2 rounded-full font-semibold transition
             {{ request()->routeIs('data-pengguna.*')
                     ? 'bg-primary text-white shadow-sm'
@@ -103,9 +103,9 @@
         <div>
             <h3 class="font-bold text-black mb-2">Hasil Data</h3>
 
-            <a href="{{ route('riwayat.index') }}"
+            <a href="{{ route('admin.hasil-pengguna.index') }}"
             class="flex items-center gap-3 px-4 py-2 rounded-full font-semibold transition
-            {{ request()->routeIs('riwayat.*')
+            {{ request()->routeIs('admin.hasil-pengguna.index')
                     ? 'bg-primary text-white shadow-sm'
                     : 'text-primary hover:bg-white' }}">
 
@@ -113,7 +113,7 @@
                     <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
                 </svg>
 
-                Riwayat
+                Hasil Pengguna
             </a>
         </div>
 

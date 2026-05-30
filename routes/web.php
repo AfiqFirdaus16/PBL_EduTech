@@ -67,8 +67,12 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
 
-// ROUTE ADMIN (wajib login + role admin)
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', fn() => view('admin.dashboard-admin'))->name('dashboard');
-    Route::get('/data-pengguna', fn() => view('admin.data-pengguna'))->name('data-pengguna.index');
-});
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::view('/dashboard', 'admin.dashboard-admin')->name('dashboard');
+        Route::view('/data-pengguna', 'admin.data-pengguna')->name('data-pengguna.index');
+        Route::view('/hasil-pengguna', 'admin.hasil-pengguna')->name('hasil-pengguna.index');
+    });
