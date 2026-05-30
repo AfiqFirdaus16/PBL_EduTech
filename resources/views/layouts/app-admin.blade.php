@@ -83,21 +83,21 @@
 
         <!-- DATA -->
         <div class="mb-6">
-            <h3 class="font-bold text-black mb-2">Data</h3>
+        <h3 class="font-bold text-black mb-2">Data</h3>
 
-            <a href="{{ route('admin.data-pengguna.index') }}"
-            class="flex items-center gap-3 px-4 py-2 rounded-full font-semibold transition
-            {{ request()->routeIs('data-pengguna.*')
-                    ? 'bg-primary text-white shadow-sm'
-                    : 'text-primary hover:bg-white' }}">
+        <a href="{{ route('admin.data-pengguna.index') }}"
+        class="flex items-center gap-3 px-4 py-2 rounded-full font-semibold transition
+        {{ request()->routeIs('admin.data-pengguna.*')
+                ? 'bg-primary text-white shadow-sm'
+                : 'text-primary hover:bg-white' }}">
 
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
-                </svg>
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M7 2h6v6H7V2zM2 2h4v4H2V2zm12 0h4v4h-4V2zM2 8h4v4H2V8zm12 0h4v4h-4V8z"/>
+            </svg>
 
-                Data Pengguna
-            </a>
-        </div>
+            Data Pengguna
+        </a>
+    </div>
         
         <!-- HASIL DATA -->
         <div>
