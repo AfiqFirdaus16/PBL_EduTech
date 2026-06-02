@@ -8,18 +8,20 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('siswa', function (Blueprint $table) {
+        Schema::create('pilihan_jawaban', function (Blueprint $table) {
         $table->id();
 
-        $table->foreignId('user_id')
-            ->constrained('users')
+        $table->foreignId('pertanyaan_id')
+            ->constrained('pertanyaan')
             ->cascadeOnDelete();
 
-        $table->string('nama');
-        $table->date('tgl_lahir')->nullable();
+        $table->string('jawaban');
 
-        $table->enum('jenjang', ['SMP', 'SMA']);
-        $table->enum('tingkat', ['1', '2', '3']);
+        $table->enum('risk_level', [
+            'Low',
+            'Medium',
+            'High'
+        ]);
 
         $table->timestamps();
     });
@@ -27,6 +29,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('siswa');
+        Schema::dropIfExists('dashboard');
     }
 };

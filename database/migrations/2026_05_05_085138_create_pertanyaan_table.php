@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+       Schema::create('pertanyaan', function (Blueprint $table) {
         $table->id();
 
-        $table->string('username')->unique();
-        $table->string('email')->unique()->nullable();
-        $table->string('password');
+        $table->text('pertanyaan');
 
-        $table->enum('role', ['admin', 'siswa'])
-            ->default('siswa');
+        $table->string('kategori')->nullable();
+
+        $table->boolean('status')
+            ->default(true);
 
         $table->timestamps();
     });
@@ -24,6 +24,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('rekomendasi');
     }
 };

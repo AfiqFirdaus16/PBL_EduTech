@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('sesi_kuis', function (Blueprint $table) {
         $table->id();
 
-        $table->string('username')->unique();
-        $table->string('email')->unique()->nullable();
-        $table->string('password');
+        $table->foreignId('siswa_id')
+            ->constrained('siswa')
+            ->cascadeOnDelete();
 
-        $table->enum('role', ['admin', 'siswa'])
-            ->default('siswa');
+        $table->timestamp('tanggal_kuis')
+            ->useCurrent();
 
         $table->timestamps();
     });
@@ -24,6 +24,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('data_siswa');
     }
 };
