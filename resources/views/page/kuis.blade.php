@@ -1,4 +1,3 @@
-{{-- resources/views/page/kuis.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuis EduTrace</title>
 
-    {{-- Google Font --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -22,7 +20,63 @@
             background:#f3f1fa;
         }
 
-        /* HEADER */
+        .navbar{
+            width:100%;
+            height:75px;
+            background:#FFFFFF;
+            position:fixed;
+            top:0;
+            left:0;
+            z-index:9999;
+            border-bottom:1px solid #E5E5E5;
+        }
+
+        .nav-wrapper{
+            width:100%;
+            height:75px;
+            position:relative;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .logo{
+            position:absolute;
+            left:0;
+            display:flex;
+            align-items:center;
+        }
+
+        .logo img{
+            height:100px;
+            object-fit:contain;
+        }
+
+        .nav-menu{
+            display:flex;
+            align-items:center;
+            gap:28px;
+        }
+
+        .nav-menu a{
+            color:#666;
+            font-size:13px;
+            font-weight:700;
+            padding:10px 22px;
+            border-radius:8px;
+            transition:0.3s;
+        }
+
+        .nav-menu a.active{
+            background:#EF9F27;
+            color:#FFFFFF;
+        }
+
+        .nav-menu a:hover{
+            color:#3C3489;
+        }
+
+        /* ── HEADER (tidak diubah) ─────────────────────────────── */
         .header{
             width:100%;
             background:white;
@@ -40,13 +94,8 @@
             gap:8px;
         }
 
-        .logo .edu{
-            color:#3a2e8f;
-        }
-
-        .logo .trace{
-            color:#f0a020;
-        }
+        .logo .edu{ color:#3a2e8f; }
+        .logo .trace{ color:#f0a020; }
 
         .logo-sub{
             font-size:12px;
@@ -54,7 +103,7 @@
             margin-top:-6px;
         }
 
-        /* CONTAINER */
+        /* ── CONTAINER ─────────────────────────────────────────── */
         .container{
             width:100%;
             display:flex;
@@ -71,13 +120,25 @@
             box-shadow:0 4px 12px rgba(0,0,0,0.05);
         }
 
-        .title{
-            font-size:22px;
-            font-weight:700;
+        .card-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
             margin-bottom:10px;
         }
 
-        /* PROGRESS */
+        .title{
+            font-size:22px;
+            font-weight:700;
+        }
+
+        .step-info{
+            font-size:14px;
+            color:#888;
+            font-weight:500;
+        }
+
+        /* ── PROGRESS ─────────────────────────────────────────── */
         .progress-wrapper{
             margin-bottom:40px;
         }
@@ -98,18 +159,23 @@
         }
 
         .progress{
-            width:33%;
             height:100%;
             background:#e89611;
             border-radius:20px;
+            transition:width 0.4s ease;
         }
 
-        /* QUESTION */
+        /* ── QUESTION ─────────────────────────────────────────── */
         .question{
-            font-size:22px;
+            font-size:20px;
             font-weight:700;
-            margin-bottom:30px;
+            margin-bottom:20px;
             line-height:1.5;
+            margin-top:40px;
+        }
+
+        .question:first-of-type{
+            margin-top:0;
         }
 
         .option{
@@ -147,8 +213,9 @@
         }
 
         .option-text{
-            font-size:16px;
+            font-size:15px;
             color:#333;
+            line-height:1.5;
         }
 
         .option.active{
@@ -161,7 +228,18 @@
             color:white;
         }
 
-        /* BUTTON */
+        /* ── ERROR ────────────────────────────────────────────── */
+        .alert-error{
+            background:#fff0f0;
+            border:1px solid #f5c2c7;
+            color:#842029;
+            border-radius:10px;
+            padding:14px 20px;
+            margin-bottom:20px;
+            font-size:14px;
+        }
+
+        /* ── BUTTON ───────────────────────────────────────────── */
         .btn-area{
             display:flex;
             justify-content:flex-end;
@@ -185,27 +263,28 @@
         }
 
         @media(max-width:768px){
-            .card{
-                padding:25px;
-            }
-
-            .question{
-                font-size:18px;
-            }
-
-            .option{
-                align-items:flex-start;
-            }
-
-            .option-text{
-                font-size:14px;
-            }
+            .card{ padding:25px; }
+            .question{ font-size:17px; }
+            .option{ align-items:flex-start; }
+            .option-text{ font-size:14px; }
+            .logo{ font-size:32px; }
         }
     </style>
 </head>
 <body>
 
-    {{-- HEADER --}}
+    {{-- ================= NAVBAR ================= --}}
+    <nav class="navbar">
+        <div class="container nav-wrapper">
+
+            <div class="logo">
+                <img src="{{ asset('images/edutrace.png') }}" alt="logo">
+            </div>
+
+        </div>
+    </nav>
+
+    {{-- ── HEADER (tidak diubah) ───────────────────────────────── --}}
     <div class="header">
         <div>
             <div class="logo">
@@ -217,118 +296,76 @@
         </div>
     </div>
 
-    {{-- CONTENT --}}
+    {{-- ── CONTENT ──────────────────────────────────────────────── --}}
     <div class="container">
         <div class="card">
 
-            <div class="title">Modul Penilaian</div>
+            {{-- Judul + info step --}}
+            <div class="card-header">
+                <div class="title">Modul Penilaian</div>
+                <div class="step-info">Halaman {{ $step }} dari {{ $totalStep }}</div>
+            </div>
 
             {{-- Progress --}}
             <div class="progress-wrapper">
                 <div class="progress-info">
                     <span></span>
-                    <span>33% selesai</span>
+                    <span>{{ $persen }}% selesai</span>
                 </div>
-
                 <div class="progress-bar">
-                    <div class="progress"></div>
+                    <div class="progress" style="width:{{ $persen }}%"></div>
                 </div>
             </div>
 
+            {{-- Tampilkan error validasi --}}
+            @if ($errors->any())
+                <div class="alert-error">
+                    ⚠️ Harap jawab semua pertanyaan sebelum melanjutkan.
+                </div>
+            @endif
+
             {{-- FORM --}}
-            <form action="{{ route('hasil') }}" method="GET">
+            <form action="{{ route('kuis.store', $step) }}" method="POST">
+                @csrf
 
-                {{-- PERTANYAAN 1 --}}
-                <div class="question">
-                    1. Bagaimana pola tidur kamu selama beberapa minggu terakhir?
-                </div>
+                @foreach ($pertanyaan as $index => $p)
 
-                <label class="option active">
-                    <input type="radio" name="q1" value="A" checked>
-                    <div class="circle">A</div>
-                    <div class="option-text">
-                        Saya biasanya tidur cukup dan bangun dalam kondisi cukup segar untuk beraktivitas
+                    {{-- Label nomor soal (nomor absolut di seluruh kuis) --}}
+                    @php
+                        $nomorSoal = (($step - 1) * 4) + $loop->iteration;
+                        $huruf     = ['A','B','C'];
+                    @endphp
+
+                    <div class="question" {{ $loop->first ? '' : 'style=margin-top:50px' }}>
+                        {{ $nomorSoal }}. {{ $p->pertanyaan }}
                     </div>
-                </label>
 
-                <label class="option">
-                    <input type="radio" name="q1" value="B">
-                    <div class="circle">B</div>
-                    <div class="option-text">
-                        Jam tidur saya kadang tidak teratur, terkadang cukup tapi sering merasa kurang istirahat
-                    </div>
-                </label>
+                    @foreach ($p->pilihanJawaban as $pi => $pilihan)
+                        <label class="option {{ old("q_{$p->id}") == $pilihan->id ? 'active' : '' }}">
+                            <input
+                                type="radio"
+                                name="q_{{ $p->id }}"
+                                value="{{ $pilihan->id }}"
+                                {{ old("q_{$p->id}") == $pilihan->id ? 'checked' : '' }}
+                            >
+                            <div class="circle">{{ $huruf[$pi] ?? $pi }}</div>
+                            <div class="option-text">{{ $pilihan->jawaban }}</div>
+                        </label>
+                    @endforeach
 
-                <label class="option">
-                    <input type="radio" name="q1" value="C">
-                    <div class="circle">C</div>
-                    <div class="option-text">
-                        Saya sering tidur larut atau kurang tidur sehingga mudah lelah saat belajar
-                    </div>
-                </label>
+                @endforeach
 
-                {{-- PERTANYAAN 2 --}}
-                <div class="question" style="margin-top:50px;">
-                    2. Bagaimana kebiasaan belajar kamu setiap hari?
-                </div>
-
-                <label class="option">
-                    <input type="radio" name="q2" value="A">
-                    <div class="circle">A</div>
-                    <div class="option-text">
-                        Saya memiliki jadwal belajar yang konsisten dan teratur
-                    </div>
-                </label>
-
-                <label class="option">
-                    <input type="radio" name="q2" value="B">
-                    <div class="circle">B</div>
-                    <div class="option-text">
-                        Saya belajar hanya ketika ada tugas atau ujian
-                    </div>
-                </label>
-
-                <label class="option">
-                    <input type="radio" name="q2" value="C">
-                    <div class="circle">C</div>
-                    <div class="option-text">
-                        Saya sering menunda belajar dan sulit fokus
-                    </div>
-                </label>
-
-                {{-- PERTANYAAN 3 --}}
-                <div class="question" style="margin-top:50px;">
-                    3. Bagaimana kondisi fokus kamu saat mengikuti pembelajaran?
-                </div>
-
-                <label class="option">
-                    <input type="radio" name="q3" value="A">
-                    <div class="circle">A</div>
-                    <div class="option-text">
-                        Saya dapat fokus dengan baik selama pembelajaran berlangsung
-                    </div>
-                </label>
-
-                <label class="option">
-                    <input type="radio" name="q3" value="B">
-                    <div class="circle">B</div>
-                    <div class="option-text">
-                        Saya terkadang kehilangan fokus saat pelajaran berlangsung
-                    </div>
-                </label>
-
-                <label class="option">
-                    <input type="radio" name="q3" value="C">
-                    <div class="circle">C</div>
-                    <div class="option-text">
-                        Saya sering sulit berkonsentrasi dan mudah terdistraksi
-                    </div>
-                </label>
-
-                {{-- BUTTON --}}
+                {{-- Tombol navigasi --}}
                 <div class="btn-area">
+                    @if ($step > 1)
+                        <a href="{{ route('kuis.show', $step - 1) }}"
+                           style="margin-right:16px; background:#ddd; color:#333; border:none; padding:14px 30px; border-radius:30px; font-size:16px; font-weight:600; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center;">
+                            ← Kembali
+                        </a>
+                    @endif
+
                     <button type="submit" class="btn-next">
-                        Lanjut →
+                        {{ $step === $totalStep ? 'Lihat Hasil ✓' : 'Lanjut →' }}
                     </button>
                 </div>
 
@@ -338,16 +375,14 @@
     </div>
 
     <script>
-        const options = document.querySelectorAll('.option');
-
-        options.forEach(option => {
+        // Toggle active state per grup pertanyaan
+        document.querySelectorAll('.option').forEach(option => {
             option.addEventListener('click', function () {
-
                 const input = this.querySelector('input');
-                const name = input.name;
+                const name  = input.name;
 
-                document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
-                    input.closest('.option').classList.remove('active');
+                document.querySelectorAll(`input[name="${name}"]`).forEach(inp => {
+                    inp.closest('.option').classList.remove('active');
                 });
 
                 this.classList.add('active');

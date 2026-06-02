@@ -6,6 +6,7 @@ use App\Http\Controllers\DataAkademikController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeknikBelajarController;
 use App\Http\Controllers\AnalisaController;
+use App\Http\Controllers\KuisController;
 
 // AUTH (tidak perlu login)
 Route::view('/login', 'auth.login')->name('login');
@@ -43,14 +44,14 @@ Route::get('/reAnalisa', function () {
 Route::middleware(['auth', 'user'])->group(function () {
 
     // Dashboard
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    //Route::view('/dashboard', 'dashboard')->name('dashboard');
 
     // Data Akademik
-    Route::view('/data-akademik', 'data-akademik.index')->name('data-akademik.index');
-    Route::post('/data-akademik', [DataAkademikController::class, 'store'])->name('data-akademik.store');
-    Route::get('/data-akademik/{id}/edit', [DataAkademikController::class, 'edit'])->name('data-akademik.edit');
-    Route::put('/data-akademik/{id}', [DataAkademikController::class, 'update'])->name('data-akademik.update');
-
+    // Route::view('/data-akademik', 'data-akademik.index')->name('data-akademik.index');
+    // Route::post('/data-akademik', [DataAkademikController::class, 'store'])->name('data-akademik.store');
+    // Route::get('/data-akademik/{id}/edit', [DataAkademikController::class, 'edit'])->name('data-akademik.edit');
+    // Route::put('/data-akademik/{id}', [DataAkademikController::class, 'update'])->name('data-akademik.update');
+});
     // Halaman Siswa
     Route::get('/hasil-resiko', fn() => view('siswa.hasil-resiko'))->name('hasil-resiko.index');
     Route::get('/riwayat', fn() => view('siswa.riwayat'))->name('riwayat.index');
@@ -65,7 +66,7 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-});
+
 
 Route::middleware(['auth', 'admin'])
     ->prefix('admin')
@@ -76,3 +77,21 @@ Route::middleware(['auth', 'admin'])
         Route::view('/data-pengguna', 'admin.data-pengguna')->name('data-pengguna.index');
         Route::view('/hasil-pengguna', 'admin.hasil-pengguna')->name('hasil-pengguna.index');
     });
+
+// ── Kuis ─────────────────────────────────────────────────────────
+// Redirect root ke step 1
+Route::get('/kuis', fn() => redirect()->route('kuis.show', 1));
+ 
+// Tampilkan halaman kuis per step (1–5)
+Route::get('/kuis/{step}', [KuisController::class, 'show'])
+    ->name('kuis.show')
+    ->where('step', '[1-5]');
+ 
+// Simpan jawaban per step
+Route::post('/kuis/{step}', [KuisController::class, 'store'])
+    ->name('kuis.store')
+    ->where('step', '[1-5]');
+ 
+// Halaman hasil akhir
+Route::get('/kuis/hasil', [KuisController::class, 'hasil'])
+    ->name('kuis.hasil');

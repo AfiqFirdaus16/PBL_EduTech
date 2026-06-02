@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class SiswaSeeder extends Seeder
 {
@@ -12,14 +11,24 @@ class SiswaSeeder extends Seeder
     {
         DB::table('siswa')->insert([
             [
-                'user_id' => 2, // pastikan ini ada di users
-                'umur' => 17,
-                'tgl_lahir' => '2007-01-01',
+                'user_id' => 2,
+                'nama' => 'Kartika Tri Juliana',
+                'tgl_lahir' => '2007-05-10',
                 'jenjang' => 'SMA',
                 'tingkat' => '1',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'user_id' => 3,
+                'nama' => 'Muhammad Rizki',
+                'tgl_lahir' => '2006-11-20',
+                'jenjang' => 'SMA',
+                'tingkat' => '2',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }
