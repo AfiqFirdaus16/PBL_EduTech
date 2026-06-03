@@ -8,12 +8,10 @@
 
     <div class="max-w-5xl mx-auto">
 
-        <!-- CARD -->
         <div class="bg-white rounded-[28px] shadow-sm overflow-hidden border border-gray-200">
 
             <!-- HEADER -->
-            <div class="h-24 bg-gradient-to-r from-orange-300 to-primary relative">
-            </div>
+            <div class="h-24 bg-gradient-to-r from-orange-300 to-primary relative"></div>
 
             <!-- CONTENT -->
             <div class="px-8 pb-8 relative">
@@ -23,32 +21,30 @@
 
                     <!-- FOTO -->
                     <div class="w-28 h-28 rounded-full border-4 border-white overflow-hidden shadow-md bg-gray-200">
-
                         <img
-                            src="https://ui-avatars.com/api/?name={{ urlencode($user->nama) }}"
+                            src="https://ui-avatars.com/api/?name={{ urlencode($user->siswa->nama ?? $user->username) }}"
                             alt="Profile"
                             class="w-full h-full object-cover">
                     </div>
 
                     <!-- NAMA -->
                     <div class="mt-8">
-
                         <div class="flex items-center gap-3">
 
                             <h2 class="text-2xl font-bold text-gray-900">
-                                {{ $user->nama }}
+                                {{ $user->siswa->nama ?? '-' }}
                             </h2>
 
-                            <!-- BADGE -->
                             <span class="px-4 py-1 rounded-full bg-primary text-white text-sm font-semibold shadow">
                                 {{ $user->siswa->jenjang ?? '-' }}
                             </span>
+
                         </div>
                     </div>
                 </div>
 
-                <!-- FORM -->
-                <form class="mt-10">
+                <!-- INFORMASI -->
+                <div class="mt-10">
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -60,8 +56,9 @@
 
                             <input
                                 type="text"
-                                value="{{ $user->nama }}"
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
+                                value="{{ $user->siswa->nama ?? '-' }}"
+                                readonly
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100">
                         </div>
 
                         <!-- USERNAME -->
@@ -73,7 +70,8 @@
                             <input
                                 type="text"
                                 value="{{ $user->username }}"
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
+                                readonly
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100">
                         </div>
 
                         <!-- EMAIL -->
@@ -85,7 +83,8 @@
                             <input
                                 type="email"
                                 value="{{ $user->email }}"
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
+                                readonly
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100">
                         </div>
 
                         <!-- PASSWORD -->
@@ -97,7 +96,8 @@
                             <input
                                 type="password"
                                 value="password"
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
+                                readonly
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100">
                         </div>
 
                         <!-- TGL LAHIR -->
@@ -109,7 +109,8 @@
                             <input
                                 type="date"
                                 value="{{ $user->siswa->tgl_lahir ?? '' }}"
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
+                                readonly
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100">
                         </div>
 
                         <!-- JENJANG -->
@@ -121,7 +122,8 @@
                             <input
                                 type="text"
                                 value="{{ $user->siswa->jenjang ?? '-' }}"
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
+                                readonly
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100">
                         </div>
 
                         <!-- TINGKAT -->
@@ -133,7 +135,8 @@
                             <input
                                 type="text"
                                 value="{{ $user->siswa->tingkat ?? '-' }}"
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-blue-50 focus:outline-none">
+                                readonly
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100">
                         </div>
 
                     </div>
@@ -143,21 +146,21 @@
 
                         <a href="{{ route('welcome') }}"
                             class="px-5 py-3 rounded-xl bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition">
-
                             Kembali
                         </a>
 
                         <a href="{{ route('profile.edit') }}"
                             class="px-5 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-secondary transition inline-block">
-
                             Edit Profil
                         </a>
 
                     </div>
-                </form>
+
+                </div>
 
             </div>
         </div>
     </div>
 </div>
+
 @endsection
