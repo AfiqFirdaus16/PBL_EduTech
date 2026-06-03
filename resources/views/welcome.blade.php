@@ -1039,9 +1039,14 @@
                     </div>
 
                     <div class="profile-info">
-                        <span class="profile-name">{{ Auth::user()->nama }}</span>
-                        <span class="profile-level">{{ Auth::user()->siswa->jenjang?? '-' }}</span>
-                    </div>
+                    <span class="profile-name">
+                        {{ Auth::user()->siswa->nama ?? 'User' }}
+                    </span>
+
+                    <span class="profile-level">
+                        {{ Auth::user()->siswa->jenjang ?? '-' }}
+                    </span>
+                </div>
 
                     <i class="fa-solid fa-chevron-down"></i>
 
