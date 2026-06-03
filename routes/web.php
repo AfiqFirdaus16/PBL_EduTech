@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeknikBelajarController;
 use App\Http\Controllers\KuisController;
+use App\Http\Controllers\AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -125,13 +126,11 @@ Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-
-        Route::view('/dashboard', 'admin.dashboard-admin')
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
         Route::view('/data-pengguna', 'admin.data-pengguna')
             ->name('data-pengguna.index');
-
         Route::view('/hasil-pengguna', 'admin.hasil-pengguna')
             ->name('hasil-pengguna.index');
     });
