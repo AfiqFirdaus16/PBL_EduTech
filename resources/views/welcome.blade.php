@@ -569,8 +569,6 @@
 
         /* ===== HASIL DESC ===== */
 
-        .hasil-desc-wrap{}
-
         .hasil-desc-wrap h4{
             font-size:20px;
             font-weight:800;
