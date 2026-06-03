@@ -14,6 +14,29 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        $credentials = $request->only('username', 'password');
+
+        if (Auth::attempt($credentials)) {
+
+            $request->session()->regenerate();
+
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            return redirect()->route('kuis.show', 1);
+        }
+
+        return back()->with('error', 'Username atau password salah');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
             'nama' => 'required',
             'username' => 'required|unique:users,username',
             'email' => 'required|email|unique:users,email',
@@ -22,34 +45,6 @@ class AuthController extends Controller
             'tingkat' => 'required|in:1,2,3'
         ]);
 
-        $credentials = $request->only('username', 'password');
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            // Cek role user yang login
-            $role = Auth::user()->role;
-
-            if ($role === 'admin') {
-                return redirect('/admin/dashboard');
-            }
-
-            return redirect('/kuis'); // redirect default untuk siswa
-        }
-
-        return back()->with('error', 'Username atau password salah');
-    }
-
-        public function register(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required',
-            'username' => 'required|unique:users,username',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6'
-        ]);
-
-        // Simpan user
         $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
@@ -57,7 +52,6 @@ class AuthController extends Controller
             'role' => 'siswa'
         ]);
 
-        // Simpan data siswa
         Siswa::create([
             'user_id' => $user->id,
             'nama' => $request->nama,
@@ -65,7 +59,8 @@ class AuthController extends Controller
             'tingkat' => $request->tingkat
         ]);
 
-        return redirect()->route('login')
+        return redirect()
+            ->route('login')
             ->with('success', 'Registrasi berhasil, silakan login');
     }
 
