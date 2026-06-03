@@ -159,15 +159,15 @@
                 <button onclick="toggleDropdown()"
                     class="flex items-center gap-3 text-white hover:bg-white/10 px-3 py-1.5 rounded-xl transition">
 
-                    <!-- Avatar -->
+                    <!-- Avatar: huruf pertama username -->
                     <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-primary font-bold text-sm">
-                        K
+                        {{ strtoupper(substr(Auth::user()->username, 0, 1)) }}
                     </div>
 
-                    <!-- Name -->
+                    <!-- Name & Role dari database -->
                     <div class="text-left leading-tight">
-                        <p class="text-[14px] font-semibold">Kartika Tri Juliana</p>
-                        <p class="text-[12px] text-gray-200">Tingkat SMA</p>
+                        <p class="text-[14px] font-semibold">{{ Auth::user()->username }}</p>
+                        <p class="text-[12px] text-gray-200">{{ ucfirst(Auth::user()->role) }}</p>
                     </div>
 
                     <!-- Arrow -->
@@ -226,6 +226,7 @@
             }
         });
         </script>
+
         <!-- PAGE -->
         <section class="flex-1 p-8 bg-[#F4F4F4]">
             @yield('content')
