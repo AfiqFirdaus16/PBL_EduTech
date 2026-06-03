@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KuisController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\DataPenggunaController;
 
 /*
@@ -118,8 +119,7 @@ Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-
-        Route::view('/dashboard', 'admin.dashboard-admin')
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
         // Route::view('/data-pengguna', 'admin.data-pengguna')
