@@ -71,7 +71,7 @@ Route::middleware(['auth', 'user'])->group(function () {
     // Kuis
     Route::get('/kuis', function () {
         return redirect()->route('kuis.show', 1);
-    });
+    })->name('kuis');
 
     Route::view('/kuis', 'kuis')->name('kuis');
 
