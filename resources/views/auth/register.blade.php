@@ -22,6 +22,25 @@
     </div>
 
     <div class="form-group">
+        <label>Jenjang</label>
+        <select name="jenjang" required>
+            <option value="">Pilih Jenjang</option>
+            <option value="SMP">SMP</option>
+            <option value="SMA">SMA</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Tingkat</label>
+        <select name="tingkat" required>
+            <option value="">Pilih Tingkat</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+    </div>
+
+    <div class="form-group">
         <label>Password</label>
         <input type="password" name="password" placeholder="Password" required>
     </div>
@@ -29,7 +48,8 @@
     <button class="btn">Daftar</button>
 
     <div class="link">
-        Sudah punya akun? <a href="{{ route('login') }}">Login</a>
+        Sudah punya akun?
+        <a href="{{ route('login') }}">Login</a>
     </div>
 </form>
 @endsection

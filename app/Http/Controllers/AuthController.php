@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\Siswa;
 
 class AuthController extends Controller
 {
@@ -20,41 +21,46 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
+
             $request->session()->regenerate();
 
-            // Cek role user yang login
-            $role = Auth::user()->role;
-
-            if ($role === 'admin') {
-                return redirect('/admin/dashboard');
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.dashboard');
             }
 
-            return redirect('/kuis'); // redirect default untuk siswa
+            return redirect()->route('kuis.show', 1);
         }
 
         return back()->with('error', 'Username atau password salah');
     }
+
     public function register(Request $request)
     {
-        // VALIDASI
         $request->validate([
             'nama' => 'required',
             'username' => 'required|unique:users,username',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'jenjang' => 'required|in:SMP,SMA',
+            'tingkat' => 'required|in:1,2,3'
         ]);
 
-        // SIMPAN KE DATABASE
-        User::create([
-            'nama' => $request->nama,
+        $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'siswa'
         ]);
 
-        // REDIRECT KE LOGIN
-        return redirect()->route('login')
+        Siswa::create([
+            'user_id' => $user->id,
+            'nama' => $request->nama,
+            'jenjang' => $request->jenjang,
+            'tingkat' => $request->tingkat
+        ]);
+
+        return redirect()
+            ->route('login')
             ->with('success', 'Registrasi berhasil, silakan login');
     }
 
@@ -98,7 +104,5 @@ class AuthController extends Controller
             $request->session()->regenerateToken();
             return redirect()->route('welcome');
         }
-
-
 
 }

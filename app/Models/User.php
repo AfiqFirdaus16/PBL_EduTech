@@ -12,13 +12,9 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $table = 'users';
-    protected $primaryKey = 'user_id';
-
-    public $timestamps = true;
 
     protected $fillable = [
         'username',
-        'nama',
         'email',
         'password',
         'role',
@@ -33,9 +29,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // RELASI: 1 user punya 1 siswa
     public function siswa()
     {
-        return $this->hasOne(Siswa::class, 'user_id', 'user_id');
+        return $this->hasOne(Siswa::class);
     }
 }
