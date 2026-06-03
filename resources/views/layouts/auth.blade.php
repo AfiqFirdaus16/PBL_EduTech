@@ -79,14 +79,26 @@
         }
 
         .alert-success {
-            color: green;
-            margin-bottom: 10px;
-        }
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        text-align: center;
+        font-size: 14px;
+    }
 
-        .alert-error {
-            color: red;
-            margin-bottom: 10px;
-        }
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        text-align: center;
+        font-size: 14px;
+    }
     </style>
 </head>
 <body>
