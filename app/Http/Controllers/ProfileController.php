@@ -4,21 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        $user->load('siswa');
+        $user = Auth::user()->load('siswa');
 
         return view('profile.index', compact('user'));
     }
 
     public function edit()
     {
-        $user = Auth::user();
-        $user->load('siswa');
+        $user = Auth::user()->load('siswa');
 
         return view('profile.edit', compact('user'));
     }
@@ -26,33 +25,43 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'nama'      => 'required|string|max:255',
-            'tgl_lahir' => 'nullable|date',
-            'jenjang'   => 'required|in:SMP,SMA',
-            'tingkat'   => 'required|in:1,2,3',
+            'nama'       => 'required|string|max:255',
+            'foto'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'tgl_lahir'  => 'nullable|date',
+            'jenjang'    => 'required|string',
+            'tingkat'    => 'required|string',
         ]);
 
-        $user = Auth::user();
-        $user->load('siswa');
+        $user = Auth::user()->load('siswa');
 
-        if ($user->siswa) {
-
-            $user->siswa->update([
-                'nama'      => $request->nama,
-                'tgl_lahir' => $request->tgl_lahir,
-                'jenjang'   => $request->jenjang,
-                'tingkat'   => $request->tingkat,
-            ]);
-
-        } else {
-
-            $user->siswa()->create([
-                'nama'      => $request->nama,
-                'tgl_lahir' => $request->tgl_lahir,
-                'jenjang'   => $request->jenjang,
-                'tingkat'   => $request->tingkat,
-            ]);
+        if (!$user->siswa) {
+            return back()->with('error', 'Data siswa tidak ditemukan.');
         }
+
+        $data = [
+            'nama'      => $request->nama,
+            'tgl_lahir' => $request->tgl_lahir,
+            'jenjang'   => $request->jenjang,
+            'tingkat'   => $request->tingkat,
+        ];
+
+        // Upload foto baru
+        if ($request->hasFile('foto')) {
+
+            // Hapus foto lama jika ada
+            if (
+                $user->siswa->foto &&
+                Storage::disk('public')->exists($user->siswa->foto)
+            ) {
+                Storage::disk('public')->delete($user->siswa->foto);
+            }
+
+            // Simpan foto baru
+            $data['foto'] = $request->file('foto')
+                ->store('foto-profil', 'public');
+        }
+
+        $user->siswa->update($data);
 
         return redirect()
             ->route('profile')

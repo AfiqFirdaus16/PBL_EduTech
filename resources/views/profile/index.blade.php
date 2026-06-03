@@ -17,31 +17,34 @@
             <div class="px-8 pb-8 relative">
 
                 <!-- PROFILE -->
-                <div class="-mt-10 flex items-center gap-5">
+                <div class="-mt-14 flex flex-col items-center">
 
                     <!-- FOTO -->
                     <div class="w-28 h-28 rounded-full border-4 border-white overflow-hidden shadow-md bg-gray-200">
-                        <img
-                            src="https://ui-avatars.com/api/?name={{ urlencode($user->siswa->nama ?? $user->username) }}"
-                            alt="Profile"
-                            class="w-full h-full object-cover">
+                        @if($user->siswa && $user->siswa->foto)
+                            <img
+                                src="{{ asset('storage/' . $user->siswa->foto) }}"
+                                alt="Profile"
+                                class="w-full h-full object-cover">
+                        @else
+                            <img
+                                src="https://ui-avatars.com/api/?name={{ urlencode($user->siswa->nama ?? 'User') }}"
+                                alt="Profile"
+                                class="w-full h-full object-cover">
+                        @endif
                     </div>
 
                     <!-- NAMA -->
-                    <div class="mt-8">
-                        <div class="flex items-center gap-3">
+                    <div class="mt-4 text-center">
+                        <h2 class="text-2xl font-bold text-gray-900">
+                            {{ $user->siswa->nama ?? '-' }}
+                        </h2>
 
-                            <h2 class="text-2xl font-bold text-gray-900">
-                                {{ $user->siswa->nama ?? '-' }}
-                            </h2>
+                        <span class="inline-block mt-2 px-4 py-1 rounded-full bg-primary text-white text-sm font-semibold shadow">
+                            {{ $user->siswa->jenjang ?? '-' }}
+                        </span>
 
-                            <span class="px-4 py-1 rounded-full bg-primary text-white text-sm font-semibold shadow">
-                                {{ $user->siswa->jenjang ?? '-' }}
-                            </span>
-
-                        </div>
                     </div>
-                </div>
 
                 <!-- INFORMASI -->
                 <div class="mt-10">
