@@ -7,14 +7,11 @@
 <div class="min-h-screen flex items-center justify-center px-4 py-10">
     <div class="max-w-5xl mx-auto">
 
-        <!-- CARD -->
         <div class="bg-white rounded-[28px] shadow-sm overflow-hidden border border-gray-200">
 
-            <!-- HEADER -->
             <div class="h-24 bg-gradient-to-r from-orange-300 to-primary relative">
             </div>
 
-            <!-- CONTENT -->
             <div class="px-8 pb-8 relative">
 
                 <!-- PROFILE -->
@@ -24,7 +21,7 @@
                     <div class="w-28 h-28 rounded-full border-4 border-white overflow-hidden shadow-md bg-gray-200">
 
                         <img
-                            src="https://ui-avatars.com/api/?name={{ urlencode($user->nama) }}"
+                            src="https://ui-avatars.com/api/?name={{ urlencode($user->siswa->nama ?? 'User') }}"
                             alt="Profile"
                             class="w-full h-full object-cover">
                     </div>
@@ -35,10 +32,9 @@
                         <div class="flex items-center gap-3">
 
                             <h2 class="text-2xl font-bold text-gray-900">
-                                {{ $user->nama }}
+                                {{ $user->siswa->nama ?? '-' }}
                             </h2>
 
-                            <!-- BADGE -->
                             <span class="px-4 py-1 rounded-full bg-primary text-white text-sm font-semibold shadow">
                                 {{ $user->siswa->jenjang ?? '-' }}
                             </span>
@@ -63,8 +59,12 @@
                             <input
                                 type="text"
                                 name="nama"
-                                value="{{ old('nama', $user->nama) }}"
+                                value="{{ old('nama', $user->siswa->nama ?? '') }}"
                                 class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+
+                            @error('nama')
+                                <small class="text-red-500">{{ $message }}</small>
+                            @enderror
                         </div>
 
                         <!-- USERNAME -->
@@ -101,12 +101,12 @@
 
                             <input
                                 type="password"
-                                value="password"
+                                value="********"
                                 disabled
                                 class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100 text-gray-500 cursor-not-allowed">
                         </div>
 
-                        <!-- TGL LAHIR -->
+                        <!-- TANGGAL LAHIR -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
                                 Tanggal Lahir
@@ -117,6 +117,10 @@
                                 name="tgl_lahir"
                                 value="{{ old('tgl_lahir', $user->siswa->tgl_lahir ?? '') }}"
                                 class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+
+                            @error('tgl_lahir')
+                                <small class="text-red-500">{{ $message }}</small>
+                            @enderror
                         </div>
 
                         <!-- JENJANG -->
@@ -129,15 +133,13 @@
                                 name="jenjang"
                                 class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
 
-                                <option value="SD" {{ ($user->siswa->jenjang ?? '') == 'SD' ? 'selected' : '' }}>
-                                    SD
-                                </option>
-
-                                <option value="SMP" {{ ($user->siswa->jenjang ?? '') == 'SMP' ? 'selected' : '' }}>
+                                <option value="SMP"
+                                    {{ old('jenjang', $user->siswa->jenjang ?? '') == 'SMP' ? 'selected' : '' }}>
                                     SMP
                                 </option>
 
-                                <option value="SMA" {{ ($user->siswa->jenjang ?? '') == 'SMA' ? 'selected' : '' }}>
+                                <option value="SMA"
+                                    {{ old('jenjang', $user->siswa->jenjang ?? '') == 'SMA' ? 'selected' : '' }}>
                                     SMA
                                 </option>
 
@@ -154,15 +156,18 @@
                                 name="tingkat"
                                 class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-primary">
 
-                                <option value="1" {{ ($user->siswa->tingkat ?? '') == '1' ? 'selected' : '' }}>
+                                <option value="1"
+                                    {{ old('tingkat', $user->siswa->tingkat ?? '') == '1' ? 'selected' : '' }}>
                                     1
                                 </option>
 
-                                <option value="2" {{ ($user->siswa->tingkat ?? '') == '2' ? 'selected' : '' }}>
+                                <option value="2"
+                                    {{ old('tingkat', $user->siswa->tingkat ?? '') == '2' ? 'selected' : '' }}>
                                     2
                                 </option>
 
-                                <option value="3" {{ ($user->siswa->tingkat ?? '') == '3' ? 'selected' : '' }}>
+                                <option value="3"
+                                    {{ old('tingkat', $user->siswa->tingkat ?? '') == '3' ? 'selected' : '' }}>
                                     3
                                 </option>
 
@@ -171,19 +176,16 @@
 
                     </div>
 
-                    <!-- BUTTON -->
                     <div class="flex justify-end gap-3 mt-8">
 
                         <a href="{{ route('profile') }}"
                             class="px-5 py-3 rounded-xl bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition">
-
                             Batal
                         </a>
 
                         <button
                             type="submit"
                             class="px-5 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-secondary transition">
-
                             Simpan Perubahan
                         </button>
 

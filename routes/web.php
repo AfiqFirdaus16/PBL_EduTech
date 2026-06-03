@@ -5,9 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TeknikBelajarController;
 use App\Http\Controllers\KuisController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\DataPenggunaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,13 +97,6 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::view('/hasil', 'page.hasil')
         ->name('hasil');
 
-    // Teknik Belajar
-    Route::get('/teknik-belajar', [TeknikBelajarController::class, 'index'])
-        ->name('teknik-belajar.index');
-
-    Route::get('/teknik-belajar/detail', [TeknikBelajarController::class, 'teknikBelajar'])
-        ->name('teknik-belajar.detail');
-
     // Profile
     Route::get('/profile', [ProfileController::class, 'index'])
         ->name('profile');
@@ -129,8 +122,15 @@ Route::middleware(['auth', 'admin'])
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
-        Route::view('/data-pengguna', 'admin.data-pengguna')
-            ->name('data-pengguna.index');
+        // Route::view('/data-pengguna', 'admin.data-pengguna')
+        //     ->name('data-pengguna.index');
+
         Route::view('/hasil-pengguna', 'admin.hasil-pengguna')
             ->name('hasil-pengguna.index');
+
+        Route::get('/data-pengguna/export', [DataPenggunaController::class, 'export'])
+            ->name('data-pengguna.export');
+
+        Route::resource('data-pengguna', DataPenggunaController::class)
+            ->names('data-pengguna');
     });
