@@ -1,11 +1,11 @@
 @extends('layouts.app-siswa')
 
-@section('page-title', 'Edit Profil')
+@section('page-title', 'Edit Profile')
 
 @section('content')
 
 <div class="min-h-screen flex items-center justify-center px-4 py-10">
-    <div class="max-w-5xl mx-auto w-full">
+    <div class="max-w-5xl mx-auto">
 
         <div class="bg-white rounded-[28px] shadow-sm overflow-hidden border border-gray-200">
 
@@ -20,39 +20,32 @@
                     <!-- FOTO -->
                     <div class="flex flex-col items-center gap-3">
 
-                        <div class="relative">
+                            <div class="relative">
 
-                            <img
-                                id="preview-foto"
-                                src="{{ $user->siswa && $user->siswa->foto
-                                    ? asset('storage/' . $user->siswa->foto)
-                                    : 'https://ui-avatars.com/api/?name=' . urlencode($user->siswa->nama ?? 'User') }}"
-                                alt="Profile"
-                                class="w-28 h-28 rounded-full border-4 border-white object-cover shadow-md cursor-pointer hover:opacity-90 transition"
-                                onclick="openPhotoMenu()">
+                                <img
+                                    id="preview-foto"
+                                    src="{{ $user->siswa && $user->siswa->foto
+                                        ? asset('storage/' . $user->siswa->foto)
+                                        : 'https://ui-avatars.com/api/?name=' . urlencode($user->siswa->nama ?? 'User') }}"
+                                    alt="Profile"
+                                    class="w-28 h-28 rounded-full border-4 border-white object-cover shadow-md cursor-pointer hover:opacity-90 transition"
+                                    onclick="openPhotoMenu()">
 
-                            <input
-                                type="file"
-                                id="foto"
-                                name="foto"
-                                accept="image/*"
-                                class="hidden">
+                            </div>
+
+                            <div class="text-center">
+                                <h2 class="text-2xl font-bold text-gray-900">
+                                    {{ $user->siswa->nama ?? '-' }}
+                                </h2>
+
+                                <span class="inline-block mt-2 px-4 py-1 rounded-full bg-primary text-white text-sm font-semibold shadow">
+                                    {{ $user->siswa->jenjang ?? '-' }}
+                                </span>
+                            </div>
 
                         </div>
-
-                        <!-- NAMA -->
-                        <div class="text-center">
-                            <h2 class="text-2xl font-bold text-gray-900">
-                                {{ $user->siswa->nama ?? '-' }}
-                            </h2>
-
-                            <span class="inline-block mt-2 px-4 py-1 rounded-full bg-primary text-white text-sm font-semibold shadow">
-                                {{ $user->siswa->jenjang ?? '-' }}
-                            </span>
-                        </div>
-
                     </div>
-                </div>
+
 
                 <!-- FORM -->
                 <form
@@ -64,7 +57,14 @@
                     @csrf
                     @method('PUT')
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input
+                        type="file"
+                        id="foto"
+                        name="foto"
+                        accept="image/*"
+                        class="hidden">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         <!-- NAMA -->
                         <div>

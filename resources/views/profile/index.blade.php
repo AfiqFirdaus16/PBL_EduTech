@@ -154,7 +154,7 @@
 
                         <a href="{{ route('profile.edit') }}"
                             class="px-5 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-secondary transition inline-block">
-                            Edit Profil
+                            Edit Profile
                         </a>
 
                     </div>

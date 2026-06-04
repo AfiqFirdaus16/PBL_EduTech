@@ -26,7 +26,7 @@ class ProfileController extends Controller
     {
         $request->validate([
             'nama'       => 'required|string|max:255',
-            'foto'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'foto'       => 'nullable|image|mimes:jpg,jpeg,png,jfif|max:2048',
             'tgl_lahir'  => 'nullable|date',
             'jenjang'    => 'required|string',
             'tingkat'    => 'required|string',
@@ -48,7 +48,7 @@ class ProfileController extends Controller
         // Upload foto baru
         if ($request->hasFile('foto')) {
 
-            // Hapus foto lama jika ada
+            // Hapus foto lama
             if (
                 $user->siswa->foto &&
                 Storage::disk('public')->exists($user->siswa->foto)
