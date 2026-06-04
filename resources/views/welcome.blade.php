@@ -1033,7 +1033,29 @@
                 <div class="profile-trigger" id="profileTrigger">
 
                     <div class="profile-avatar">
-                        <i class="fa-solid fa-user"></i>
+
+                        @if(Auth::user()->siswa && Auth::user()->siswa->foto)
+                            <img
+                                src="{{ asset('storage/' . Auth::user()->siswa->foto) }}"
+                                alt="Profile"
+                                style="
+                                    width:100%;
+                                    height:100%;
+                                    object-fit:cover;
+                                    border-radius:50%;
+                                ">
+                        @else
+                            <img
+                                src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->siswa->nama ?? 'User') }}"
+                                alt="Profile"
+                                style="
+                                    width:100%;
+                                    height:100%;
+                                    object-fit:cover;
+                                    border-radius:50%;
+                                ">
+                        @endif
+
                     </div>
 
                     <div class="profile-info">
