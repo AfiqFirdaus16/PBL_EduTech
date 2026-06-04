@@ -353,6 +353,12 @@
         }
 
         .fitur .container{
+            overflow:visible;
+        }
+
+        .fitur{
+            padding:100px 0;
+            background:#F7F7F7;
             overflow:hidden;
         }
 
@@ -1150,14 +1156,6 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide">
-                        <div class="fitur-card">
-                            <div class="icon-wrap"><i class="fa-solid fa-book"></i></div>
-                            <h3>Evaluasi Belajar</h3>
-                            <p>Evaluasi pembelajaran siswa berdasarkan kebiasaan belajar</p>
-                        </div>
-                    </div>
-
                 </div>
 
                 <div class="swiper-pagination"></div>
@@ -1482,33 +1480,43 @@
 
         // ================= SWIPER =================
 
+        // ================= SWIPER =================
+
         var swiper = new Swiper(".fiturSwiper", {
-            loop:true,
-            centeredSlides:true,
-            grabCursor:true,
-            speed:900,
-            loopedSlides:4,
-            autoplay:{
-                delay:2500,
-                disableOnInteraction:false,
+            loop: true,
+            centeredSlides: true,
+            grabCursor: true,
+            speed: 600,
+            slidesPerView: 3,
+            spaceBetween: 28,
+            allowTouchMove: true,
+            autoplay: {
+                delay: 2500,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
             },
-            pagination:{
-                el:".swiper-pagination",
-                clickable:true,
-                dynamicBullets:false,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+                dynamicBullets: false,
             },
-            breakpoints:{
-                0:{
-                    slidesPerView:1.2,
-                    spaceBetween:16,
+            on: {
+                afterInit: function () {
+                    this.slideToLoop(0, 0, false);
+                }
+            },
+            breakpoints: {
+                0: {
+                    slidesPerView: 1.2,
+                    spaceBetween: 16,
                 },
-                768:{
-                    slidesPerView:2.2,
-                    spaceBetween:24,
+                768: {
+                    slidesPerView: 2.2,
+                    spaceBetween: 24,
                 },
-                1024:{
-                    slidesPerView:2.8,
-                    spaceBetween:32,
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 28,
                 }
             }
         });
