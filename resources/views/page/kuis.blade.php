@@ -330,30 +330,30 @@
 
                 @foreach ($pertanyaan as $index => $p)
 
-                    {{-- Label nomor soal (nomor absolut di seluruh kuis) --}}
-                    @php
-                        $nomorSoal = (($step - 1) * 4) + $loop->iteration;
-                        $huruf     = ['A','B','C'];
-                    @endphp
+                @php
+                    $nomorSoal = (($step - 1) * 4) + $loop->iteration;
+                    $huruf     = ['A','B','C'];
+                    $selected  = old("q_{$p->id}") ?? ($jawabanSession["q_{$p->id}"] ?? null);
+                @endphp
 
-                    <div class="question" {{ $loop->first ? '' : 'style=margin-top:50px' }}>
-                        {{ $nomorSoal }}. {{ $p->pertanyaan }}
-                    </div>
+                <div class="question" {{ $loop->first ? '' : 'style=margin-top:50px' }}>
+                    {{ $nomorSoal }}. {{ $p->pertanyaan }}
+                </div>
 
-                    @foreach ($p->pilihanJawaban as $pi => $pilihan)
-                        <label class="option {{ old("q_{$p->id}") == $pilihan->id ? 'active' : '' }}">
-                            <input
-                                type="radio"
-                                name="q_{{ $p->id }}"
-                                value="{{ $pilihan->id }}"
-                                {{ old("q_{$p->id}") == $pilihan->id ? 'checked' : '' }}
-                            >
-                            <div class="circle">{{ $huruf[$pi] ?? $pi }}</div>
-                            <div class="option-text">{{ $pilihan->jawaban }}</div>
-                        </label>
-                    @endforeach
-
+                @foreach ($p->pilihanJawaban as $pi => $pilihan)
+                    <label class="option {{ $selected == $pilihan->id ? 'active' : '' }}">
+                        <input
+                            type="radio"
+                            name="q_{{ $p->id }}"
+                            value="{{ $pilihan->id }}"
+                            {{ $selected == $pilihan->id ? 'checked' : '' }}
+                        >
+                        <div class="circle">{{ $huruf[$pi] ?? $pi }}</div>
+                        <div class="option-text">{{ $pilihan->jawaban }}</div>
+                    </label>
                 @endforeach
+
+            @endforeach
 
                 {{-- Tombol navigasi --}}
                 <div class="btn-area">

@@ -22,32 +22,32 @@ class KuisController extends Controller
     // Halaman kuis per kategori  →  GET /kuis/{step}
     // ─────────────────────────────────────────────────────────────
     public function show(int $step)
-    {
-        // Validasi step
-        if ($step < 1 || $step > 5) {
-            return redirect()->route('kuis.show', 1);
-        }
-
-        $kategori = $this->kategoriUrutan[$step];
-
-        // Ambil 4 pertanyaan beserta pilihan jawabannya dari DB
-        $pertanyaan = \App\Models\Pertanyaan::with('pilihanJawaban')
-            ->where('kategori', $kategori)
-            ->get();
-
-        $totalStep    = 5;
-        $persen       = (int) round(($step / $totalStep) * 100);
-        $stepBerikut  = $step + 1;
-
-        return view('page.kuis', compact(
-            'step',
-            'totalStep',
-            'persen',
-            'kategori',
-            'pertanyaan',
-            'stepBerikut',
-        ));
+{
+    if ($step < 1 || $step > 5) {
+        return redirect()->route('kuis.show', 1);
     }
+
+    $kategori = $this->kategoriUrutan[$step];
+
+    $pertanyaan = \App\Models\Pertanyaan::with('pilihanJawaban')
+        ->where('kategori', $kategori)
+        ->get();
+
+    $totalStep    = 5;
+    $persen       = round((($step - 1) / $totalStep) * 100);
+    $stepBerikut  = $step + 1;
+    $jawabanSession = session('jawaban', []);
+
+    return view('page.kuis', compact(
+        'step',
+        'totalStep',
+        'persen',
+        'kategori',
+        'pertanyaan',
+        'stepBerikut',
+        'jawabanSession',
+    ));
+}
 
     // ─────────────────────────────────────────────────────────────
     // Simpan jawaban satu halaman  →  POST /kuis/{step}
