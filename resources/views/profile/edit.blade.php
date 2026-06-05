@@ -1,6 +1,6 @@
 @extends('layouts.app-siswa')
 
-@section('page-title', 'Edit Profil')
+@section('page-title', 'Edit Profile')
 
 @section('content')
 
@@ -9,46 +9,62 @@
 
         <div class="bg-white rounded-[28px] shadow-sm overflow-hidden border border-gray-200">
 
-            <div class="h-24 bg-gradient-to-r from-orange-300 to-primary relative">
-            </div>
+            <!-- HEADER -->
+            <div class="h-24 bg-gradient-to-r from-orange-300 to-primary"></div>
 
             <div class="px-8 pb-8 relative">
 
                 <!-- PROFILE -->
-                <div class="-mt-10 flex items-center gap-5">
+                <div class="-mt-14 flex flex-col items-center">
 
                     <!-- FOTO -->
-                    <div class="w-28 h-28 rounded-full border-4 border-white overflow-hidden shadow-md bg-gray-200">
+                    <div class="flex flex-col items-center gap-3">
 
-                        <img
-                            src="https://ui-avatars.com/api/?name={{ urlencode($user->siswa->nama ?? 'User') }}"
-                            alt="Profile"
-                            class="w-full h-full object-cover">
-                    </div>
+                            <div class="relative">
 
-                    <!-- NAMA -->
-                    <div class="mt-8">
+                                <img
+                                    id="preview-foto"
+                                    src="{{ $user->siswa && $user->siswa->foto
+                                        ? asset('storage/' . $user->siswa->foto)
+                                        : 'https://ui-avatars.com/api/?name=' . urlencode($user->siswa->nama ?? 'User') }}"
+                                    alt="Profile"
+                                    class="w-28 h-28 rounded-full border-4 border-white object-cover shadow-md cursor-pointer hover:opacity-90 transition"
+                                    onclick="openPhotoMenu()">
 
-                        <div class="flex items-center gap-3">
+                            </div>
 
-                            <h2 class="text-2xl font-bold text-gray-900">
-                                {{ $user->siswa->nama ?? '-' }}
-                            </h2>
+                            <div class="text-center">
+                                <h2 class="text-2xl font-bold text-gray-900">
+                                    {{ $user->siswa->nama ?? '-' }}
+                                </h2>
 
-                            <span class="px-4 py-1 rounded-full bg-primary text-white text-sm font-semibold shadow">
-                                {{ $user->siswa->jenjang ?? '-' }}
-                            </span>
+                                <span class="inline-block mt-2 px-4 py-1 rounded-full bg-primary text-white text-sm font-semibold shadow">
+                                    {{ $user->siswa->jenjang ?? '-' }}
+                                </span>
+                            </div>
 
                         </div>
                     </div>
-                </div>
+
 
                 <!-- FORM -->
-                <form action="{{ route('profile.update') }}" method="POST" class="mt-10">
+                <form
+                    action="{{ route('profile.update') }}"
+                    method="POST"
+                    enctype="multipart/form-data"
+                    class="mt-12">
+
                     @csrf
                     @method('PUT')
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input
+                        type="file"
+                        id="foto"
+                        name="foto"
+                        accept="image/*"
+                        class="hidden">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         <!-- NAMA -->
                         <div>
@@ -77,7 +93,7 @@
                                 type="text"
                                 value="{{ $user->username }}"
                                 disabled
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100 text-gray-500 cursor-not-allowed">
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100 text-gray-500">
                         </div>
 
                         <!-- EMAIL -->
@@ -90,7 +106,7 @@
                                 type="email"
                                 value="{{ $user->email }}"
                                 disabled
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100 text-gray-500 cursor-not-allowed">
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100 text-gray-500">
                         </div>
 
                         <!-- PASSWORD -->
@@ -103,7 +119,7 @@
                                 type="password"
                                 value="********"
                                 disabled
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100 text-gray-500 cursor-not-allowed">
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 bg-gray-100 text-gray-500">
                         </div>
 
                         <!-- TANGGAL LAHIR -->
@@ -176,9 +192,11 @@
 
                     </div>
 
+                    <!-- BUTTON -->
                     <div class="flex justify-end gap-3 mt-8">
 
-                        <a href="{{ route('profile') }}"
+                        <a
+                            href="{{ route('profile') }}"
                             class="px-5 py-3 rounded-xl bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition">
                             Batal
                         </a>
@@ -190,11 +208,110 @@
                         </button>
 
                     </div>
+
                 </form>
 
             </div>
         </div>
     </div>
 </div>
+
+<!-- MENU FOTO -->
+<div
+    id="photoMenu"
+    class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+
+    <div class="bg-white rounded-2xl w-80 overflow-hidden shadow-xl">
+
+        <button
+            type="button"
+            onclick="showPhotoPreview()"
+            class="w-full py-4 border-b hover:bg-gray-50 font-medium">
+
+            👀 Lihat Foto Profil
+        </button>
+
+        <button
+            type="button"
+            onclick="changePhoto()"
+            class="w-full py-4 border-b hover:bg-gray-50 text-primary font-medium">
+
+            📷 Ganti Foto
+        </button>
+
+        <button
+            type="button"
+            onclick="closePhotoMenu()"
+            class="w-full py-4 hover:bg-gray-50 text-red-500">
+
+            Batal
+        </button>
+
+    </div>
+
+</div>
+
+<!-- PREVIEW -->
+<div
+    id="previewModal"
+    class="hidden fixed inset-0 bg-black/90 z-[60] flex items-center justify-center">
+
+    <button
+        type="button"
+        onclick="closePreview()"
+        class="absolute top-5 right-8 text-white text-4xl">
+
+        ×
+    </button>
+
+    <img
+        id="previewModalImage"
+        src=""
+        class="max-w-[90vw] max-h-[90vh] rounded-xl shadow-2xl">
+
+</div>
+
+<script>
+function openPhotoMenu() {
+    document.getElementById('photoMenu').classList.remove('hidden');
+}
+
+function closePhotoMenu() {
+    document.getElementById('photoMenu').classList.add('hidden');
+}
+
+function showPhotoPreview() {
+    document.getElementById('previewModalImage').src =
+        document.getElementById('preview-foto').src;
+
+    document.getElementById('previewModal').classList.remove('hidden');
+
+    closePhotoMenu();
+}
+
+function closePreview() {
+    document.getElementById('previewModal').classList.add('hidden');
+}
+
+function changePhoto() {
+    closePhotoMenu();
+    document.getElementById('foto').click();
+}
+
+document.getElementById('foto').addEventListener('change', function(e) {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        document.getElementById('preview-foto').src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+});
+</script>
 
 @endsection
