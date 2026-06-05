@@ -729,7 +729,7 @@
             margin-top:14px;
         }
 
-        /* ===== TOP 3 TEKNIK ===== */
+        /* ===== TOP 9 TEKNIK ===== */
 
         .teknik-section{
             margin-top:40px;
@@ -750,41 +750,165 @@
         }
 
         .teknik-card{
-            background:linear-gradient(180deg, #6B63E7 0%, #5147C8 100%);
             border-radius:12px;
             overflow:hidden;
             box-shadow:0 8px 20px rgba(65,55,160,0.18);
             transition:.3s ease;
+            position:relative;
+            background:#000;
         }
 
         .teknik-card:hover{
             transform:translateY(-6px);
+            box-shadow:0 14px 30px rgba(65,55,160,0.28);
         }
 
         .teknik-img{
             width:100%;
-            height:185px;
+            height:220px;
             object-fit:cover;
             display:block;
+            transition:0.4s ease;
         }
 
-        .teknik-content{
-            padding:14px 16px 18px;
+        .teknik-card:hover .teknik-img{
+            transform:scale(1.05);
+            opacity:0.85;
         }
 
-        .teknik-content h4{
+        /* Gradasi gelap dari bawah yang menindih gambar */
+        .teknik-overlay{
+            position:absolute;
+            inset:0;
+            background:linear-gradient(
+                to bottom,
+                rgba(0,0,0,0) 30%,
+                rgba(30,20,80,0.55) 65%,
+                rgba(20,10,60,0.92) 100%
+            );
+            pointer-events:none;
+        }
+
+        /* Judul di dalam gambar pojok kiri bawah */
+        .teknik-label{
+            position:absolute;
+            bottom:0;
+            left:0;
+            right:0;
+            padding:14px 16px 16px;
+            z-index:2;
+        }
+
+        .teknik-label h4{
             color:#fff;
-            font-size:16px;
-            font-weight:700;
-            margin-bottom:8px;
-            text-align:center;
+            font-size:17px;
+            font-weight:800;
+            margin:0;
+            text-shadow:0 2px 8px rgba(0,0,0,0.5);
+            letter-spacing:0.3px;
         }
 
-        .teknik-content p{
-            color:#ECEBFF;
-            font-size:12px;
-            line-height:1.6;
-            text-align:center;
+        /* ===== INFO BUTTON ===== */
+
+        .teknik-info-btn{
+            position:absolute;
+            top:10px;
+            right:10px;
+            width:28px;
+            height:28px;
+            border-radius:50%;
+            background:rgba(255,255,255,0.85);
+            border:none;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:13px;
+            font-weight:800;
+            color:#3C3489;
+            transition:0.2s;
+            z-index:2;
+            line-height:1;
+            font-family:'Poppins', sans-serif;
+        }
+
+        .teknik-info-btn:hover{
+            background:#fff;
+            transform:scale(1.1);
+        }
+
+        /* ===== MODAL INFO TEKNIK ===== */
+
+        .teknik-modal-overlay{
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,0.45);
+            z-index:99999;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            opacity:0;
+            pointer-events:none;
+            transition:0.25s ease;
+        }
+
+        .teknik-modal-overlay.show{
+            opacity:1;
+            pointer-events:all;
+        }
+
+        .teknik-modal{
+            background:#fff;
+            border-radius:18px;
+            padding:32px 28px;
+            max-width:420px;
+            width:90%;
+            box-shadow:0 16px 50px rgba(0,0,0,0.22);
+            transform:translateY(16px) scale(0.96);
+            transition:0.25s ease;
+            position:relative;
+        }
+
+        .teknik-modal-overlay.show .teknik-modal{
+            transform:translateY(0) scale(1);
+        }
+
+        .teknik-modal-close{
+            position:absolute;
+            top:14px;
+            right:16px;
+            background:none;
+            border:none;
+            font-size:20px;
+            cursor:pointer;
+            color:#888;
+            line-height:1;
+            transition:0.2s;
+        }
+
+        .teknik-modal-close:hover{
+            color:#333;
+        }
+
+        .teknik-modal img{
+            width:100%;
+            height:160px;
+            object-fit:cover;
+            border-radius:12px;
+            margin-bottom:16px;
+        }
+
+        .teknik-modal h4{
+            font-size:20px;
+            font-weight:800;
+            color:#3C3489;
+            margin-bottom:10px;
+        }
+
+        .teknik-modal p{
+            font-size:14px;
+            line-height:1.8;
+            color:#555;
         }
 
         /* ================= TUJUAN ================= */
@@ -1252,7 +1376,7 @@
                         </div>
 
                         <div class="stat-item">
-                            <span class="stat-label">Akses<br>Pembelajaran</span>
+                            <span class="stat-label">Akses Pembelajaran</span>
                             <div class="stat-icon-wrap gray">
                                 <i class="fa-solid fa-book-open"></i>
                             </div>
@@ -1319,35 +1443,74 @@
 
             </div>
 
-            {{-- Top 3 Teknik --}}
+            {{-- Top 9 Teknik --}}
             <div class="teknik-section">
 
-                <h3 class="teknik-title">Top 3 Teknik Belajar Rekomendasi</h3>
+                <h3 class="teknik-title">Rekomendasi Teknik Belajar</h3>
 
                 <div class="teknik-grid">
 
                     <div class="teknik-card">
                         <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600" alt="Pomodoro" class="teknik-img">
-                        <div class="teknik-content">
-                            <h4>Pomodoro</h4>
-                            <p>Teknik Pomodoro adalah metode belajar atau bekerja dengan membagi waktu menjadi sesi fokus diselingi waktu istirahat.</p>
-                        </div>
+                        <div class="teknik-overlay"></div>
+                        <button class="teknik-info-btn" onclick="openTeknikModal('Pomodoro','https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600','Teknik Pomodoro adalah metode belajar atau bekerja dengan membagi waktu menjadi sesi fokus 25 menit yang diselingi istirahat singkat 5 menit. Setelah 4 sesi, ambil istirahat lebih panjang 15–30 menit. Metode ini terbukti meningkatkan fokus, mengurangi kelelahan mental, dan membantu manajemen waktu belajar.')">i</button>
+                        <div class="teknik-label"><h4>Pomodoro</h4></div>
                     </div>
 
                     <div class="teknik-card">
                         <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600" alt="Feynman" class="teknik-img">
-                        <div class="teknik-content">
-                            <h4>Feynman</h4>
-                            <p>Metode belajar cepat untuk memahami konsep sulit dengan menjelaskan ulang menggunakan bahasa sederhana.</p>
-                        </div>
+                        <div class="teknik-overlay"></div>
+                        <button class="teknik-info-btn" onclick="openTeknikModal('Feynman','https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600','Metode Feynman adalah teknik belajar cepat untuk memahami konsep sulit dengan cara menjelaskan ulang materi menggunakan bahasa yang sederhana, seolah-olah kamu sedang mengajarkannya kepada orang lain yang baru belajar. Jika ada bagian yang sulit dijelaskan, itu sinyal untuk kembali belajar bagian tersebut.')">i</button>
+                        <div class="teknik-label"><h4>Feynman</h4></div>
                     </div>
 
                     <div class="teknik-card">
                         <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600" alt="Active Recall" class="teknik-img">
-                        <div class="teknik-content">
-                            <h4>Active Recall</h4>
-                            <p>Teknik belajar dengan mengingat informasi secara aktif, bukan hanya membaca ulang materi pembelajaran.</p>
-                        </div>
+                        <div class="teknik-overlay"></div>
+                        <button class="teknik-info-btn" onclick="openTeknikModal('Active Recall','https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600','Active Recall adalah teknik belajar dengan mengingat informasi secara aktif tanpa melihat catatan. Alih-alih membaca ulang, kamu menutup buku lalu mencoba mengingat kembali apa yang telah dipelajari. Teknik ini memperkuat jalur memori di otak dan jauh lebih efektif dibandingkan membaca pasif.')">i</button>
+                        <div class="teknik-label"><h4>Active Recall</h4></div>
+                    </div>
+
+                    <div class="teknik-card">
+                        <img src="https://images.unsplash.com/photo-1516534775068-ba3e7458af70?w=600" alt="Spaced Repetition" class="teknik-img">
+                        <div class="teknik-overlay"></div>
+                        <button class="teknik-info-btn" onclick="openTeknikModal('Spaced Repetition','https://images.unsplash.com/photo-1516534775068-ba3e7458af70?w=600','Spaced Repetition adalah teknik mengulang materi pada interval waktu yang semakin lama seiring bertambahnya penguasaan materi. Alih-alih belajar sekaligus (cramming), kamu mengulas materi hari ini, lalu 2 hari lagi, lalu seminggu lagi. Teknik ini sangat efektif untuk hafalan jangka panjang.')">i</button>
+                        <div class="teknik-label"><h4>Spaced Repetition</h4></div>
+                    </div>
+
+                    <div class="teknik-card">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600" alt="Interleaving" class="teknik-img">
+                        <div class="teknik-overlay"></div>
+                        <button class="teknik-info-btn" onclick="openTeknikModal('Interleaving','https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600','Interleaving adalah teknik belajar dengan mencampur beberapa topik atau mata pelajaran berbeda dalam satu sesi belajar, daripada menyelesaikan satu topik hingga tuntas sebelum pindah ke topik lain. Meski terasa lebih sulit, teknik ini terbukti meningkatkan kemampuan problem-solving dan transfer pengetahuan.')">i</button>
+                        <div class="teknik-label"><h4>Interleaving</h4></div>
+                    </div>
+
+                    <div class="teknik-card">
+                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600" alt="Blurting Method" class="teknik-img">
+                        <div class="teknik-overlay"></div>
+                        <button class="teknik-info-btn" onclick="openTeknikModal('Blurting Method','https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600','Blurting Method adalah teknik belajar dengan cara membaca materi sekali, lalu menutup buku dan menulis atau mengucapkan semua yang kamu ingat tanpa melihat catatan. Setelah selesai, bandingkan dengan materi asli dan tandai bagian yang terlewat. Ulangi prosesnya hingga semua bagian terkuasai.')">i</button>
+                        <div class="teknik-label"><h4>Blurting Method</h4></div>
+                    </div>
+
+                    <div class="teknik-card">
+                        <img src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=600" alt="Mind Mapping" class="teknik-img">
+                        <div class="teknik-overlay"></div>
+                        <button class="teknik-info-btn" onclick="openTeknikModal('Mind Mapping','https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=600','Mind Mapping adalah teknik mencatat visual dengan menempatkan topik utama di tengah, lalu membuat cabang-cabang yang menghubungkan ide-ide terkait. Metode ini memanfaatkan kedua sisi otak, membuat informasi lebih mudah diingat dan dipahami secara menyeluruh, cocok untuk merangkum bab yang kompleks.')">i</button>
+                        <div class="teknik-label"><h4>Mind Mapping</h4></div>
+                    </div>
+
+                    <div class="teknik-card">
+                        <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600" alt="Teach Back" class="teknik-img">
+                        <div class="teknik-overlay"></div>
+                        <button class="teknik-info-btn" onclick="openTeknikModal('Teach Back','https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600','Teach Back adalah teknik belajar dengan cara mengajarkan kembali materi yang telah dipelajari kepada orang lain, seperti teman atau anggota keluarga. Proses mengajar memaksa otak untuk mengorganisir informasi dengan lebih terstruktur dan mengidentifikasi bagian yang belum benar-benar dipahami.')">i</button>
+                        <div class="teknik-label"><h4>Teach Back</h4></div>
+                    </div>
+
+                    <div class="teknik-card">
+                        <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600" alt="SQ3R" class="teknik-img">
+                        <div class="teknik-overlay"></div>
+                        <button class="teknik-info-btn" onclick="openTeknikModal('SQ3R','https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600','SQ3R adalah metode membaca terstruktur yang terdiri dari 5 langkah: Survey (tinjau sekilas), Question (buat pertanyaan), Read (baca untuk menjawab), Recite (ceritakan kembali), dan Review (ulang keseluruhan). Metode ini sangat efektif untuk memahami teks akademis yang panjang dan padat.')">i</button>
+                        <div class="teknik-label"><h4>SQ3R</h4></div>
                     </div>
 
                 </div>
@@ -1357,6 +1520,16 @@
         </div>
 
     </section>
+
+    {{-- ===== MODAL INFO TEKNIK ===== --}}
+    <div class="teknik-modal-overlay" id="teknikModalOverlay" onclick="closeTeknikModal(event)">
+        <div class="teknik-modal" id="teknikModal">
+            <button class="teknik-modal-close" onclick="document.getElementById('teknikModalOverlay').classList.remove('show')">&#x2715;</button>
+            <img id="modalImg" src="" alt="">
+            <h4 id="modalTitle"></h4>
+            <p id="modalDesc"></p>
+        </div>
+    </div>
 
     {{-- ================= TUJUAN ================= --}}
     <section class="tujuan">
@@ -1502,8 +1675,6 @@
 
         // ================= SWIPER =================
 
-        // ================= SWIPER =================
-
         var swiper = new Swiper(".fiturSwiper", {
             loop: true,
             centeredSlides: true,
@@ -1615,6 +1786,29 @@
             });
 
         }
+
+        // ================= TEKNIK MODAL =================
+
+        function openTeknikModal(title, img, desc) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalImg').src = img;
+            document.getElementById('modalImg').alt = title;
+            document.getElementById('modalDesc').textContent = desc;
+            document.getElementById('teknikModalOverlay').classList.add('show');
+        }
+
+        function closeTeknikModal(e) {
+            if (e.target === document.getElementById('teknikModalOverlay')) {
+                document.getElementById('teknikModalOverlay').classList.remove('show');
+            }
+        }
+
+        // Tutup modal dengan tombol Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('teknikModalOverlay').classList.remove('show');
+            }
+        });
 
     </script>
 
