@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\Siswa;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -68,35 +69,40 @@ class AuthController extends Controller
     // PROSES KIRIM LINK RESET PASSWORD (sementara dummy)
     public function sendResetLink(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email'
-        ]);
+        $request->validate(['email' => 'required|email']);
 
-        $token = Str::random(60);
+        $status = Password::sendResetLink($request->only('email'));
 
-        return redirect()->route('password.reset', $token);
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('success', 'Link reset password sudah dikirim ke email kamu.');
+        }
+
+        return back()->with('error', 'Email tidak ditemukan.');
     }
     
     // PROSES UPDATE PASSWORD
-    public function resetPassword(Request $request)
+   public function resetPassword(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6'
+            'token'    => 'required',
+            'email'    => 'required|email',
+            'password' => 'required|min:6|confirmed',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->save();
+            }
+        );
 
-        if (!$user) {
-            return back()->with('error', 'Email tidak ditemukan');
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect()->route('login')->with('success', 'Password berhasil direset! Silakan login.');
         }
 
-        $user->update([
-            'password' => Hash::make($request->password)
-        ]);
-
-        return redirect()->route('login')
-            ->with('success', 'Password berhasil diubah');
+        return back()->with('error', 'Token tidak valid atau sudah expired.');
     }
     public function logout(Request $request)
         {
