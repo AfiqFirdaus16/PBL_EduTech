@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\Siswa;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -22,11 +23,19 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
-
             $request->session()->regenerate();
 
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
+            }
+
+            $siswaId = Auth::user()->siswa->id ?? null;
+            $sudahIsiKuis = $siswaId
+                ? DB::table('sesi_kuis')->where('siswa_id', $siswaId)->exists()
+                : false;
+
+            if ($sudahIsiKuis) {
+                return redirect()->route('hasil-resiko.index');
             }
 
             return redirect()->route('kuis.show', 1);
