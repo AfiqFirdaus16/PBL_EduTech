@@ -130,27 +130,9 @@
         <header class="bg-primary h-[56px] px-6 flex items-center justify-between border-b border-[#2f2253] relative">
 
             <!-- LEFT TITLE -->
-        <h2 class="text-white text-[26px] font-bold whitespace-nowrap">
-            @yield('page-title', 'Dashboard')
-        </h2>
-
-            <!-- SEARCH CENTER -->
-            <div class="absolute left-1/2 -translate-x-1/2 w-[320px]">
-                <div class="relative">
-                    <input
-                        type="text"
-                        placeholder="Cari"
-                        class="w-full h-[38px] rounded-full bg-white pl-11 pr-4 text-[14px] text-gray-700 placeholder-gray-400 focus:outline-none"
-                    >
-
-                    <!-- Search Icon -->
-                    <svg class="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0a7 7 0 0114 0z"/>
-                    </svg>
-                </div>
-            </div>
+            <h2 class="text-white text-[26px] font-bold whitespace-nowrap">
+                @yield('page-title', 'Dashboard')
+            </h2>
 
             <!-- RIGHT PROFILE -->
             <div class="relative">

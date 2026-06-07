@@ -8,11 +8,11 @@
     </div>
 @endif
 
-@if(session('error'))
+{{-- @if(session('error'))
     <div style="color: red; margin-bottom: 12px; text-align: center;">
         {{ session('error') }}
     </div>
-@endif
+@endif --}}
 
 <form method="POST" action="{{ route('password.email') }}">
     @csrf
