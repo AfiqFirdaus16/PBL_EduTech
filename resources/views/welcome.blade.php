@@ -11,9 +11,6 @@
     {{-- FONT AWESOME --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
-    {{-- SWIPER --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-
     <style>
 
         *{
@@ -297,7 +294,7 @@
         }
 
         .hero-content img{
-            width:90px;
+            width:160px;
             margin-bottom:20px;
         }
 
@@ -335,7 +332,6 @@
         .fitur{
             padding:100px 0;
             background:#F7F7F7;
-            overflow:hidden;
         }
 
         .section-title{
@@ -346,49 +342,31 @@
             margin-bottom:60px;
         }
 
-        .fiturSwiper{
-            width:100%;
-            padding:20px 0 70px 0;
-            overflow:visible !important;
-        }
-
-        .fitur .container{
-            overflow:visible;
-        }
-
-        .fitur{
-            padding:100px 0;
-            background:#F7F7F7;
-            overflow:hidden;
-        }
-
-        .swiper-slide{
-            display:flex;
-            justify-content:center;
-            opacity:0.5;
-            transform:scale(0.88);
-            transition:0.4s ease;
-        }
-
-        .swiper-slide-active{
-            opacity:1;
-            transform:scale(1);
+        .fitur-grid{
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:28px;
         }
 
         .fitur-card{
-            width:260px;
-            min-height:240px;
             border-radius:18px;
             background:#FFFFFF;
             border:1.5px solid #E0DCFC;
-            padding:30px 22px;
+            padding:40px 28px;
             text-align:center;
             box-shadow:0 4px 16px rgba(0,0,0,0.06);
-            transition:0.4s ease;
+            transition:0.3s ease;
             display:flex;
             flex-direction:column;
             align-items:center;
             justify-content:center;
+        }
+
+        .fitur-card:hover{
+            transform:translateY(-6px);
+            background:#3C3489;
+            border-color:#3C3489;
+            box-shadow:0 10px 30px rgba(60,52,137,0.35);
         }
 
         .fitur-card .icon-wrap{
@@ -400,11 +378,21 @@
             align-items:center;
             justify-content:center;
             margin:0 auto 18px;
+            transition:0.3s ease;
+        }
+
+        .fitur-card:hover .icon-wrap{
+            background:rgba(255,255,255,0.2);
         }
 
         .fitur-card .icon-wrap i{
             font-size:30px;
             color:#3C3489;
+            transition:0.3s ease;
+        }
+
+        .fitur-card:hover .icon-wrap i{
+            color:#FFFFFF;
         }
 
         .fitur-card h3{
@@ -413,51 +401,22 @@
             margin-bottom:10px;
             line-height:1.4;
             color:#222;
+            transition:0.3s ease;
+        }
+
+        .fitur-card:hover h3{
+            color:#FFFFFF;
         }
 
         .fitur-card p{
             font-size:13px;
             line-height:1.7;
             color:#666;
+            transition:0.3s ease;
         }
 
-        .swiper-slide-active .fitur-card{
-            background:#3C3489;
-            border-color:#3C3489;
-            box-shadow:0 10px 30px rgba(60,52,137,0.35);
-        }
-
-        .swiper-slide-active .fitur-card .icon-wrap{
-            background:rgba(255,255,255,0.2);
-        }
-
-        .swiper-slide-active .fitur-card .icon-wrap i{
-            color:#FFFFFF;
-        }
-
-        .swiper-slide-active .fitur-card h3{
-            color:#FFFFFF;
-        }
-
-        .swiper-slide-active .fitur-card p{
+        .fitur-card:hover p{
             color:rgba(255,255,255,0.8);
-        }
-
-        .fitur-card:hover{
-            transform:translateY(-5px);
-        }
-
-        .swiper-pagination-bullet{
-            width:10px;
-            height:10px;
-            background:#B6AEF8;
-            opacity:1;
-        }
-
-        .swiper-pagination-bullet-active{
-            width:28px;
-            border-radius:20px;
-            background:#3C3489;
         }
 
         /* ================= ANALISA SETELAH TES ================= */
@@ -776,7 +735,6 @@
             opacity:0.85;
         }
 
-        /* Gradasi gelap dari bawah yang menindih gambar */
         .teknik-overlay{
             position:absolute;
             inset:0;
@@ -789,7 +747,6 @@
             pointer-events:none;
         }
 
-        /* Judul di dalam gambar pojok kiri bawah */
         .teknik-label{
             position:absolute;
             bottom:0;
@@ -1120,6 +1077,7 @@
             .hero-content h1{ font-size:32px; }
             .hero-content p{ font-size:15px; }
             .hero-btn{ font-size:16px; padding:12px 36px; }
+            .fitur-grid{ grid-template-columns:1fr; }
             .analisa-grid{ grid-template-columns:1fr; }
             .teknik-grid{ grid-template-columns:1fr; }
             .footer-wrapper{ flex-direction:column; }
@@ -1274,37 +1232,25 @@
 
             <h2 class="section-title">AKSES FITUR SISTEM REKOMENDASI</h2>
 
-            <div class="swiper fiturSwiper">
+            <div class="fitur-grid">
 
-                <div class="swiper-wrapper">
-
-                    <div class="swiper-slide">
-                        <div class="fitur-card">
-                            <div class="icon-wrap"><i class="fa-solid fa-stopwatch"></i></div>
-                            <h3>Teknik Belajar</h3>
-                            <p>Teknik Belajar yang cocok sesuai kondisi dari siswa</p>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <div class="fitur-card">
-                            <div class="icon-wrap"><i class="fa-regular fa-face-smile"></i></div>
-                            <h3>Hasil Resiko Akademik</h3>
-                            <p>Meningkatkan kebiasaan akademik dari kebiasaan akademik yang beresiko</p>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <div class="fitur-card">
-                            <div class="icon-wrap"><i class="fa-solid fa-chart-column"></i></div>
-                            <h3>Riwayat</h3>
-                            <p>Riwayat untuk mengetahui hasil tes dari terakhir</p>
-                        </div>
-                    </div>
-
+                <div class="fitur-card">
+                    <div class="icon-wrap"><i class="fa-solid fa-stopwatch"></i></div>
+                    <h3>Teknik Belajar</h3>
+                    <p>Teknik Belajar yang cocok sesuai kondisi dari siswa</p>
                 </div>
 
-                <div class="swiper-pagination"></div>
+                <div class="fitur-card">
+                    <div class="icon-wrap"><i class="fa-regular fa-face-smile"></i></div>
+                    <h3>Hasil Resiko Akademik</h3>
+                    <p>Meningkatkan kebiasaan akademik dari kebiasaan akademik yang beresiko</p>
+                </div>
+
+                <div class="fitur-card">
+                    <div class="icon-wrap"><i class="fa-solid fa-chart-column"></i></div>
+                    <h3>Riwayat</h3>
+                    <p>Riwayat untuk mengetahui hasil tes dari terakhir</p>
+                </div>
 
             </div>
 
@@ -1668,51 +1614,7 @@
 
     </footer>
 
-    {{-- SWIPER --}}
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
     <script>
-
-        // ================= SWIPER =================
-
-        var swiper = new Swiper(".fiturSwiper", {
-            loop: true,
-            centeredSlides: true,
-            grabCursor: true,
-            speed: 600,
-            slidesPerView: 3,
-            spaceBetween: 28,
-            allowTouchMove: true,
-            autoplay: {
-                delay: 2500,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: true,
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-                dynamicBullets: false,
-            },
-            on: {
-                afterInit: function () {
-                    this.slideToLoop(0, 0, false);
-                }
-            },
-            breakpoints: {
-                0: {
-                    slidesPerView: 1.2,
-                    spaceBetween: 16,
-                },
-                768: {
-                    slidesPerView: 2.2,
-                    spaceBetween: 24,
-                },
-                1024: {
-                    slidesPerView: 3,
-                    spaceBetween: 28,
-                }
-            }
-        });
 
         // ================= FAQ =================
 
@@ -1803,7 +1705,6 @@
             }
         }
 
-        // Tutup modal dengan tombol Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 document.getElementById('teknikModalOverlay').classList.remove('show');
