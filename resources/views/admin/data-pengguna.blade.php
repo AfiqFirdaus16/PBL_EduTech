@@ -44,6 +44,23 @@
             </svg>
         </div>
 
+        <!-- Search -->
+        <div class="relative">
+            <input
+                type="text"
+                id="searchPengguna"
+                placeholder="Cari nama, username, email..."
+                oninput="handleSearch(this.value)"
+                autocomplete="off"
+                class="h-[38px] pl-9 pr-4 w-[220px] rounded-lg border border-gray-300 bg-white text-[13px] text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0a7 7 0 0114 0z"/>
+            </svg>
+        </div>
+
     </div>
 
     <!-- Export -->
@@ -74,7 +91,7 @@
                 <th class="px-4 py-3">Tindakan</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tablePengguna">
             @forelse($siswas as $index => $siswa)
             <tr class="border-b border-gray-100 text-center hover:bg-gray-50 transition">
                 <td class="px-4 py-3">{{ $siswas->firstItem() + $index }}</td>
@@ -126,6 +143,11 @@
             @endforelse
         </tbody>
     </table>
+
+    <!-- Pesan tidak ditemukan (muncul saat search kosong hasil) -->
+    <p id="searchEmptyMsg" class="hidden text-center text-gray-400 text-sm py-6">
+        Data tidak ditemukan.
+    </p>
 </div>
 
 <!-- PAGINATION -->
@@ -137,7 +159,7 @@
 
 @push('scripts')
 <script>
-    // Filter Jenjang & Tingkat
+    // ── FILTER JENJANG & TINGKAT ──────────────────────────────────
     const filterJenjang = document.getElementById('filterJenjang');
     const filterTingkat = document.getElementById('filterTingkat');
 
@@ -159,5 +181,26 @@
     const params = new URLSearchParams(window.location.search);
     if (params.get('jenjang')) filterJenjang.value = params.get('jenjang');
     if (params.get('tingkat')) filterTingkat.value = params.get('tingkat');
+
+    // ── SEARCH REAL-TIME ──────────────────────────────────────────
+    function handleSearch(query) {
+        const rows     = document.querySelectorAll('#tablePengguna tr');
+        const emptyMsg = document.getElementById('searchEmptyMsg');
+        const q        = query.trim().toLowerCase();
+
+        rows.forEach(function(row) {
+            if (q === '') {
+                row.style.display = '';
+                return;
+            }
+            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+
+        const allHidden = Array.from(rows).every(function(r) {
+            return r.style.display === 'none';
+        });
+
+        emptyMsg.classList.toggle('hidden', !(allHidden && q !== ''));
+    }
 </script>
 @endpush
