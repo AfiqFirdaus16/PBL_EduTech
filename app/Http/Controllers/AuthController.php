@@ -55,14 +55,15 @@ class AuthController extends Controller
             'tingkat' => 'required|in:1,2,3'
         ]);
 
+        // 1. Simpan ke tabel 'users' (TIDAK ADA KOLOM NAMA)
         $user = User::create([
-        'nama' => $request->nama,
-        'username' => $request->username,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role' => 'siswa'
-    ]);
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'siswa'
+        ]);
 
+        // 2. Simpan ke tabel 'siswas' (ADA KOLOM NAMA)
         Siswa::create([
             'user_id' => $user->id,
             'nama' => $request->nama,
@@ -72,7 +73,7 @@ class AuthController extends Controller
 
         return redirect()
             ->route('login')
-            ->with('success', 'Registrasi berhasil, silakan login');
+            ->with('success', 'Registrasi berhasil, silakan login dengan akun Anda.');
     }
 
     // PROSES KIRIM LINK RESET PASSWORD (sementara dummy)
@@ -88,9 +89,9 @@ class AuthController extends Controller
 
         return back()->with('error', 'Email tidak ditemukan.');
     }
-    
+
     // PROSES UPDATE PASSWORD
-   public function resetPassword(Request $request)
+    public function resetPassword(Request $request)
     {
         $request->validate([
             'token'    => 'required',
@@ -114,11 +115,10 @@ class AuthController extends Controller
         return back()->with('error', 'Token tidak valid atau sudah expired.');
     }
     public function logout(Request $request)
-        {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return redirect()->route('welcome');
-        }
-
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('welcome');
+    }
 }
