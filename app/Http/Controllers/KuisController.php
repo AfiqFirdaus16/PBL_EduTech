@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\ForwardChainingService;
 
 class KuisController extends Controller
 {
@@ -148,5 +149,34 @@ class KuisController extends Controller
             'kesulitan_belajar'    => 'Kesulitan Belajar',
             default                => $kategori,
         };
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Function Model: Forward Chaining
+    // ─────────────────────────────────────────────────────────────
+    public function proses(Request $request)
+    {
+        $forward = new ForwardChainingService();
+
+        $data = [
+            'hours'      => $request->hours_studied,
+            'score'      => $request->previous_scores,
+            'sleep'      => $request->sleep_hours,
+            'resource'   => $request->access_to_resources,
+            'motivation' => $request->motivation_level,
+            'tutor'      => $request->tutoring_sessions,
+        ];
+
+        $risk = $forward->riskLevel($data);
+
+        $rekomendasi = $forward->rekomendasi(
+            $data,
+            $risk
+        );
+
+        dd([
+            'risk' => $risk,
+            'rekomendasi' => $rekomendasi
+        ]);
     }
 }
