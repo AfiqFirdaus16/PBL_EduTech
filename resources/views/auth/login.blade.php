@@ -26,10 +26,10 @@
         >
     </div>
 
-    <div class="form-group" style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
-        <label style="display:flex; align-items:center; gap:6px; margin:0; font-weight:normal;">
-            <input type="checkbox" name="remember">
-            Ingatkan saya
+    <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; flex-wrap:nowrap; margin-bottom:16px;">
+        <label style="display:inline-flex; align-items:center; gap:6px; margin:0; font-weight:normal; white-space:nowrap; cursor:pointer;">
+            <input type="checkbox" name="remember" style="width:14px; height:14px; flex-shrink:0; margin:0; display:inline-block; vertical-align:middle;">
+            <span style="white-space:nowrap; vertical-align:middle;">Ingatkan saya</span>
         </label>
 
         <a href="{{ route('password.request') }}">

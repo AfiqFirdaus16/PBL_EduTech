@@ -104,7 +104,7 @@
 <body>
 
 <div class="card">
-    <img src="{{ asset('images/edutrace.png') }}" alt="logo">
+    <img src="{{ asset('images/edutrace2.png') }}" alt="logo">
 
     <h2>@yield('title')</h2>
 

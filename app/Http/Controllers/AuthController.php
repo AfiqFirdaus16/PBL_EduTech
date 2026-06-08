@@ -87,7 +87,7 @@ class AuthController extends Controller
             return back()->with('success', 'Link reset password sudah dikirim ke email kamu.');
         }
 
-        return back()->with('error', 'Email tidak ditemukan.');
+        return back()->with('error', 'Email tidak sesuai. Masukkan email yang terdaftar');
     }
 
     // PROSES UPDATE PASSWORD
