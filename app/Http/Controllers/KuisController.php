@@ -22,32 +22,32 @@ class KuisController extends Controller
     // Halaman kuis per kategori  →  GET /kuis/{step}
     // ─────────────────────────────────────────────────────────────
     public function show(int $step)
-{
-    if ($step < 1 || $step > 5) {
-        return redirect()->route('kuis.show', 1);
+    {
+        if ($step < 1 || $step > 5) {
+            return redirect()->route('kuis.show', 1);
+        }
+
+        $kategori = $this->kategoriUrutan[$step];
+
+        $pertanyaan = \App\Models\Pertanyaan::with('pilihanJawaban')
+            ->where('kategori', $kategori)
+            ->get();
+
+        $totalStep    = 5;
+        $persen       = round((($step - 1) / $totalStep) * 100);
+        $stepBerikut  = $step + 1;
+        $jawabanSession = session('jawaban', []);
+
+        return view('page.kuis', compact(
+            'step',
+            'totalStep',
+            'persen',
+            'kategori',
+            'pertanyaan',
+            'stepBerikut',
+            'jawabanSession',
+        ));
     }
-
-    $kategori = $this->kategoriUrutan[$step];
-
-    $pertanyaan = \App\Models\Pertanyaan::with('pilihanJawaban')
-        ->where('kategori', $kategori)
-        ->get();
-
-    $totalStep    = 5;
-    $persen       = round((($step - 1) / $totalStep) * 100);
-    $stepBerikut  = $step + 1;
-    $jawabanSession = session('jawaban', []);
-
-    return view('page.kuis', compact(
-        'step',
-        'totalStep',
-        'persen',
-        'kategori',
-        'pertanyaan',
-        'stepBerikut',
-        'jawabanSession',
-    ));
-}
 
     // ─────────────────────────────────────────────────────────────
     // Simpan jawaban satu halaman  →  POST /kuis/{step}
@@ -128,6 +128,48 @@ class KuisController extends Controller
         $riskCounts  = array_count_values($allRisks);
         arsort($riskCounts);
         $riskTotal   = array_key_first($riskCounts);
+
+        // ====================================================
+        // 🚀 PROSES SIMPAN KE DATABASE (SESUAI SKEMA GAMBAR)
+        // ====================================================
+        $siswaId = \Illuminate\Support\Facades\Auth::user()->siswa->id ?? null;
+
+        if ($siswaId) {
+
+            // 1. Buat Data Sesi Kuis
+            $sesiId = \Illuminate\Support\Facades\DB::table('sesi_kuis')->insertGetId([
+                'siswa_id' => $siswaId,
+                'tanggal_kuis' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // 2. Simpan Detail Jawaban Kuis per Pertanyaan
+            $insertJawaban = [];
+            foreach ($jawaban as $key => $pilihanId) {
+                // $key bentuknya "q_1", "q_2", dst. Kita ambil angkanya saja untuk pertanyaan_id.
+                $pertanyaanId = str_replace('q_', '', $key);
+
+                $insertJawaban[] = [
+                    'sesi_id' => $sesiId,
+                    'pertanyaan_id' => $pertanyaanId,
+                    'pilihan_id' => $pilihanId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            // Insert massal ke tabel jawaban_kuis
+            \Illuminate\Support\Facades\DB::table('jawaban_kuis')->insert($insertJawaban);
+
+            // 3. Simpan Hasil Analisa Akhir
+            \Illuminate\Support\Facades\DB::table('hasil_analisa')->insert([
+                'sesi_id' => $sesiId, // Di gambar Anda nama kolomnya sesi_id
+                'risk_level' => $riskTotal,
+                'rekomendasi' => 'Belum ada rekomendasi', // Nanti bisa diganti dinamis dari sistem pakar
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         // Hapus session setelah selesai
         session()->forget('jawaban');
