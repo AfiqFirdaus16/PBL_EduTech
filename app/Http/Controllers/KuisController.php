@@ -16,7 +16,7 @@ class KuisController extends Controller
         2 => 'Access_to_Resources',
         3 => 'Motivation_Level',
         4 => 'Les',
-        5 => 'kesulitan_belajar',
+        5 => 'Kesulitan_Belajar',
     ];
 
     // ─────────────────────────────────────────────────────────────
@@ -188,7 +188,7 @@ class KuisController extends Controller
             'Access_to_Resources'  => 'Akses Sumber Belajar',
             'Motivation_Level'     => 'Motivasi Belajar',
             'Les'                  => 'Les / Bimbingan Belajar',
-            'kesulitan_belajar'    => 'Kesulitan Belajar',
+            'Kesulitan_Belajar'    => 'Kesulitan Belajar',
             default                => $kategori,
         };
     }

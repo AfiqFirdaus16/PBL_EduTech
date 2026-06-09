@@ -108,7 +108,7 @@ class PilihanJawabanSeeder extends Seeder
             ['pertanyaan_id' => 16, 'jawaban' => 'Tidak sesuai, les yang saya ikuti tidak membantu mata pelajaran yang paling sulit.', 'risk_level' => 'High'],
 
             // ════════════════════════════════════════════════════════
-            // KATEGORI 5 – kesulitan_belajar  (pertanyaan_id 17–20)
+            // KATEGORI 5 – Kesulitan_Belajar  (pertanyaan_id 17–20)
             // ════════════════════════════════════════════════════════
 
             // Q17 – Kesulitan memahami pelajaran tertentu
