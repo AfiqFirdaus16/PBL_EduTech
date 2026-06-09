@@ -1188,7 +1188,7 @@
             {{-- GUEST: belum login --}}
             @guest
             <div class="nav-auth" style="gap:10px;">
-                <a href="{{ route('register') }}" class="btn-daftar">Daftar</a>
+                {{-- <a href="{{ route('register') }}" class="btn-daftar">Daftar</a> --}}
                 <a href="{{ route('login') }}" class="btn-masuk">Masuk</a>
             </div>
             @endguest

@@ -41,12 +41,12 @@
         Masuk
     </button>
 
-    <div class="link">
+    {{-- <div class="link">
         Belum punya akun?
         <a href="{{ route('register') }}">
             Daftar
         </a>
-    </div>
+    </div> --}}
 
 </form>
 
