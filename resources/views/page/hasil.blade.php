@@ -268,7 +268,7 @@
                 <li><a href="{{ url('/#beranda') }}" class="nav-link">Beranda</a></li>
                 <li><a href="{{ url('/#fitur') }}" class="nav-link">Fitur</a></li>
                 <li><a href="{{ url('/#faq') }}" class="nav-link">FAQ</a></li>
-                <li><a href="{{ route('hasil') }}" class="nav-link active">Hasil Analisa</a></li>
+                <li><a href="{{ route('kuis.hasil') }}" class="nav-link active">Hasil Analisa</a></li>
             </ul>
 
             <div class="nav-auth">
