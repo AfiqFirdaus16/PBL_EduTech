@@ -4,128 +4,109 @@ namespace App\Services;
 
 class ForwardChainingService
 {
-    public function catHours($x)
+    /**
+     * Menentukan Risk Level dan Rekomendasi Belajar
+     */
+    public function proses(array $data): array
     {
-        if ($x <= 4) {
-            return 'HIGH';
-        } elseif ($x <= 7) {
-            return 'MEDIUM';
+        $attendance = $data['attendance_cat'] ?? null;
+        $sleep      = $data['sleep_cat'] ?? null;
+        $study      = $data['hours_cat'] ?? null;
+        $resource   = $data['resource_cat'] ?? null;
+        $motivation = $data['motivation_cat'] ?? null;
+        $tutor      = $data['tutor_cat'] ?? null;
+        $score      = $data['score_cat'] ?? null;
+
+        /*
+        ====================================================
+        RULE 1
+        ====================================================
+        */
+        if (
+            $attendance === 'HIGH' &&
+            $study === 'HIGH' &&
+            $score === 'HIGH'
+        ) {
+            return [
+                'risk' => 'LOW RISK',
+                'rekomendasi' =>
+                    'Pertahankan pola belajar dengan Active Recall dan Spaced Repetition'
+            ];
         }
 
-        return 'LOW';
-    }
-
-    public function catScore($x)
-    {
-        if ($x < 60) {
-            return 'HIGH';
-        } elseif ($x < 75) {
-            return 'MEDIUM';
+        /*
+        ====================================================
+        RULE 2
+        ====================================================
+        */
+        if (
+            $attendance === 'LOW' &&
+            $study === 'LOW' &&
+            $score === 'LOW'
+        ) {
+            return [
+                'risk' => 'HIGH RISK',
+                'rekomendasi' =>
+                    'Pomodoro, Active Recall, dan jadwal belajar terstruktur'
+            ];
         }
 
-        return 'LOW';
-    }
-
-    public function catSleep($x)
-    {
-        if ($x < 6) {
-            return 'HIGH';
-        } elseif ($x <= 8) {
-            return 'MEDIUM';
+        /*
+        ====================================================
+        RULE 3
+        ====================================================
+        */
+        if (
+            $motivation === 'LOW' &&
+            $study === 'LOW'
+        ) {
+            return [
+                'risk' => 'HIGH RISK',
+                'rekomendasi' =>
+                    'Pomodoro dan target belajar harian'
+            ];
         }
 
-        return 'LOW';
-    }
-
-    public function catText($x)
-    {
-        if ($x == 'High') {
-            return 'LOW';
+        /*
+        ====================================================
+        RULE 4
+        ====================================================
+        */
+        if (
+            $sleep === 'LOW' &&
+            $attendance === 'MEDIUM'
+        ) {
+            return [
+                'risk' => 'MEDIUM RISK',
+                'rekomendasi' =>
+                    'Perbaiki jam tidur dan gunakan teknik Interleaving'
+            ];
         }
 
-        if ($x == 'Medium') {
-            return 'MEDIUM';
+        /*
+        ====================================================
+        RULE 5
+        ====================================================
+        */
+        if (
+            $resource === 'LOW'
+        ) {
+            return [
+                'risk' => 'MEDIUM RISK',
+                'rekomendasi' =>
+                    'Gunakan sumber belajar digital gratis dan SQ3R'
+            ];
         }
 
-        return 'HIGH';
-    }
-
-    public function catTutor($x)
-    {
-        if ($x == 0) {
-            return 'HIGH';
-        }
-
-        if ($x == 1) {
-            return 'MEDIUM';
-        }
-
-        return 'LOW';
-    }
-
-    public function riskLevel($data)
-    {
-        $kategori = [
-            $this->catHours($data['hours']),
-            $this->catScore($data['score']),
-            $this->catSleep($data['sleep']),
-            $this->catText($data['resource']),
-            $this->catText($data['motivation']),
-            $this->catTutor($data['tutor']),
+        /*
+        ====================================================
+        DEFAULT
+        ====================================================
+        */
+        return [
+            'risk' => 'MEDIUM RISK',
+            'rekomendasi' =>
+                'Active Recall dan Feynman Technique'
         ];
-
-        $high = count(array_filter($kategori, fn($v) => $v == 'HIGH'));
-        $medium = count(array_filter($kategori, fn($v) => $v == 'MEDIUM'));
-        $low = count(array_filter($kategori, fn($v) => $v == 'LOW'));
-
-        if ($high >= 4) {
-            return 'HIGH RISK';
-        }
-
-        if ($high >= 2) {
-            return 'MEDIUM RISK';
-        }
-
-        return 'LOW RISK';
-    }
-
-    public function rekomendasi($data, $risk)
-    {
-        $hours = $this->catHours($data['hours']);
-        $score = $this->catScore($data['score']);
-        $sleep = $this->catSleep($data['sleep']);
-
-        $resource = $this->catText($data['resource']);
-        $motivation = $this->catText($data['motivation']);
-
-        if (
-            $score == 'HIGH'
-            && $hours == 'HIGH'
-        ) {
-            return 'Active Recall, Spaced Repetition, Blurting';
-        }
-
-        if (
-            $sleep == 'HIGH'
-            && $motivation == 'HIGH'
-        ) {
-            return 'Pomodoro, Mind Mapping, Interleaving';
-        }
-
-        if (
-            $resource == 'HIGH'
-        ) {
-            return 'Feynman Technique, SQ3R';
-        }
-
-        if ($risk == 'HIGH RISK') {
-            return 'Active Recall, Pomodoro, Spaced Repetition';
-        }
-
-        if ($risk == 'MEDIUM RISK') {
-            return 'Active Recall, Feynman Technique';
-        }
-
-        return 'Pertahankan pola belajar saat ini';
     }
 }

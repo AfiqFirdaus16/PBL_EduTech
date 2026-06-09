@@ -158,25 +158,17 @@ class KuisController extends Controller
     {
         $forward = new ForwardChainingService();
 
-        $data = [
-            'hours'      => $request->hours_studied,
-            'score'      => $request->previous_scores,
-            'sleep'      => $request->sleep_hours,
-            'resource'   => $request->access_to_resources,
-            'motivation' => $request->motivation_level,
-            'tutor'      => $request->tutoring_sessions,
-        ];
-
-        $risk = $forward->riskLevel($data);
-
-        $rekomendasi = $forward->rekomendasi(
-            $data,
-            $risk
-        );
-
-        dd([
-            'risk' => $risk,
-            'rekomendasi' => $rekomendasi
+        $hasilForward = $forward->proses([
+            'attendance_cat' => $attendanceCat,
+            'sleep_cat'      => $sleepCat,
+            'hours_cat'      => $hoursCat,
+            'resource_cat'   => $resourceCat,
+            'motivation_cat' => $motivationCat,
+            'tutor_cat'      => $tutorCat,
+            'score_cat'      => $scoreCat,
         ]);
+
+        $riskTotal = $hasilForward['risk'];
+        $rekomendasi = $hasilForward['rekomendasi'];
     }
 }
