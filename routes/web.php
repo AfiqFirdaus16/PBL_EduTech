@@ -27,6 +27,10 @@ Route::view('/reAnalisa', 'page.reAnalisa')
 |--------------------------------------------------------------------------
 */
 
+// Rute untuk registrasi dari SIAKAD
+Route::get('/register-lanjutan', [App\Http\Controllers\AuthController::class, 'registerLanjutan'])->name('register.lanjutan');
+Route::post('/register-lanjutan', [App\Http\Controllers\AuthController::class, 'simpanRegisterLanjutan'])->name('register.lanjutan.simpan');
+
 Route::middleware('guest')->group(function () {
 
     Route::view('/login', 'auth.login')
