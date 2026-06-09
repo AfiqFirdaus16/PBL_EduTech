@@ -82,22 +82,22 @@ class PertanyaanSeeder extends Seeder
                 'kategori'   => 'Les',
             ],
 
-            // ── Kategori 5: kesulitan_belajar ───────────────────────
+            // ── Kategori 5: Kesulitan_Belajar ───────────────────────
             [
                 'pertanyaan' => 'Apakah Anda mengalami kesulitan dalam memahami pelajaran tertentu?',
-                'kategori'   => 'kesulitan_belajar',
+                'kategori'   => 'Kesulitan_Belajar',
             ],
             [
                 'pertanyaan' => 'Seberapa sering Anda merasa frustrasi saat mengerjakan tugas atau PR?',
-                'kategori'   => 'kesulitan_belajar',
+                'kategori'   => 'Kesulitan_Belajar',
             ],
             [
                 'pertanyaan' => 'Apakah Anda kesulitan berkonsentrasi saat belajar di rumah?',
-                'kategori'   => 'kesulitan_belajar',
+                'kategori'   => 'Kesulitan_Belajar',
             ],
             [
                 'pertanyaan' => 'Bagaimana kemampuan Anda dalam mengingat materi yang sudah dipelajari?',
-                'kategori'   => 'kesulitan_belajar',
+                'kategori'   => 'Kesulitan_Belajar',
             ],
         ]);
     }

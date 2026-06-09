@@ -90,6 +90,7 @@ class AuthController extends Controller
         // 2. Simpan akun resmi ke database EduTrace
         $user = User::create([
             'username' => $nisn,
+            'nisn'    => $nisn,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'role'     => 'siswa'
@@ -98,6 +99,7 @@ class AuthController extends Controller
         // 3. Simpan biodata resmi ke tabel siswas
         Siswa::create([
             'user_id' => $user->id,
+            'nisn'    => $nisn,
             'nama'    => $request->nama, // <-- SEKARANG MENGAMBIL DARI INPUTAN FORM, BUKAN DARI SESSION
             'jenjang' => $request->jenjang,
             'tingkat' => $request->tingkat

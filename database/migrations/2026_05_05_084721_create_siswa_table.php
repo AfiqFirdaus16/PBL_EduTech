@@ -15,6 +15,8 @@ return new class extends Migration
             ->constrained('users')
             ->cascadeOnDelete();
 
+        $table->string('nisn')->unique();
+
         $table->string('nama');
         $table->date('tgl_lahir')->nullable();
 

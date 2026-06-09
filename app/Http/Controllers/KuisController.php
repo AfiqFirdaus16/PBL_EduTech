@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Models\Pertanyaan;
 use App\Services\ForwardChainingService;
 
 class KuisController extends Controller
@@ -16,7 +19,7 @@ class KuisController extends Controller
         2 => 'Access_to_Resources',
         3 => 'Motivation_Level',
         4 => 'Les',
-        5 => 'kesulitan_belajar',
+        5 => 'Kesulitan_Belajar',
     ];
 
     // ─────────────────────────────────────────────────────────────
@@ -131,6 +134,54 @@ class KuisController extends Controller
         $riskTotal   = array_key_first($riskCounts);
 
         // ====================================================
+        // DUMMY DATA SIAKAD (sementara)
+        // Nanti diganti API SIAKAD
+        // ====================================================
+
+        $attendanceCat = 'HIGH';
+        $hoursCat      = 'MEDIUM';
+        $scoreCat      = 'HIGH';
+
+        // dari hasil kuis
+        $sleepCat = strtoupper(
+            $riskPerKategori['Sleep_Hours']['risk']
+        );
+
+        $resourceCat = strtoupper(
+            $riskPerKategori['Access_to_Resources']['risk']
+        );
+
+        $motivationCat = strtoupper(
+            $riskPerKategori['Motivation_Level']['risk']
+        );
+
+        $tutorCat = strtoupper(
+            $riskPerKategori['Les']['risk']
+        );
+
+        $kesulitanBelajar = strtoupper(
+            $riskPerKategori['Kesulitan_Belajar']['risk']
+        );
+
+        // ─────────────────────────────────────────────────────────────
+        // Function Model: Forward Chaining
+        // ─────────────────────────────────────────────────────────────
+        $forward = new ForwardChainingService();
+
+        $hasilForward = $forward->proses([
+            'attendance_cat' => $attendanceCat,
+            'sleep_cat'      => $sleepCat,
+            'hours_cat'      => $hoursCat,
+            'resource_cat'   => $resourceCat,
+            'motivation_cat' => $motivationCat,
+            'tutor_cat'      => $tutorCat,
+            'score_cat'      => $scoreCat,
+        ]);
+
+        $riskTotal = $hasilForward['risk'] ?? $riskTotal;
+        $rekomendasi = $hasilForward['rekomendasi'] ?? null;
+
+        // ====================================================
         // 🚀 PROSES SIMPAN KE DATABASE (SESUAI SKEMA GAMBAR)
         // ====================================================
         $siswaId = \Illuminate\Support\Facades\Auth::user()->siswa->id ?? null;
@@ -166,7 +217,7 @@ class KuisController extends Controller
             \Illuminate\Support\Facades\DB::table('hasil_analisa')->insert([
                 'sesi_id' => $sesiId, // Di gambar Anda nama kolomnya sesi_id
                 'risk_level' => $riskTotal,
-                'rekomendasi' => 'Belum ada rekomendasi', // Nanti bisa diganti dinamis dari sistem pakar
+                'rekomendasi' => $rekomendasi,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -175,7 +226,7 @@ class KuisController extends Controller
         // Hapus session setelah selesai
         session()->forget('jawaban');
 
-        return view('page.hasil', compact('riskPerKategori', 'riskTotal'));
+        return view('page.hasil', compact('riskPerKategori', 'riskTotal', 'rekomendasi'));
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -188,37 +239,8 @@ class KuisController extends Controller
             'Access_to_Resources'  => 'Akses Sumber Belajar',
             'Motivation_Level'     => 'Motivasi Belajar',
             'Les'                  => 'Les / Bimbingan Belajar',
-            'kesulitan_belajar'    => 'Kesulitan Belajar',
+            'Kesulitan_Belajar'    => 'Kesulitan Belajar',
             default                => $kategori,
         };
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // Function Model: Forward Chaining
-    // ─────────────────────────────────────────────────────────────
-    public function proses(Request $request)
-    {
-        $forward = new ForwardChainingService();
-
-        $data = [
-            'hours'      => $request->hours_studied,
-            'score'      => $request->previous_scores,
-            'sleep'      => $request->sleep_hours,
-            'resource'   => $request->access_to_resources,
-            'motivation' => $request->motivation_level,
-            'tutor'      => $request->tutoring_sessions,
-        ];
-
-        $risk = $forward->riskLevel($data);
-
-        $rekomendasi = $forward->rekomendasi(
-            $data,
-            $risk
-        );
-
-        dd([
-            'risk' => $risk,
-            'rekomendasi' => $rekomendasi
-        ]);
     }
 }
