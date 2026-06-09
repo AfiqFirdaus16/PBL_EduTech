@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KuisController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\DataPenggunaController;
+use App\Http\Controllers\HasilPenggunaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,12 +125,17 @@ Route::middleware(['auth', 'admin'])
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
-        // Route::view('/data-pengguna', 'admin.data-pengguna')
-        //     ->name('data-pengguna.index');
+        // Hasil Analisa Pengguna
+        Route::get('/hasil-pengguna/export', [HasilPenggunaController::class, 'export'])
+            ->name('hasil-pengguna.export');
 
-        Route::view('/hasil-pengguna', 'admin.hasil-pengguna')
+        Route::get('/hasil-pengguna', [HasilPenggunaController::class, 'index'])
             ->name('hasil-pengguna.index');
 
+        Route::delete('/hasil-pengguna/{id}', [HasilPenggunaController::class, 'destroy'])
+            ->name('hasil-pengguna.destroy');
+
+        // Data Pengguna
         Route::get('/data-pengguna/export', [DataPenggunaController::class, 'export'])
             ->name('data-pengguna.export');
 
