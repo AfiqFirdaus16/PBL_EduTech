@@ -12,6 +12,7 @@ class SiswaSeeder extends Seeder
         DB::table('siswa')->insert([
             [
                 'user_id' => 2,
+                'nisn' => '12345678',
                 'nama' => 'Kartika Tri Juliana',
                 'tgl_lahir' => '2007-05-10',
                 'jenjang' => 'SMA',
@@ -22,6 +23,7 @@ class SiswaSeeder extends Seeder
 
             [
                 'user_id' => 3,
+                'nisn' => '87654321',
                 'nama' => 'Muhammad Rizki',
                 'tgl_lahir' => '2006-11-20',
                 'jenjang' => 'SMA',

@@ -345,6 +345,49 @@
 
     {{-- ================= KONTEN HALAMAN HASIL ================= --}}
 
+            <div style="
+            margin-top:120px;
+            width:90%;
+            max-width:900px;
+            margin-left:auto;
+            margin-right:auto;
+        ">
+
+            <div style="
+                background:#fff;
+                border-radius:20px;
+                padding:30px;
+                box-shadow:0 10px 30px rgba(0,0,0,.08);
+            ">
+
+                <h2 style="color:#3C3489;">
+                    Hasil Analisa EduTrace
+                </h2>
+
+                <hr style="margin:20px 0;">
+
+                <h3>Risk Level</h3>
+
+                <p style="
+                    font-size:22px;
+                    font-weight:700;
+                    color:#EF9F27;
+                ">
+                    {{ $riskTotal }}
+                </p>
+
+                <br>
+
+                <h3>Rekomendasi Belajar</h3>
+
+                <p>
+                    {{ $rekomendasi }}
+                </p>
+
+            </div>
+
+        </div>
+
     <script>
 
         // ================= PROFILE DROPDOWN =================

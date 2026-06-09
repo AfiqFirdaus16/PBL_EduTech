@@ -10,14 +10,16 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $user = Auth::user()->load('siswa');
+        $user = Auth::user();
+        $user->load('siswa');
 
         return view('profile.index', compact('user'));
     }
 
     public function edit()
     {
-        $user = Auth::user()->load('siswa');
+        $user = Auth::user();
+        $user->load('siswa');
 
         return view('profile.edit', compact('user'));
     }
@@ -32,7 +34,8 @@ class ProfileController extends Controller
             'tingkat'    => 'required|string',
         ]);
 
-        $user = Auth::user()->load('siswa');
+        $user = Auth::user();
+        $user->load('siswa');
 
         if (!$user->siswa) {
             return back()->with('error', 'Data siswa tidak ditemukan.');

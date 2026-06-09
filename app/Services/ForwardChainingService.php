@@ -28,7 +28,7 @@ class ForwardChainingService
             $score === 'HIGH'
         ) {
             return [
-                'risk' => 'LOW RISK',
+                'risk' => 'LOW',
                 'rekomendasi' =>
                     'Pertahankan pola belajar dengan Active Recall dan Spaced Repetition'
             ];
@@ -45,7 +45,7 @@ class ForwardChainingService
             $score === 'LOW'
         ) {
             return [
-                'risk' => 'HIGH RISK',
+                'risk' => 'HIGH',
                 'rekomendasi' =>
                     'Pomodoro, Active Recall, dan jadwal belajar terstruktur'
             ];
@@ -61,7 +61,7 @@ class ForwardChainingService
             $study === 'LOW'
         ) {
             return [
-                'risk' => 'HIGH RISK',
+                'risk' => 'HIGH',
                 'rekomendasi' =>
                     'Pomodoro dan target belajar harian'
             ];
@@ -77,7 +77,7 @@ class ForwardChainingService
             $attendance === 'MEDIUM'
         ) {
             return [
-                'risk' => 'MEDIUM RISK',
+                'risk' => 'MEDIUM',
                 'rekomendasi' =>
                     'Perbaiki jam tidur dan gunakan teknik Interleaving'
             ];
@@ -92,7 +92,7 @@ class ForwardChainingService
             $resource === 'LOW'
         ) {
             return [
-                'risk' => 'MEDIUM RISK',
+                'risk' => 'MEDIUM',
                 'rekomendasi' =>
                     'Gunakan sumber belajar digital gratis dan SQ3R'
             ];
@@ -104,7 +104,7 @@ class ForwardChainingService
         ====================================================
         */
         return [
-            'risk' => 'MEDIUM RISK',
+            'risk' => 'MEDIUM',
             'rekomendasi' =>
                 'Active Recall dan Feynman Technique'
         ];
