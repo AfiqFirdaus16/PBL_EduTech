@@ -27,6 +27,10 @@ Route::view('/reAnalisa', 'page.reAnalisa')
 |--------------------------------------------------------------------------
 */
 
+// Rute untuk registrasi dari SIAKAD
+Route::get('/register-lanjutan', [App\Http\Controllers\AuthController::class, 'registerLanjutan'])->name('register.lanjutan');
+Route::post('/register-lanjutan', [App\Http\Controllers\AuthController::class, 'simpanRegisterLanjutan'])->name('register.lanjutan.simpan');
+
 Route::middleware('guest')->group(function () {
 
     Route::view('/login', 'auth.login')
@@ -69,12 +73,10 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware(['auth', 'user'])->group(function () {
 
-    // Kuis
+    //Kuis
     Route::get('/kuis', function () {
         return redirect()->route('kuis.show', 1);
     })->name('kuis');
-
-    Route::view('/kuis', 'kuis')->name('kuis');
 
     Route::get('/kuis/{step}', [KuisController::class, 'show'])
         ->where('step', '[1-5]')
