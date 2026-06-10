@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class HasilAnalisa extends Model
 {
@@ -19,11 +20,12 @@ class HasilAnalisa extends Model
         'tutoring_sessions',
         'kesulitan_belajar',
         'risk_level',
-        'rekomendasi',
+        'rekomendasi'
     ];
 
-    public function sesi()
+    // DEFINISIKAN RELASI INI AGAR ERROR SADA IMAGE 2 HILANG
+    public function sesiKuis(): BelongsTo
     {
-        return $this->belongsTo(SesiKuis::class, 'sesi_id');
+        return $this->belongsTo(SesiKuis::class, 'sesi_id', 'id');
     }
 }
