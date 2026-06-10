@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    
+    'siakad' => [
+        'base_url' => env('SIAKAD_BASE_URL', 'https://siakad-production-523b.up.railway.app'),
+    ],
 
 ];

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use App\Models\Pertanyaan;
 use App\Services\ForwardChainingService;
 
@@ -134,17 +136,54 @@ class KuisController extends Controller
         $tutorVal      = $riskPerKategori['Les']['risk'];
         $kesulitanVal  = $riskPerKategori['Kesulitan_Belajar']['risk'];
 
-        // ── Forward Chaining ──
-        // ====================================================
-        // DUMMY DATA SIAKAD (sementara — ganti dengan API SIAKAD)
-        // ====================================================
-        $attendanceCat = 'HIGH';
-        $hoursCat      = 'MEDIUM';
-        $scoreCat      = 'HIGH';
-        // Nilai dummy numerik untuk disimpan ke kolom int di hasil_analisa
-        $attendanceNum    = 90;   // persen kehadiran
-        $hoursStudiedNum  = 6;    // jam belajar per hari
-        $previousScoreNum = 80;   // nilai sebelumnya
+        // ── Ambil data akademik dari API SIAKAD ──
+        $nisn             = Auth::user()->siswa->nisn ?? null;
+        $attendanceNum    = null;
+        $hoursStudiedNum  = null;
+        $previousScoreNum = null;
+        $attendanceCat    = 'MEDIUM'; // fallback jika API gagal
+        $hoursCat         = 'MEDIUM';
+        $scoreCat         = 'MEDIUM';
+
+        if ($nisn) {
+            try {
+                $siakadUrl  = rtrim(config('services.siakad.base_url'), '/') . '/api/student/' . $nisn;
+                $response   = \Illuminate\Support\Facades\Http::timeout(8)->get($siakadUrl);
+
+                if ($response->successful()) {
+                    $siakad = $response->json('data');
+
+                    $attendanceNum    = $siakad['attendance']      ?? null;
+                    $hoursStudiedNum  = $siakad['hours_studied']   ?? null;
+                    $previousScoreNum = $siakad['previous_scores'] ?? null;
+
+                    // Konversi nilai numerik → kategori HIGH/MEDIUM/LOW
+                    // Kehadiran: ≥80% = HIGH, 60–79% = MEDIUM, <60% = LOW
+                    $attendanceCat = match(true) {
+                        $attendanceNum >= 80 => 'HIGH',
+                        $attendanceNum >= 60 => 'MEDIUM',
+                        default              => 'LOW',
+                    };
+
+                    // Jam belajar: ≥7 = HIGH, 4–6 = MEDIUM, <4 = LOW
+                    $hoursCat = match(true) {
+                        $hoursStudiedNum >= 7 => 'HIGH',
+                        $hoursStudiedNum >= 4 => 'MEDIUM',
+                        default               => 'LOW',
+                    };
+
+                    // Nilai sebelumnya: ≥75 = HIGH, 50–74 = MEDIUM, <50 = LOW
+                    $scoreCat = match(true) {
+                        $previousScoreNum >= 75 => 'HIGH',
+                        $previousScoreNum >= 50 => 'MEDIUM',
+                        default                 => 'LOW',
+                    };
+                }
+            } catch (\Exception $e) {
+                // API SIAKAD tidak bisa diakses — lanjut dengan fallback MEDIUM
+                \Illuminate\Support\Facades\Log::warning('SIAKAD API gagal: ' . $e->getMessage());
+            }
+        }
 
         $forward = new ForwardChainingService();
 
@@ -156,6 +195,7 @@ class KuisController extends Controller
             'motivation_cat' => strtoupper($motivationVal),
             'tutor_cat'      => strtoupper($tutorVal),
             'score_cat'      => $scoreCat,
+            'kesulitan_cat'  => strtoupper($kesulitanVal),
         ]);
 
         $riskTotal   = $hasilForward['risk'] ?? $riskTotal;
@@ -273,77 +313,91 @@ class KuisController extends Controller
     {
         return [
             [
-                'nama'     => 'Pomodoro',
-                'ikon'     => '🍅',
-                'keywords' => ['Pomodoro'],
-                'desc'     => 'Teknik belajar dengan membagi waktu menjadi sesi fokus 25 menit yang diselingi istirahat singkat untuk menjaga konsentrasi.',
-                'cara'     => [
+                'nama'        => 'Pomodoro',
+                'ikon'        => '🍅',
+                'img'         => 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600',
+                'keywords'    => ['Pomodoro'],
+                'desc'        => 'Teknik belajar dengan membagi waktu menjadi sesi fokus 25 menit yang diselingi istirahat singkat untuk menjaga konsentrasi.',
+                'penjelasan'  => 'Teknik Pomodoro adalah metode belajar atau bekerja dengan membagi waktu menjadi sesi fokus 25 menit yang diselingi istirahat singkat 5 menit. Setelah 4 sesi, ambil istirahat lebih panjang 15–30 menit. Metode ini terbukti meningkatkan fokus, mengurangi kelelahan mental, dan membantu manajemen waktu belajar.',
+                'cara'        => [
                     'Belajar 25 menit (fokus penuh, tidak ada gangguan)',
                     'Istirahat 5 menit — berdiri, minum, atau jalan sebentar',
                     'Ulangi 4 siklus, lalu istirahat panjang 15–30 menit',
                 ],
             ],
             [
-                'nama'     => 'Active Recall',
-                'ikon'     => '🔁',
-                'keywords' => ['Active Recall'],
-                'desc'     => 'Teknik menguji ingatan secara aktif tanpa melihat catatan untuk memperkuat memori jangka panjang.',
-                'cara'     => [
+                'nama'        => 'Active Recall',
+                'ikon'        => '🔁',
+                'img'         => 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600',
+                'keywords'    => ['Active Recall'],
+                'desc'        => 'Teknik menguji ingatan secara aktif tanpa melihat catatan untuk memperkuat memori jangka panjang.',
+                'penjelasan'  => 'Active Recall adalah teknik belajar dengan mengingat informasi secara aktif tanpa melihat catatan. Alih-alih membaca ulang, kamu menutup buku lalu mencoba mengingat kembali apa yang telah dipelajari. Teknik ini memperkuat jalur memori di otak dan jauh lebih efektif dibandingkan membaca pasif.',
+                'cara'        => [
                     'Baca atau pelajari materi satu kali dengan fokus',
                     'Tutup buku dan coba ingat semua poin utama',
                     'Periksa ulang dan ulangi bagian yang terlupakan',
                 ],
             ],
             [
-                'nama'     => 'Spaced Repetition',
-                'ikon'     => '📅',
-                'keywords' => ['Spaced Repetition'],
-                'desc'     => 'Teknik mengulang materi pada interval waktu yang semakin panjang agar informasi tersimpan lebih lama di memori.',
-                'cara'     => [
+                'nama'        => 'Spaced Repetition',
+                'ikon'        => '📅',
+                'img'         => 'https://images.unsplash.com/photo-1516534775068-ba3e7458af70?w=600',
+                'keywords'    => ['Spaced Repetition'],
+                'desc'        => 'Teknik mengulang materi pada interval waktu yang semakin panjang agar informasi tersimpan lebih lama di memori.',
+                'penjelasan'  => 'Spaced Repetition adalah teknik mengulang materi pada interval waktu yang semakin lama seiring bertambahnya penguasaan materi. Alih-alih belajar sekaligus (cramming), kamu mengulas materi hari ini, lalu 2 hari lagi, lalu seminggu lagi. Teknik ini sangat efektif untuk hafalan jangka panjang.',
+                'cara'        => [
                     'Pelajari materi baru hari ini',
                     'Ulangi setelah 1 hari, lalu 3 hari, lalu 1 minggu',
                     'Gunakan flashcard (fisik atau aplikasi seperti Anki)',
                 ],
             ],
             [
-                'nama'     => 'Feynman',
-                'ikon'     => '🧑‍🏫',
-                'keywords' => ['Feynman', 'Feynman Technique'],
-                'desc'     => 'Metode memahami konsep rumit dengan cara menjelaskannya kembali menggunakan bahasa sesederhana mungkin.',
-                'cara'     => [
+                'nama'        => 'Feynman',
+                'ikon'        => '🧑‍🏫',
+                'img'         => 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600',
+                'keywords'    => ['Feynman', 'Feynman Technique'],
+                'desc'        => 'Metode memahami konsep rumit dengan cara menjelaskannya kembali menggunakan bahasa sesederhana mungkin.',
+                'penjelasan'  => 'Metode Feynman adalah teknik belajar cepat untuk memahami konsep sulit dengan cara menjelaskan ulang materi menggunakan bahasa yang sederhana, seolah-olah kamu sedang mengajarkannya kepada orang lain yang baru belajar. Jika ada bagian yang sulit dijelaskan, itu sinyal untuk kembali belajar bagian tersebut.',
+                'cara'        => [
                     'Pilih satu konsep yang ingin dipahami',
                     'Jelaskan konsep tersebut seolah mengajar orang awam',
                     'Identifikasi bagian yang sulit dijelaskan dan pelajari ulang',
                 ],
             ],
             [
-                'nama'     => 'Interleaving',
-                'ikon'     => '🔀',
-                'keywords' => ['Interleaving'],
-                'desc'     => 'Teknik mencampur beberapa topik berbeda dalam satu sesi belajar agar otak lebih adaptif dalam memecahkan masalah.',
-                'cara'     => [
+                'nama'        => 'Interleaving',
+                'ikon'        => '🔀',
+                'img'         => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600',
+                'keywords'    => ['Interleaving'],
+                'desc'        => 'Teknik mencampur beberapa topik berbeda dalam satu sesi belajar agar otak lebih adaptif dalam memecahkan masalah.',
+                'penjelasan'  => 'Interleaving adalah teknik belajar dengan mencampur beberapa topik atau mata pelajaran berbeda dalam satu sesi belajar, daripada menyelesaikan satu topik hingga tuntas sebelum pindah ke topik lain. Meski terasa lebih sulit, teknik ini terbukti meningkatkan kemampuan problem-solving dan transfer pengetahuan.',
+                'cara'        => [
                     'Bagi sesi belajar menjadi 3 blok topik berbeda',
                     'Pindah topik setiap 20–30 menit meskipun belum selesai',
                     'Evaluasi pemahaman setiap topik di akhir sesi',
                 ],
             ],
             [
-                'nama'     => 'SQ3R',
-                'ikon'     => '📖',
-                'keywords' => ['SQ3R'],
-                'desc'     => 'Metode membaca aktif: Survey, Question, Read, Recite, Review untuk memaksimalkan pemahaman dari teks.',
-                'cara'     => [
+                'nama'        => 'SQ3R',
+                'ikon'        => '📖',
+                'img'         => 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600',
+                'keywords'    => ['SQ3R'],
+                'desc'        => 'Metode membaca aktif: Survey, Question, Read, Recite, Review untuk memaksimalkan pemahaman dari teks.',
+                'penjelasan'  => 'SQ3R adalah metode membaca terstruktur yang terdiri dari 5 langkah: Survey (tinjau sekilas), Question (buat pertanyaan), Read (baca untuk menjawab), Recite (ceritakan kembali), dan Review (ulang keseluruhan). Metode ini sangat efektif untuk memahami teks akademis yang panjang dan padat.',
+                'cara'        => [
                     'Survey: pindai judul, subjudul, dan ringkasan',
                     'Question: ubah setiap judul menjadi pertanyaan',
                     'Read, Recite, Review: baca, jawab pertanyaan, dan tinjau ulang',
                 ],
             ],
             [
-                'nama'     => 'Jadwal Terstruktur',
-                'ikon'     => '🗓️',
-                'keywords' => ['jadwal belajar terstruktur', 'target belajar harian'],
-                'desc'     => 'Membuat jadwal belajar harian yang terstruktur dengan target spesifik untuk meningkatkan konsistensi.',
-                'cara'     => [
+                'nama'        => 'Jadwal Terstruktur',
+                'ikon'        => '🗓️',
+                'img'         => 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=600',
+                'keywords'    => ['jadwal belajar terstruktur', 'target belajar harian'],
+                'desc'        => 'Membuat jadwal belajar harian yang terstruktur dengan target spesifik untuk meningkatkan konsistensi.',
+                'penjelasan'  => 'Jadwal Terstruktur adalah metode belajar dengan membuat rencana harian yang jelas — menentukan waktu belajar tetap, target per mata pelajaran, dan evaluasi rutin. Konsistensi jadwal terbukti meningkatkan produktivitas dan mengurangi kebiasaan menunda belajar (prokrastinasi).',
+                'cara'        => [
                     'Tentukan waktu belajar tetap setiap hari (minimal 2 jam)',
                     'Bagi waktu per mata pelajaran dengan target yang jelas',
                     'Evaluasi pencapaian setiap malam sebelum tidur',
