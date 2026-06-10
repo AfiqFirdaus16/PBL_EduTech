@@ -175,11 +175,25 @@
         }
         .kat-card .kat-title { font-size: 12px; font-weight: 600; color: #555; margin-bottom: 10px; }
         .kat-card .kat-icon  { font-size: 26px; margin-bottom: 10px; }
+        .kat-card .kat-value { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 4px; }
         .kat-card .kat-risk-label { font-size: 11px; color: #888; margin-bottom: 6px; }
+
+        /* Siakad badge */
+        .siakad-badge {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: #EEF0FF;
+            color: var(--primary);
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
 
         /* Progress bar */
         .risk-bar-wrap { height: 8px; background: #EBEBEB; border-radius: 99px; overflow: hidden; }
-        .risk-bar      { height: 8px; border-radius: 99px; }
+        .risk-bar      { height: 8px; border-radius: 99px; transition: width 0.6s ease; }
         .risk-bar.low    { background: var(--success); width: 30%; }
         .risk-bar.medium { background: var(--warning); width: 60%; }
         .risk-bar.high   { background: var(--danger);  width: 90%; }
@@ -189,9 +203,13 @@
         .kat-risk-text.medium { color: var(--warning); }
         .kat-risk-text.high   { color: var(--danger);  }
 
-        /* ===== TOP 3 TEKNIK ===== */
+        /* ===== TOP 3 TEKNIK BELAJAR ===== */
         .teknik-section { margin-top: 24px; }
-        .teknik-section h3 { font-size: 20px; font-weight: 800; color: #222; margin-bottom: 18px; }
+        .teknik-section h3 { font-size: 20px; font-weight: 800; color: #222; margin-bottom: 4px; }
+        .teknik-section .teknik-subtitle {
+            font-size: 12px; color: #888; margin-bottom: 18px;
+            font-style: italic;
+        }
         .teknik-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 
         .teknik-card {
@@ -225,12 +243,6 @@
         }
         .teknik-toggle:hover { background: #F3F2FF; color: var(--primary); }
 
-        .teknik-img {
-            width: 100%; height: 120px;
-            object-fit: cover;
-            margin-top: 10px;
-            display: block;
-        }
         .teknik-img-placeholder {
             width: 100%; height: 120px;
             background: linear-gradient(135deg, #f0eefc 0%, #e0dcfb 100%);
@@ -243,7 +255,6 @@
         .teknik-name {
             font-size: 14px; font-weight: 700;
             color: var(--primary);
-            text-decoration: underline;
             margin-bottom: 6px;
         }
         .teknik-desc { font-size: 12px; color: #666; line-height: 1.6; }
@@ -267,6 +278,19 @@
             position: absolute; left: 0;
             color: var(--secondary);
         }
+
+        /* Rekomendasi lengkap */
+        .rekomendasi-full {
+            margin-top: 16px;
+            background: #F9F8FF;
+            border: 1px solid #E0DCFC;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 12px;
+            color: #444;
+            line-height: 1.7;
+        }
+        .rekomendasi-full strong { color: var(--primary); font-size: 12px; }
 
         /* ===== SIDEBAR ===== */
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
@@ -301,7 +325,6 @@
         .riwayat-tanggal { font-size: 11px; color: #AAA; font-weight: 500; margin-bottom: 4px; }
         .riwayat-level   { font-size: 13px; font-weight: 700; color: #333; }
         .riwayat-waktu   { font-size: 11px; color: #888; }
-
         .riwayat-note { font-size: 11px; color: #AAA; text-align: center; margin-top: 8px; }
 
         /* CTA Card */
@@ -401,34 +424,26 @@
             <div class="card" style="margin-bottom:24px;">
 
                 <div class="hasil-utama">
-
-                    {{-- Donut ring sesuai risk --}}
                     @php
                         $riskLower = strtolower($riskTotal);
                         $donutColor = match($riskLower) {
-                            'low'    => '#27AE60',
-                            'high'   => '#E53535',
-                            default  => '#EF9F27',
+                            'low'  => '#27AE60',
+                            'high' => '#E53535',
+                            default => '#EF9F27',
                         };
-                        // Lingkaran penuh = 283 (circumference untuk r=45)
                         $circumference = 283;
                         $fillPercent = match($riskLower) {
-                            'low'    => 0.30,
-                            'high'   => 0.90,
-                            default  => 0.60,
+                            'low'  => 0.30,
+                            'high' => 0.90,
+                            default => 0.60,
                         };
-                        $dasharray  = round($circumference * $fillPercent);
-                        $dashoffset = $circumference - $dasharray;
+                        $dasharray = round($circumference * $fillPercent);
                     @endphp
 
                     <div class="donut-wrap">
                         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            {{-- Track --}}
                             <circle cx="50" cy="50" r="45"
-                                fill="none"
-                                stroke="#EBEBEB"
-                                stroke-width="10"/>
-                            {{-- Fill --}}
+                                fill="none" stroke="#EBEBEB" stroke-width="10"/>
                             <circle cx="50" cy="50" r="45"
                                 fill="none"
                                 stroke="{{ $donutColor }}"
@@ -448,15 +463,15 @@
                         <h2>Hasil Resiko Belajar</h2>
                         <p>
                             Berdasarkan pola aktivitas Anda, tingkat risiko burnout berada
-                            pada level {{ strtolower($riskTotal) }}.
+                            pada level <strong>{{ strtolower($riskTotal) }}</strong>.
                             @if($rekomendasi)
-                                {{ $rekomendasi }}
+                                Rekomendasi teknik belajar untuk Anda: <em>{{ $rekomendasi }}</em>
                             @endif
                         </p>
                     </div>
                 </div>
 
-                {{-- ── GRID 6 KATEGORI ── --}}
+                {{-- ── GRID KATEGORI ── --}}
                 @php
                     $ikonKategori = [
                         'Sleep_Hours'         => '🌙',
@@ -465,34 +480,81 @@
                         'Les'                 => '📊',
                         'Kesulitan_Belajar'   => '🧠',
                     ];
-                    // Tambah "Jam Belajar" (dari SIAKAD) — dummy
-                    $extraKategori = [
-                        [
-                            'label' => 'Jam Belajar',
-                            'ikon'  => '🕐',
-                            'risk'  => 'Medium',
-                        ]
-                    ];
+
+                    {{--
+                        Konversi nilai category string (HIGH/MEDIUM/LOW) dari SIAKAD
+                        ke class CSS yang dipakai di blade.
+                        $attendanceCat, $hoursCat, $scoreCat dikirim dari controller.
+                    --}}
+                    $siakadRiskClass = fn(string $cat): string => match(strtolower($cat)) {
+                        'low'  => 'low',
+                        'high' => 'high',
+                        default => 'medium',
+                    };
+
+                    $siakadRiskLabel = fn(string $cat): string => match(strtolower($cat)) {
+                        'low'  => 'Resiko Rendah',
+                        'high' => 'Resiko Tinggi',
+                        default => 'Resiko Normal',
+                    };
                 @endphp
 
                 <div class="grid-kategori">
 
-                    {{-- Jam Belajar (dummy SIAKAD) --}}
+                    {{-- ── 3 KARTU DATA SIAKAD ── --}}
+                    {{-- Kehadiran --}}
+                    <div class="kat-card">
+                        <div class="kat-title">Kehadiran</div>
+                        <div class="kat-icon">🏫</div>
+                        <div class="siakad-badge">SIAKAD</div>
+                        <div class="kat-value">{{ $attendanceNum ?? '-' }}%</div>
+                        <div class="kat-risk-label">{{ $siakadRiskLabel($attendanceCat) }}</div>
+                        <div class="risk-bar-wrap">
+                            <div class="risk-bar {{ $siakadRiskClass($attendanceCat) }}"></div>
+                        </div>
+                        <div class="kat-risk-text {{ $siakadRiskClass($attendanceCat) }}">
+                            {{ ucfirst(strtolower($attendanceCat)) }}
+                        </div>
+                    </div>
+
+                    {{-- Jam Belajar --}}
                     <div class="kat-card">
                         <div class="kat-title">Jam Belajar</div>
                         <div class="kat-icon">🕐</div>
-                        <div class="kat-risk-label">Resiko Normal</div>
-                        <div class="risk-bar-wrap"><div class="risk-bar medium"></div></div>
+                        <div class="siakad-badge">SIAKAD</div>
+                        <div class="kat-value">{{ $hoursStudiedNum ?? '-' }} jam/hari</div>
+                        <div class="kat-risk-label">{{ $siakadRiskLabel($hoursCat) }}</div>
+                        <div class="risk-bar-wrap">
+                            <div class="risk-bar {{ $siakadRiskClass($hoursCat) }}"></div>
+                        </div>
+                        <div class="kat-risk-text {{ $siakadRiskClass($hoursCat) }}">
+                            {{ ucfirst(strtolower($hoursCat)) }}
+                        </div>
                     </div>
 
-                    {{-- Dari hasil kuis --}}
+                    {{-- Nilai Sebelumnya --}}
+                    <div class="kat-card">
+                        <div class="kat-title">Nilai Sebelumnya</div>
+                        <div class="kat-icon">📝</div>
+                        <div class="siakad-badge">SIAKAD</div>
+                        <div class="kat-value">{{ $previousScoreNum ?? '-' }}</div>
+                        <div class="kat-risk-label">{{ $siakadRiskLabel($scoreCat) }}</div>
+                        <div class="risk-bar-wrap">
+                            <div class="risk-bar {{ $siakadRiskClass($scoreCat) }}"></div>
+                        </div>
+                        <div class="kat-risk-text {{ $siakadRiskClass($scoreCat) }}">
+                            {{ ucfirst(strtolower($scoreCat)) }}
+                        </div>
+                    </div>
+
+                    {{-- ── 5 KARTU DATA KUIS ── --}}
                     @foreach($riskPerKategori as $key => $item)
                         @php
                             $riskClass = strtolower($item['risk']);
                             $riskLabel = match($riskClass) {
-                                'low'    => 'Resiko Rendah',
-                                'high'   => 'Resiko Tinggi',
-                                default  => 'Resiko Normal',
+                                'low'  => 'Resiko Rendah',
+                                'high' => 'Resiko Tinggi',
+                                default => 'Resiko Normal',
                             };
                             $ikon = $ikonKategori[$key] ?? '📋';
                         @endphp
@@ -503,6 +565,9 @@
                             <div class="risk-bar-wrap">
                                 <div class="risk-bar {{ $riskClass }}"></div>
                             </div>
+                            <div class="kat-risk-text {{ $riskClass }}">
+                                {{ $item['risk'] }}
+                            </div>
                         </div>
                     @endforeach
 
@@ -510,50 +575,24 @@
             </div>
 
             {{-- ── TOP 3 TEKNIK BELAJAR ── --}}
-            @php
-                $teknikList = [
-                    [
-                        'nama'  => 'Pomodoro',
-                        'ikon'  => '🍅',
-                        'desc'  => 'Teknik Pomodoro adalah metode belajar atau bekerja dengan membagi waktu menjadi sesi fokus singkat yang diselingi istirahat.',
-                        'cara'  => [
-                            'Belajar 25 menit (fokus penuh)',
-                            'Istirahat 5 menit',
-                            'Ulangi 4 kali, lalu istirahat lebih lama (15–30 menit)',
-                        ],
-                    ],
-                    [
-                        'nama'  => 'Feynman',
-                        'ikon'  => '🧑‍🏫',
-                        'desc'  => 'Metode belajar cepat untuk memahami konsep rumit secara mendalam dengan cara mengajarkannya kembali menggunakan bahasa yang sangat sederhana.',
-                        'cara'  => [
-                            'Pilih konsep yang ingin dipahami',
-                            'Jelaskan konsep seolah mengajar anak kecil',
-                            'Identifikasi celah pemahaman dan pelajari ulang',
-                        ],
-                    ],
-                    [
-                        'nama'  => 'Active Recall',
-                        'ikon'  => '🔁',
-                        'desc'  => 'Teknik belajar dengan cara menguji ingatan secara aktif, bukan sekadar membaca ulang materi.',
-                        'cara'  => [
-                            'Baca materi satu kali',
-                            'Tutup buku dan coba ingat poin-poin utama',
-                            'Ulangi proses hingga materi benar-benar hafal',
-                        ],
-                    ],
-                ];
-            @endphp
-
+            {{--
+                $teknikBelajar dikirim dari controller sebagai array berisi maks 3 teknik
+                yang dipilih berdasarkan rekomendasi Forward Chaining.
+            --}}
             <div class="teknik-section">
                 <h3>Top 3 Teknik Belajar</h3>
+                <p class="teknik-subtitle">
+                    Dipilih berdasarkan hasil analisa risiko Anda: <em>"{{ $rekomendasi }}"</em>
+                </p>
                 <div class="teknik-grid">
-                    @foreach($teknikList as $idx => $teknik)
+                    @foreach($teknikBelajar as $idx => $teknik)
                         @php $n = $idx + 1; @endphp
                         <div class="teknik-card">
 
                             <div class="teknik-header">
-                                <div class="teknik-num {{ $n === 2 ? 'n2' : ($n === 3 ? 'n3' : '') }}">{{ $n }}</div>
+                                <div class="teknik-num {{ $n === 2 ? 'n2' : ($n === 3 ? 'n3' : '') }}">
+                                    {{ $n }}
+                                </div>
                                 <button class="teknik-toggle" onclick="toggleCara(this)">
                                     <i class="fa-solid fa-chevron-{{ $n === 1 ? 'up' : 'down' }}"></i>
                                 </button>
@@ -593,7 +632,6 @@
 
                 <div class="riwayat-list">
                     @php
-                        // Ambil riwayat 30 hari terakhir dari database
                         $siswaId = Auth::user()->siswa->id ?? null;
                         $riwayat = [];
 
@@ -613,13 +651,12 @@
 
                     @forelse($riwayat as $r)
                         @php
-                            $rl       = strtolower($r->risk_level);
-                            $tanggal  = \Carbon\Carbon::parse($r->tanggal_kuis);
-                            $dotClass = $rl;
+                            $rl          = strtolower($r->risk_level);
+                            $tanggal     = \Carbon\Carbon::parse($r->tanggal_kuis);
                             $activeClass = 'active-' . $rl;
                         @endphp
                         <div class="riwayat-item {{ $activeClass }}">
-                            <div class="riwayat-dot {{ $dotClass }}"></div>
+                            <div class="riwayat-dot {{ $rl }}"></div>
                             <div class="riwayat-tanggal">{{ $tanggal->translatedFormat('d F Y') }}</div>
                             <div class="riwayat-level">Level Resiko {{ ucfirst($rl) }}</div>
                             <div class="riwayat-waktu">Mulai Test : {{ $tanggal->format('H.i') }} WIB</div>
@@ -636,7 +673,7 @@
 
             {{-- ── CTA CARD ── --}}
             <div class="cta-card">
-                <h3>Kurang puas dengan hasil nya?</h3>
+                <h3>Kurang puas dengan hasilnya?</h3>
                 <p>Lakukan penilaian mendalam untuk mendapatkan rekomendasi belajar yang dipersonalisasi.</p>
                 <a href="{{ route('kuis.show', 1) }}" class="btn-ulang">Mulai Test Ulang</a>
             </div>
