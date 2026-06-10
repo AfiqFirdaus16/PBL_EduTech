@@ -212,7 +212,7 @@
         }
         .teknik-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 
-        /* Kartu bergambar — sama persis dengan top 9 */
+        /* Kartu bergambar */
         .teknik-card {
             position: relative;
             border-radius: 16px;
@@ -559,7 +559,6 @@
                     <div class="kat-card">
                         <div class="kat-title">Kehadiran</div>
                         <div class="kat-icon">🏫</div>
-                        {{-- <div class="siakad-badge">SIAKAD</div> --}}
                         <div class="kat-value">{{ $attendanceNum ?? '-' }}%</div>
                         <div class="kat-risk-label">{{ $siakadRiskLabel($attendanceCat) }}</div>
                         <div class="risk-bar-wrap">
@@ -574,7 +573,6 @@
                     <div class="kat-card">
                         <div class="kat-title">Jam Belajar</div>
                         <div class="kat-icon">🕐</div>
-                        {{-- <div class="siakad-badge">SIAKAD</div> --}}
                         <div class="kat-value">{{ $hoursStudiedNum ?? '-' }} jam/hari</div>
                         <div class="kat-risk-label">{{ $siakadRiskLabel($hoursCat) }}</div>
                         <div class="risk-bar-wrap">
@@ -589,7 +587,6 @@
                     <div class="kat-card">
                         <div class="kat-title">Nilai Sebelumnya</div>
                         <div class="kat-icon">📝</div>
-                        {{-- <div class="siakad-badge">SIAKAD</div> --}}
                         <div class="kat-value">{{ $previousScoreNum ?? '-' }}</div>
                         <div class="kat-risk-label">{{ $siakadRiskLabel($scoreCat) }}</div>
                         <div class="risk-bar-wrap">
@@ -639,7 +636,6 @@
                             $n       = $idx + 1;
                             $rankCls = 'r' . $n;
                             $img     = $teknik['img'] ?? 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600';
-                            // Encode untuk onclick attribute — hindari konflik tanda kutip
                             $modalId = 'modal-' . $idx;
                         @endphp
                         <div class="teknik-card" onclick="openModal('{{ $modalId }}')">
@@ -800,6 +796,7 @@
                 document.body.style.overflow = '';
             }
         });
+
         // Simpan URL base untuk fetch
         const hasilSesiUrl = "{{ url('kuis/hasil') }}";
 
@@ -889,7 +886,7 @@
                 text.textContent = item.risk;
             });
 
-            // ── Tambah badge tanggal di hasil-text ──
+            // ── Tambah / update badge tanggal di hasil-text ──
             const badge = document.getElementById('tanggal-badge');
             if (badge) {
                 badge.textContent = '📅 ' + data.tanggal;
@@ -899,6 +896,64 @@
                 newBadge.style.cssText = 'font-size:11px;color:#AAA;margin-top:6px;';
                 newBadge.textContent = '📅 ' + data.tanggal;
                 document.querySelector('.hasil-text').appendChild(newBadge);
+            }
+
+            // ── RENDER ULANG Top 3 Teknik Belajar ──
+            if (data.teknikBelajar && data.teknikBelajar.length) {
+
+                // Update subtitle
+                const subtitle = document.querySelector('.teknik-subtitle');
+                if (subtitle) {
+                    subtitle.innerHTML = `Dipilih berdasarkan hasil analisa risiko Anda: <em>"${data.rekomendasi}"</em>`;
+                }
+
+                // Hapus semua modal lama (baik dari Blade maupun dari JS sebelumnya)
+                document.querySelectorAll('.modal-overlay').forEach(el => el.remove());
+
+                // Render ulang kartu teknik di dalam .teknik-grid
+                const rankCls = ['r1', 'r2', 'r3'];
+                const grid = document.querySelector('.teknik-grid');
+                if (grid) {
+                    grid.innerHTML = data.teknikBelajar.map((teknik, idx) => {
+                        const n       = idx + 1;
+                        const img     = teknik.img || 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600';
+                        const modalId = 'modal-dyn-' + idx;
+                        return `
+                            <div class="teknik-card" onclick="openModal('${modalId}')">
+                                <img src="${img}" alt="${teknik.nama}" class="teknik-img">
+                                <div class="teknik-overlay"></div>
+                                <div class="teknik-rank ${rankCls[idx]}">${n}</div>
+                                <button class="teknik-info-btn" onclick="event.stopPropagation(); openModal('${modalId}')">i</button>
+                                <div class="teknik-label">
+                                    <h4>${teknik.nama}</h4>
+                                    <p>${teknik.desc}</p>
+                                </div>
+                            </div>`;
+                    }).join('');
+                }
+
+                // Buat modal baru sesuai teknik belajar yang diupdate
+                data.teknikBelajar.forEach((teknik, idx) => {
+                    const modalId  = 'modal-dyn-' + idx;
+                    const img      = teknik.img || 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600';
+                    const caraHtml = (teknik.cara || []).map(step => `<li>${step}</li>`).join('');
+                    const modalEl  = document.createElement('div');
+                    modalEl.className = 'modal-overlay';
+                    modalEl.id        = modalId;
+                    modalEl.onclick   = () => closeModal(modalId);
+                    modalEl.innerHTML = `
+                        <div class="modal-box" onclick="event.stopPropagation()">
+                            <img src="${img}" alt="${teknik.nama}" class="modal-img">
+                            <div class="modal-content">
+                                <div class="modal-title">${teknik.nama}</div>
+                                <div class="modal-desc">${teknik.penjelasan || teknik.desc}</div>
+                                <div class="modal-cara-title">Cara Menggunakan :</div>
+                                <ul class="modal-cara-list">${caraHtml}</ul>
+                                <button class="modal-close" onclick="closeModal('${modalId}')">Tutup</button>
+                            </div>
+                        </div>`;
+                    document.body.appendChild(modalEl);
+                });
             }
         }
     </script>
