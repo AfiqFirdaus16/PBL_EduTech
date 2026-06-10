@@ -61,6 +61,7 @@ class KuisController extends Controller
         $kategori   = $this->kategoriUrutan[$step];
         $pertanyaan = \App\Models\Pertanyaan::where('kategori', $kategori)->get();
 
+        // Buat aturan validasi: setiap q_{id} wajib diisi
         $rules = [];
         foreach ($pertanyaan as $p) {
             $rules["q_{$p->id}"] = 'required|integer|exists:pilihan_jawaban,id';
@@ -68,12 +69,14 @@ class KuisController extends Controller
 
         $validated = $request->validate($rules);
 
+        // Gabungkan jawaban ke session
         $jawaban = session('jawaban', []);
         foreach ($validated as $key => $pilihanId) {
             $jawaban[$key] = (int) $pilihanId;
         }
         session(['jawaban' => $jawaban]);
 
+        // Langkah terakhir → ke halaman hasil
         if ($step === 5) {
             return redirect()->route('kuis.hasil');
         }
@@ -82,7 +85,7 @@ class KuisController extends Controller
     }
 
     // ─────────────────────────────────────────────────────────────
-    // Halaman hasil  →  GET /kuis/hasil (HYBRID MODE)
+    // Halaman hasil  →  GET /kuis/hasil
     // ─────────────────────────────────────────────────────────────
     public function hasil()
     {
@@ -112,12 +115,8 @@ class KuisController extends Controller
                 arsort($skor);
                 $riskDominan = array_key_first($skor);
 
-                $riskPerKategori[$kategori] = [
-                    'skor'  => $skor,
-                    'risk'  => $riskDominan,
-                    'label' => $this->labelKategori($kategori),
-                ];
-            }
+        // Hitung risk per kategori
+        $riskPerKategori = [];
 
             $allRisks   = array_column($riskPerKategori, 'risk');
             $riskCounts = array_count_values($allRisks);
@@ -135,8 +134,7 @@ class KuisController extends Controller
                 'score_cat'      => 'HIGH',
             ]);
 
-            $riskTotal   = $hasilForward['risk'] ?? $riskTotal;
-            $rekomendasi = $hasilForward['rekomendasi'] ?? null;
+            $skor = ['Low' => 0, 'Medium' => 0, 'High' => 0];
 
             if ($siswaId) {
                 $sesiId = DB::table('sesi_kuis')->insertGetId([
@@ -168,7 +166,9 @@ class KuisController extends Controller
                 ]);
             }
 
-            session()->forget('jawaban');
+            // Tentukan risk dominan
+            arsort($skor);
+            $riskDominan = array_key_first($skor);
 
             // TODO: ganti dengan data real dari SIAKAD API
             $attendanceCat    = 'HIGH';
@@ -188,9 +188,65 @@ class KuisController extends Controller
             ));
         }
 
-        // =========================================================================
-        // SKENARIO B: SISWA KLIK DARI NAVBAR / LOGIN ULANG (Ambil dari Database)
-        // =========================================================================
+        // Risk keseluruhan (majority vote)
+        $allRisks    = array_column($riskPerKategori, 'risk');
+        $riskCounts  = array_count_values($allRisks);
+        arsort($riskCounts);
+        $riskTotal   = array_key_first($riskCounts);
+
+        // ====================================================
+        // DUMMY DATA SIAKAD (sementara)
+        // Nanti diganti API SIAKAD
+        // ====================================================
+
+        $attendanceCat = 'HIGH';
+        $hoursCat      = 'MEDIUM';
+        $scoreCat      = 'HIGH';
+
+        // dari hasil kuis
+        $sleepCat = strtoupper(
+            $riskPerKategori['Sleep_Hours']['risk']
+        );
+
+        $resourceCat = strtoupper(
+            $riskPerKategori['Access_to_Resources']['risk']
+        );
+
+        $motivationCat = strtoupper(
+            $riskPerKategori['Motivation_Level']['risk']
+        );
+
+        $tutorCat = strtoupper(
+            $riskPerKategori['Les']['risk']
+        );
+
+        $kesulitanBelajar = strtoupper(
+            $riskPerKategori['Kesulitan_Belajar']['risk']
+        );
+
+        // ─────────────────────────────────────────────────────────────
+        // Function Model: Forward Chaining
+        // ─────────────────────────────────────────────────────────────
+        $forward = new ForwardChainingService();
+
+        $hasilForward = $forward->proses([
+            'attendance_cat' => $attendanceCat,
+            'sleep_cat'      => $sleepCat,
+            'hours_cat'      => $hoursCat,
+            'resource_cat'   => $resourceCat,
+            'motivation_cat' => $motivationCat,
+            'tutor_cat'      => $tutorCat,
+            'score_cat'      => $scoreCat,
+        ]);
+
+        $riskTotal = $hasilForward['risk'] ?? $riskTotal;
+        $rekomendasi = $hasilForward['rekomendasi'] ?? null;
+
+        // ====================================================
+        // 🚀 PROSES SIMPAN KE DATABASE (SESUAI SKEMA GAMBAR)
+        // ====================================================
+        $siswaId = \Illuminate\Support\Facades\Auth::user()->siswa->id ?? null;
+
         if ($siswaId) {
             $latestSesi = DB::table('sesi_kuis')
                 ->where('siswa_id', $siswaId)
@@ -247,12 +303,23 @@ class KuisController extends Controller
                     'teknikBelajar',
                 ));
             }
+            // Insert massal ke tabel jawaban_kuis
+            \Illuminate\Support\Facades\DB::table('jawaban_kuis')->insert($insertJawaban);
+
+            // 3. Simpan Hasil Analisa Akhir
+            \Illuminate\Support\Facades\DB::table('hasil_analisa')->insert([
+                'sesi_id' => $sesiId, // Di gambar Anda nama kolomnya sesi_id
+                'risk_level' => $riskTotal,
+                'rekomendasi' => $rekomendasi,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
 
-        // =========================================================================
-        // SKENARIO C: BENAR-BENAR BELUM KUIS
-        // =========================================================================
-        return redirect()->route('kuis.show', 1)->with('info', 'Silakan selesaikan kuis terlebih dahulu.');
+        // Hapus session setelah selesai
+        session()->forget('jawaban');
+
+        return view('page.hasil', compact('riskPerKategori', 'riskTotal', 'rekomendasi'));
     }
 
     // ─────────────────────────────────────────────────────────────
