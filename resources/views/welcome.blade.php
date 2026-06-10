@@ -1108,7 +1108,7 @@
                 <li><a href="#faq" class="nav-link">FAQ</a></li>
                 <li>
                     @auth
-                        <a href="{{ route('hasil') }}" class="nav-link">Hasil Analisa</a>
+                        <a href="{{ route('kuis.hasil') }}" class="nav-link">Hasil Analisa</a>
                     @else
                         <a href="{{ route('reAnalisa') }}" class="nav-link">Hasil Analisa</a>
                     @endauth
