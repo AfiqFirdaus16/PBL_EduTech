@@ -31,10 +31,11 @@ class AuthController extends Controller
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
+            // Jika berhasil login sebagai siswa, langsung ke Landing Page (Cek Kuis)
             return $this->cekStatusKuis();
         }
 
-        // 2. SKENARIO SIAKAD: Jika di EduTrace belum ada, cek ke SIAKAD
+        // 2. SKENARIO SIAKAD: Jika di EduTrace gagal, cek ke SIAKAD
         try {
             $response = Http::post('https://siakad-production-523b.up.railway.app/api/verify-nisn', [
                 'nisn'     => $request->username,
@@ -44,7 +45,16 @@ class AuthController extends Controller
             if ($response->successful() && $response->json('status') === 'success') {
                 $dataSiakad = $response->json('data');
 
-                // Simpan data dari SIAKAD (NISN dan Nama) ke memori sementara (Session)
+                // 🚀 REVISI: PENCEGAHAN GANDA
+                // Cek apakah NISN ini sebenarnya sudah pernah melakukan Register Lanjutan
+                $userSudahAda = User::where('username', $dataSiakad['nisn'])->first();
+
+                if ($userSudahAda) {
+                    // Jika data sudah ada di EduTrace, berarti siswa salah memasukkan password (pakai password SIAKAD)
+                    return back()->with('error', 'Akun Anda sudah terdaftar di EduTrace. Silakan login menggunakan Password EduTrace yang telah Anda buat.');
+                }
+
+                // Jika lolos pengecekan (benar-benar baru), simpan ke Session
                 session([
                     'siakad_nisn' => $dataSiakad['nisn'],
                     'siakad_nama' => $dataSiakad['name']
@@ -149,20 +159,29 @@ class AuthController extends Controller
     // =================================================================
     // FUNGSI HELPER & LAINNYA
     // =================================================================
+
     private function cekStatusKuis()
     {
         $siswaId = Auth::user()->siswa->id ?? null;
-        $sudahIsiKuis = $siswaId
-            ? DB::table('sesi_kuis')->where('siswa_id', $siswaId)->exists()
-            : false;
 
-        if ($sudahIsiKuis) {
-            return redirect()->route('hasil-resiko.index');
+        if (!$siswaId) {
+            return redirect()->route('kuis.show', 1);
         }
 
-        return redirect()->route('kuis.show', 1);
-    }
+        // CEK AKURAT: Apakah siswa ini sudah punya HASIL ANALISA?
+        $sudahSelesaiKuis = DB::table('hasil_analisa')
+            ->join('sesi_kuis', 'hasil_analisa.sesi_id', '=', 'sesi_kuis.id')
+            ->where('sesi_kuis.siswa_id', $siswaId)
+            ->exists();
 
+        if ($sudahSelesaiKuis) {
+            // Jika sudah punya hasil analisa, pastikan diarahkan ke Hasil
+            return redirect()->route('kuis.hasil')->with('success', 'Selamat datang kembali!');
+        }
+
+        // Jika belum selesai kuis
+        return redirect()->route('kuis.show', 1)->with('info', 'Silakan selesaikan kuis ini.');
+    }
     // =================================================================
     // FUNGSI LAINNYA (Logout & Reset Password)
     // =================================================================
