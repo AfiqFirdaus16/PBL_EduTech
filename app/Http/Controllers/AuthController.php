@@ -19,19 +19,20 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'username' => 'required', // Bisa NISN atau Username
+            'username' => 'required',
             'password' => 'required'
         ]);
 
-        // 1. SKENARIO LOKAL: Coba login pakai database EduTrace
-        $credentials = $request->only('username', 'password');
+        // 1. SKENARIO LOKAL: Cari user berdasarkan username, lalu cek password
+        $user = User::where('username', $request->username)->first();
 
-        if (Auth::attempt($credentials)) {
+        if ($user && Hash::check($request->password, $user->password)) {
+            Auth::login($user);
             $request->session()->regenerate();
-            if (Auth::user()->role === 'admin') {
+
+            if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
-            // Jika berhasil login sebagai siswa, langsung ke Landing Page (Cek Kuis)
             return $this->cekStatusKuis();
         }
 
@@ -45,22 +46,19 @@ class AuthController extends Controller
             if ($response->successful() && $response->json('status') === 'success') {
                 $dataSiakad = $response->json('data');
 
-                // 🚀 REVISI: PENCEGAHAN GANDA
-                // Cek apakah NISN ini sebenarnya sudah pernah melakukan Register Lanjutan
+                // Cek apakah NISN ini sudah pernah melakukan Register Lanjutan
                 $userSudahAda = User::where('username', $dataSiakad['nisn'])->first();
 
                 if ($userSudahAda) {
-                    // Jika data sudah ada di EduTrace, berarti siswa salah memasukkan password (pakai password SIAKAD)
                     return back()->with('error', 'Akun Anda sudah terdaftar di EduTrace. Silakan login menggunakan Password EduTrace yang telah Anda buat.');
                 }
 
-                // Jika lolos pengecekan (benar-benar baru), simpan ke Session
+                // Jika benar-benar baru, simpan ke Session
                 session([
                     'siakad_nisn' => $dataSiakad['nisn'],
                     'siakad_nama' => $dataSiakad['name']
                 ]);
 
-                // Arahkan siswa ke form untuk melengkapi data & membuat password baru
                 return redirect()->route('register.lanjutan');
             }
         } catch (\Exception $e) {
@@ -76,7 +74,6 @@ class AuthController extends Controller
     // =================================================================
     public function registerLanjutan()
     {
-        // Pastikan halaman ini hanya bisa dibuka jika ada data dari SIAKAD
         if (!session()->has('siakad_nisn')) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
@@ -86,9 +83,8 @@ class AuthController extends Controller
 
     public function simpanRegisterLanjutan(Request $request)
     {
-        // 1. Tambahkan validasi untuk 'nama'
         $request->validate([
-            'nama'     => 'required|string|max:255', // <-- TAMBAHAN BARU
+            'nama'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'jenjang'  => 'required|in:SMP,SMA',
@@ -97,32 +93,27 @@ class AuthController extends Controller
 
         $nisn = session('siakad_nisn');
 
-        // 2. Simpan akun resmi ke database EduTrace
         $user = User::create([
             'username' => $nisn,
-            'nisn'    => $nisn,
+            'nisn'     => $nisn,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'role'     => 'siswa'
         ]);
 
-        // 3. Simpan biodata resmi ke tabel siswas
         Siswa::create([
             'user_id' => $user->id,
             'nisn'    => $nisn,
-            'nama'    => $request->nama, // <-- SEKARANG MENGAMBIL DARI INPUTAN FORM, BUKAN DARI SESSION
+            'nama'    => $request->nama,
             'jenjang' => $request->jenjang,
             'tingkat' => $request->tingkat
         ]);
 
-        // Hapus session sementara
         session()->forget(['siakad_nisn', 'siakad_nama']);
 
-        // Langsung loginkan dan arahkan ke kuis
         Auth::login($user);
         return redirect()->route('kuis.show', 1)->with('success', 'Akun berhasil dibuat! Silakan mulai tes.');
     }
-
 
     // =================================================================
     // PROSES REGISTER MANDIRI (Bukan dari SIAKAD)
@@ -155,11 +146,9 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'Registrasi berhasil, silakan login.');
     }
 
-
     // =================================================================
     // FUNGSI HELPER & LAINNYA
     // =================================================================
-
     private function cekStatusKuis()
     {
         $siswaId = Auth::user()->siswa->id ?? null;
@@ -168,20 +157,18 @@ class AuthController extends Controller
             return redirect()->route('kuis.show', 1);
         }
 
-        // CEK AKURAT: Apakah siswa ini sudah punya HASIL ANALISA?
         $sudahSelesaiKuis = DB::table('hasil_analisa')
             ->join('sesi_kuis', 'hasil_analisa.sesi_id', '=', 'sesi_kuis.id')
             ->where('sesi_kuis.siswa_id', $siswaId)
             ->exists();
 
         if ($sudahSelesaiKuis) {
-            // Jika sudah punya hasil analisa, pastikan diarahkan ke Hasil
             return redirect()->route('kuis.hasil')->with('success', 'Selamat datang kembali!');
         }
 
-        // Jika belum selesai kuis
         return redirect()->route('kuis.show', 1)->with('info', 'Silakan selesaikan kuis ini.');
     }
+
     // =================================================================
     // FUNGSI LAINNYA (Logout & Reset Password)
     // =================================================================

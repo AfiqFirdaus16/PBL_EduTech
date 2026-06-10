@@ -19,11 +19,22 @@
 
     <div class="form-group">
         <label>Password</label>
-        <input
-            type="password"
-            name="password"
-            required
-        >
+        <div style="position: relative;">
+            <input
+                type="password"
+                name="password"
+                id="passwordInput"
+                required
+                style="padding-right: 40px; width: 100%;"
+            >
+            <span
+                id="togglePassword"
+                onclick="togglePass()"
+                style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888;"
+            >
+                <i class="fa-solid fa-eye" id="eyeIcon"></i>
+            </span>
+        </div>
     </div>
 
     <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; flex-wrap:nowrap; margin-bottom:16px;">
@@ -49,5 +60,19 @@
     </div> --}}
 
 </form>
+
+<script>
+    function togglePass() {
+        const input = document.getElementById('passwordInput');
+        const icon  = document.getElementById('eyeIcon');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+</script>
 
 @endsection
