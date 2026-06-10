@@ -64,12 +64,40 @@
 
         <div class="form-group">
             <label>Buat Password EduTrace</label>
-            <input type="password" name="password" placeholder="Minimal 6 karakter" required>
-            <small style="color: #888; font-size: 11px;">Ini akan menjadi password permanen Anda untuk login ke EduTrace
-                selanjutnya.</small>
+            <div style="position: relative;">
+                <input
+                    type="password"
+                    name="password"
+                    id="passwordInput"
+                    placeholder="Minimal 6 karakter"
+                    required
+                    style="padding-right: 40px; width: 100%;"
+                >
+                <span
+                    onclick="togglePass()"
+                    style="position: absolute; right: 12px; top: 30%; transform: translateY(0%); cursor: pointer; color: #888;"
+                >
+                    <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                </span>
+            </div>
+            <small style="color: #888; font-size: 11px;">Ini akan menjadi password permanen Anda untuk login ke EduTrace selanjutnya.</small>
         </div>
 
         <button type="submit" class="btn">Simpan & Mulai Tes</button>
 
     </form>
+
+    <script>
+        function togglePass() {
+            const input = document.getElementById('passwordInput');
+            const icon  = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+    </script>
 @endsection
