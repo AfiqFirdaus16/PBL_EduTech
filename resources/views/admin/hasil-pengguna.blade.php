@@ -138,7 +138,7 @@
     <div class="bg-white rounded-xl shadow-sm">
         <div class="hasil-table-wrapper" style="overflow-x:auto; position:relative;">
             <table class="hasil-table w-full text-[12px] text-gray-700"
-                style="border-collapse:separate; border-spacing:0; min-width:1300px;">
+                style="border-collapse:separate; border-spacing:0; min-width:1100px;">
                 <thead>
                     <tr class="border-b border-gray-200 text-center text-[12px] font-semibold text-gray-600 bg-white">
                         <th class="col-fixed-left px-3 py-3 text-center" style="left:0; min-width:48px;">No</th>
@@ -146,39 +146,19 @@
                         <th class="col-fixed-left px-3 py-3 text-center"
                             style="left:188px; min-width:110px; border-right:2px solid #e5e7eb;">Username</th>
 
-                        <th
-                            class="px-3 py-3 {{ request('sort_by') == 'attendance' ? 'bg-indigo-50 text-indigo-700' : '' }}">
-                            Kehadiran</th>
-                        <th
-                            class="px-3 py-3 {{ request('sort_by') == 'sleep_hours' ? 'bg-indigo-50 text-indigo-700' : '' }}">
-                            Jam Tidur</th>
-                        <th
-                            class="px-3 py-3 {{ request('sort_by') == 'hours_studied' ? 'bg-indigo-50 text-indigo-700' : '' }}">
-                            Jam Belajar</th>
-                        <th
-                            class="px-3 py-3 {{ request('sort_by') == 'access_to_resources' ? 'bg-indigo-50 text-indigo-700' : '' }}">
-                            Akses Belajar</th>
-                        <th
-                            class="px-3 py-3 {{ request('sort_by') == 'motivation_level' ? 'bg-indigo-50 text-indigo-700' : '' }}">
-                            Motivasi</th>
-                        <th
-                            class="px-3 py-3 {{ request('sort_by') == 'tutoring_sessions' ? 'bg-indigo-50 text-indigo-700' : '' }}">
-                            Sesi Les</th>
-                        <th
-                            class="px-3 py-3 {{ request('sort_by') == 'previous_scores' ? 'bg-indigo-50 text-indigo-700' : '' }}">
-                            Nilai Sebelumnya</th>
-                        <th
-                            class="px-3 py-3 {{ request('sort_by') == 'kesulitan_belajar' ? 'bg-indigo-50 text-indigo-700' : '' }}">
-                            Kesulitan Belajar</th>
+                        <th class="px-3 py-3 {{ request('sort_by') == 'attendance' ? 'bg-indigo-50 text-indigo-700' : '' }}">Kehadiran</th>
+                        <th class="px-3 py-3 {{ request('sort_by') == 'sleep_hours' ? 'bg-indigo-50 text-indigo-700' : '' }}">Jam Tidur</th>
+                        <th class="px-3 py-3 {{ request('sort_by') == 'hours_studied' ? 'bg-indigo-50 text-indigo-700' : '' }}">Jam Belajar</th>
+                        <th class="px-3 py-3 {{ request('sort_by') == 'access_to_resources' ? 'bg-indigo-50 text-indigo-700' : '' }}">Akses Belajar</th>
+                        <th class="px-3 py-3 {{ request('sort_by') == 'motivation_level' ? 'bg-indigo-50 text-indigo-700' : '' }}">Motivasi</th>
+                        <th class="px-3 py-3 {{ request('sort_by') == 'tutoring_sessions' ? 'bg-indigo-50 text-indigo-700' : '' }}">Sesi Les</th>
+                        <th class="px-3 py-3 {{ request('sort_by') == 'previous_scores' ? 'bg-indigo-50 text-indigo-700' : '' }}">Nilai Sebelumnya</th>
+                        <th class="px-3 py-3 {{ request('sort_by') == 'kesulitan_belajar' ? 'bg-indigo-50 text-indigo-700' : '' }}">Kesulitan Belajar</th>
 
                         <th class="col-fixed-right px-3 py-3"
-                            style="right:360px; min-width:110px; border-left:2px solid #e5e7eb;">Tingkat Risiko</th>
+                            style="right:120px; min-width:110px; border-left:2px solid #e5e7eb;">Tingkat Risiko</th>
                         <th class="col-fixed-right px-3 py-3 text-left bg-purple-50"
-                            style="right:240px; min-width:120px;">Rekomendasi 1</th>
-                        <th class="col-fixed-right px-3 py-3 text-left bg-purple-50"
-                            style="right:120px; min-width:120px;">Rekomendasi 2</th>
-                        <th class="col-fixed-right px-3 py-3 text-left bg-purple-50" style="right:0;    min-width:120px;">
-                            Rekomendasi 3</th>
+                            style="right:0; min-width:120px;">Rekomendasi</th>
                     </tr>
                 </thead>
                 <tbody id="tableHasil">
@@ -196,8 +176,6 @@
                             }
 
                             $rek1 = trim($rekomendasi->get(0, '-'));
-                            $rek2 = trim($rekomendasi->get(1, '-'));
-                            $rek3 = trim($rekomendasi->get(2, '-'));
 
                             $riskStyle = match ($item->risk_level) {
                                 'High', 'HIGH' => 'bg-red-100 text-red-700',
@@ -206,7 +184,6 @@
                                 default => 'bg-gray-100 text-gray-500',
                             };
 
-                            // Proteksi fallback nama siswa dari integrasi SIAKAD
                             $namaSiswa = $item->sesiKuis->siswa->nama ?? ($item->sesiKuis->siswa->name ?? '-');
                         @endphp
                         <tr class="border-b border-gray-100 text-center hover:bg-gray-50 transition">
@@ -218,48 +195,28 @@
                                 style="left:188px; border-right:2px solid #e5e7eb;">
                                 {{ $item->sesiKuis->siswa->user->username ?? '-' }}</td>
 
-                            <td
-                                class="px-3 py-3 {{ request('sort_by') == 'attendance' ? 'bg-indigo-50 font-semibold' : '' }}">
-                                {{ $item->attendance ?? '0' }}</td>
-                            <td
-                                class="px-3 py-3 {{ request('sort_by') == 'sleep_hours' ? 'bg-indigo-50 font-semibold' : '' }}">
-                                {{ $item->sleep_hours ?? '-' }}</td>
-                            <td
-                                class="px-3 py-3 {{ request('sort_by') == 'hours_studied' ? 'bg-indigo-50 font-semibold' : '' }}">
-                                {{ $item->hours_studied ?? '0' }}</td>
-                            <td
-                                class="px-3 py-3 {{ request('sort_by') == 'access_to_resources' ? 'bg-indigo-50 font-semibold' : '' }}">
-                                {{ $item->access_to_resources ?? '-' }}</td>
-                            <td
-                                class="px-3 py-3 {{ request('sort_by') == 'motivation_level' ? 'bg-indigo-50 font-semibold' : '' }}">
-                                {{ $item->motivation_level ?? '-' }}</td>
-                            <td
-                                class="px-3 py-3 {{ request('sort_by') == 'tutoring_sessions' ? 'bg-indigo-50 font-semibold' : '' }}">
-                                {{ $item->tutoring_sessions ?? '-' }}</td>
-                            <td
-                                class="px-3 py-3 {{ request('sort_by') == 'previous_scores' ? 'bg-indigo-50 font-semibold' : '' }}">
-                                {{ $item->previous_scores ?? '0' }}</td>
-                            <td
-                                class="px-3 py-3 {{ request('sort_by') == 'kesulitan_belajar' ? 'bg-indigo-50 font-semibold' : '' }}">
-                                {{ $item->kesulitan_belajar ?? '-' }}</td>
+                            <td class="px-3 py-3 {{ request('sort_by') == 'attendance' ? 'bg-indigo-50 font-semibold' : '' }}">{{ $item->attendance ?? '0' }}</td>
+                            <td class="px-3 py-3 {{ request('sort_by') == 'sleep_hours' ? 'bg-indigo-50 font-semibold' : '' }}">{{ $item->sleep_hours ?? '-' }}</td>
+                            <td class="px-3 py-3 {{ request('sort_by') == 'hours_studied' ? 'bg-indigo-50 font-semibold' : '' }}">{{ $item->hours_studied ?? '0' }}</td>
+                            <td class="px-3 py-3 {{ request('sort_by') == 'access_to_resources' ? 'bg-indigo-50 font-semibold' : '' }}">{{ $item->access_to_resources ?? '-' }}</td>
+                            <td class="px-3 py-3 {{ request('sort_by') == 'motivation_level' ? 'bg-indigo-50 font-semibold' : '' }}">{{ $item->motivation_level ?? '-' }}</td>
+                            <td class="px-3 py-3 {{ request('sort_by') == 'tutoring_sessions' ? 'bg-indigo-50 font-semibold' : '' }}">{{ $item->tutoring_sessions ?? '-' }}</td>
+                            <td class="px-3 py-3 {{ request('sort_by') == 'previous_scores' ? 'bg-indigo-50 font-semibold' : '' }}">{{ $item->previous_scores ?? '0' }}</td>
+                            <td class="px-3 py-3 {{ request('sort_by') == 'kesulitan_belajar' ? 'bg-indigo-50 font-semibold' : '' }}">{{ $item->kesulitan_belajar ?? '-' }}</td>
 
                             <td class="col-fixed-right px-3 py-3 bg-white"
-                                style="right:360px; border-left:2px solid #e5e7eb;">
+                                style="right:120px; border-left:2px solid #e5e7eb;">
                                 <span
                                     class="inline-flex items-center px-2 py-1 rounded-full text-[11px] font-semibold {{ $riskStyle }}">
                                     {{ ucfirst(strtolower($item->risk_level)) }}
                                 </span>
                             </td>
-                            <td class="col-fixed-right px-3 py-3 text-left bg-purple-50" style="right:240px;">
-                                {{ $rek1 }}</td>
-                            <td class="col-fixed-right px-3 py-3 text-left bg-purple-50" style="right:120px;">
-                                {{ $rek2 }}</td>
                             <td class="col-fixed-right px-3 py-3 text-left bg-purple-50" style="right:0;">
-                                {{ $rek3 }}</td>
+                                {{ $rek1 }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="15" class="text-center py-8 text-gray-400">Belum ada data hasil analisis.</td>
+                            <td colspan="13" class="text-center py-8 text-gray-400">Belum ada data hasil analisis.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -341,7 +298,6 @@
             const emptyMsg = document.getElementById('searchEmptyMsg');
             const q = query.trim().toLowerCase();
 
-            // Proteksi jika table kosong
             if (rows.length === 1 && rows[0].textContent.includes('Belum ada data')) return;
 
             rows.forEach(row => {

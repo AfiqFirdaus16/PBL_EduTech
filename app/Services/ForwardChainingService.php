@@ -32,8 +32,11 @@ class ForwardChainingService
         // Semua faktor (SIAKAD + kuis) harus bagus
         // Syarat: SIAKAD bagus DAN minimal 3 dari 5 faktor kuis LOW
         // ────────────────────────────────────────────────────────
-        $siakadBagus = ($attendance === 'HIGH' && $study === 'HIGH' && $score === 'HIGH');
-
+        $siakadBagus = (
+            $attendance === 'LOW' &&
+            $study === 'LOW' &&
+            $score === 'LOW'
+        );
         $kuisLowCount = collect([
             $sleep, $resource, $motivation, $tutor, $kesulitan
         ])->filter(fn($v) => $v === 'LOW')->count();
@@ -49,7 +52,11 @@ class ForwardChainingService
         // RULE 2 — HIGH risk
         // SIAKAD buruk semua + kuis buruk semua
         // ────────────────────────────────────────────────────────
-        $siakadBuruk = ($attendance === 'LOW' && $study === 'LOW' && $score === 'LOW');
+        $siakadBuruk = (
+            $attendance === 'HIGH' &&
+            $study === 'HIGH' &&
+            $score === 'HIGH'
+        );
 
         $kuisHighCount = collect([
             $sleep, $resource, $motivation, $tutor, $kesulitan

@@ -697,12 +697,13 @@
                         $riwayat = [];
 
                         if ($siswaId) {
-                            $riwayat = \Illuminate\Support\Facades\DB::table('hasil_analisa')
+                            $riwayat = DB::table('hasil_analisa')
                                 ->join('sesi_kuis', 'hasil_analisa.sesi_id', '=', 'sesi_kuis.id')
                                 ->where('sesi_kuis.siswa_id', $siswaId)
                                 ->where('sesi_kuis.tanggal_kuis', '>=', now()->subDays(30))
                                 ->orderByDesc('sesi_kuis.tanggal_kuis')
                                 ->select(
+                                    'hasil_analisa.sesi_id',
                                     'hasil_analisa.risk_level',
                                     'sesi_kuis.tanggal_kuis'
                                 )
@@ -712,15 +713,29 @@
 
                     @forelse($riwayat as $r)
                         @php
-                            $rl          = strtolower($r->risk_level);
-                            $tanggal     = \Carbon\Carbon::parse($r->tanggal_kuis);
+                            $rl = strtolower($r->risk_level);
+                            $tanggal = \Carbon\Carbon::parse($r->tanggal_kuis);
                             $activeClass = 'active-' . $rl;
                         @endphp
-                        <div class="riwayat-item {{ $activeClass }}">
+
+                        <div class="riwayat-item {{ $activeClass }}"
+                            data-sesi-id="{{ $r->sesi_id }}"
+                            onclick="loadHasilSesi(this)">
+
                             <div class="riwayat-dot {{ $rl }}"></div>
-                            <div class="riwayat-tanggal">{{ $tanggal->translatedFormat('d F Y') }}</div>
-                            <div class="riwayat-level">Level Resiko {{ ucfirst($rl) }}</div>
-                            <div class="riwayat-waktu">Mulai Test : {{ $tanggal->format('H.i') }} WIB</div>
+
+                            <div class="riwayat-tanggal">
+                                {{ $tanggal->translatedFormat('d F Y') }}
+                            </div>
+
+                            <div class="riwayat-level">
+                                Level Resiko {{ ucfirst($rl) }}
+                            </div>
+
+                            <div class="riwayat-waktu">
+                                Mulai Test : {{ $tanggal->format('H.i') }} WIB
+                            </div>
+
                         </div>
                     @empty
                         <p style="font-size:13px;color:#AAA;text-align:center;padding:20px 0;">
@@ -785,6 +800,107 @@
                 document.body.style.overflow = '';
             }
         });
+        // Simpan URL base untuk fetch
+        const hasilSesiUrl = "{{ url('kuis/hasil') }}";
+
+        function loadHasilSesi(el) {
+            const sesiId = el.dataset.sesiId;
+            if (!sesiId) return;
+
+            // Tandai item aktif
+            document.querySelectorAll('.riwayat-item').forEach(i => i.style.opacity = '1');
+            el.style.opacity = '0.6';
+
+            fetch(`${hasilSesiUrl}/${sesiId}`)
+                .then(r => r.json())
+                .then(data => {
+                    updateHasil(data);
+                    el.style.opacity = '1';
+                })
+                .catch(() => {
+                    el.style.opacity = '1';
+                    alert('Gagal memuat data. Coba lagi.');
+                });
+        }
+
+        function updateHasil(data) {
+            const risk = data.riskTotal.toLowerCase();
+
+            // ── Warna & label donut ──
+            const colorMap = { low: '#27AE60', medium: '#EF9F27', high: '#E53535' };
+            const fillMap  = { low: 0.30, medium: 0.60, high: 0.90 };
+            const circ     = 283;
+            const fill     = Math.round(circ * (fillMap[risk] ?? 0.60));
+
+            const donutCircle = document.querySelector('.donut-wrap svg circle:last-child');
+            if (donutCircle) {
+                donutCircle.setAttribute('stroke', colorMap[risk] ?? '#EF9F27');
+                donutCircle.setAttribute('stroke-dasharray', `${fill} ${circ - fill}`);
+            }
+
+            const donutLabel = document.querySelector('.donut-center strong');
+            if (donutLabel) {
+                donutLabel.textContent  = data.riskTotal.toUpperCase();
+                donutLabel.className    = risk;
+            }
+
+            // ── Teks hasil ──
+            const hasilP = document.querySelector('.hasil-text p');
+            if (hasilP) {
+                hasilP.innerHTML = `Berdasarkan pola aktivitas Anda, tingkat risiko burnout berada
+                    pada level <strong>${risk}</strong>.
+                    ${data.rekomendasi ? `Rekomendasi teknik belajar untuk Anda: <em>${data.rekomendasi}</em>` : ''}`;
+            }
+
+            // ── Update kartu SIAKAD ──
+            const siakadCards = document.querySelectorAll('.kat-card');
+            const siakadData = [
+                { num: data.attendanceNum + '%', cat: data.attendanceCat },
+                { num: data.hoursStudiedNum + ' jam/hari', cat: data.hoursCat },
+                { num: data.previousScoreNum, cat: data.scoreCat },
+            ];
+            const labelMap = { low: 'Resiko Rendah', medium: 'Resiko Normal', high: 'Resiko Tinggi' };
+
+            siakadData.forEach((s, i) => {
+                const cat   = s.cat.toLowerCase();
+                const card  = siakadCards[i];
+                if (!card) return;
+                card.querySelector('.kat-value').textContent      = s.num;
+                card.querySelector('.kat-risk-label').textContent = labelMap[cat] ?? 'Resiko Normal';
+                const bar  = card.querySelector('.risk-bar');
+                const text = card.querySelector('.kat-risk-text');
+                bar.className  = `risk-bar ${cat}`;
+                text.className = `kat-risk-text ${cat}`;
+                text.textContent = s.cat.charAt(0) + s.cat.slice(1).toLowerCase();
+            });
+
+            // ── Update kartu kuis (indeks 3–7) ──
+            const kuisKeys = ['Sleep_Hours','Access_to_Resources','Motivation_Level','Les','Kesulitan_Belajar'];
+            kuisKeys.forEach((key, i) => {
+                const card = siakadCards[3 + i];
+                const item = data.riskPerKategori[key];
+                if (!card || !item) return;
+                const rc = item.risk.toLowerCase();
+                card.querySelector('.kat-risk-label').textContent = labelMap[rc] ?? 'Resiko Normal';
+                const bar  = card.querySelector('.risk-bar');
+                const text = card.querySelector('.kat-risk-text');
+                bar.className  = `risk-bar ${rc}`;
+                text.className = `kat-risk-text ${rc}`;
+                text.textContent = item.risk;
+            });
+
+            // ── Tambah badge tanggal di hasil-text ──
+            const badge = document.getElementById('tanggal-badge');
+            if (badge) {
+                badge.textContent = '📅 ' + data.tanggal;
+            } else {
+                const newBadge = document.createElement('p');
+                newBadge.id = 'tanggal-badge';
+                newBadge.style.cssText = 'font-size:11px;color:#AAA;margin-top:6px;';
+                newBadge.textContent = '📅 ' + data.tanggal;
+                document.querySelector('.hasil-text').appendChild(newBadge);
+            }
+        }
     </script>
 
 </body>
