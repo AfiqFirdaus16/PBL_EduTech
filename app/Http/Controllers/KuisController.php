@@ -177,19 +177,19 @@ class KuisController extends Controller
 
                 // Insert ke hasil_analisa disesuaikan penuh dengan field di gambar database Anda
                 DB::table('hasil_analisa')->insert([
-                    'sesi_id'            => $sesiId,
-                    'attendance'         => $siakadData['attendanceNum'],
-                    'previous_scores'    => $siakadData['previousScoreNum'],
-                    'hours_studied'      => $siakadData['hoursStudiedNum'],
-                    'sleep_hours'        => $riskPerKategori['Sleep_Hours']['risk'],
+                    'sesi_id'             => $sesiId,
+                    'attendance'          => $siakadData['attendanceNum'],
+                    'previous_scores'     => $siakadData['previousScoreNum'],
+                    'hours_studied'       => $siakadData['hoursStudiedNum'],
+                    'sleep_hours'         => $riskPerKategori['Sleep_Hours']['risk'],
                     'access_to_resources' => $riskPerKategori['Access_to_Resources']['risk'],
-                    'motivation_level'   => $riskPerKategori['Motivation_Level']['risk'],
-                    'tutoring_sessions'  => $riskPerKategori['Les']['risk'],
-                    'kesulitan_belajar'  => $riskPerKategori['Kesulitan_Belajar']['risk'],
-                    'risk_level'         => $riskTotal,
-                    'rekomendasi'        => $rekomendasi,
-                    'created_at'         => now(),
-                    'updated_at'         => now(),
+                    'motivation_level'    => $riskPerKategori['Motivation_Level']['risk'],
+                    'tutoring_sessions'   => $riskPerKategori['Les']['risk'],
+                    'kesulitan_belajar'   => $riskPerKategori['Kesulitan_Belajar']['risk'],
+                    'risk_level'          => $riskTotal,
+                    'rekomendasi'         => $rekomendasi,
+                    'created_at'          => now(),
+                    'updated_at'          => now(),
                 ]);
             }
 
@@ -268,11 +268,9 @@ class KuisController extends Controller
 
     // ─────────────────────────────────────────────────────────────
     // HELPER PRIVATE METHOD: fetchSiakadData()
-    // Mengintegrasikan pemanggilan API SIAKAD & Logika Mapping Kategori
     // ─────────────────────────────────────────────────────────────
     private function fetchSiakadData(): array
     {
-        // Fallback default nilai jika API bermasalah atau user belum login
         $dataSia = [
             'attendanceNum'    => 0,
             'hoursStudiedNum'  => 0,
@@ -286,7 +284,6 @@ class KuisController extends Controller
 
         if ($nisn) {
             try {
-                // Menghindari double slash pada pembuatan URL API
                 $baseUrl   = config('services.siakad.base_url', 'https://siakad-production-523b.up.railway.app');
                 $siakadUrl = rtrim($baseUrl, '/') . '/api/student/' . $nisn;
 
@@ -295,12 +292,10 @@ class KuisController extends Controller
                 if ($response->successful() && $response->json('status') === 'success') {
                     $siakad = $response->json('data');
 
-                    // 1. Ambil nilai angka mentah dari respon API Anda
                     $dataSia['attendanceNum']    = $siakad['attendance'] ?? 0;
                     $dataSia['hoursStudiedNum']  = $siakad['hours_studied'] ?? 0;
                     $dataSia['previousScoreNum'] = $siakad['previous_scores'] ?? 0;
 
-                    // 2. Terapkan konversi aturan batasan (Threshold) Anda
                     $dataSia['attendanceCat'] = match (true) {
                         $dataSia['attendanceNum'] >= 85 => 'LOW',
                         $dataSia['attendanceNum'] >= 70 => 'MEDIUM',
@@ -453,7 +448,11 @@ class KuisController extends Controller
 
         return $hasil;
     }
-    
+
+    // ─────────────────────────────────────────────────────────────
+    // METHOD: hasilBySesi()
+    // Dipanggil via AJAX saat klik riwayat test di sidebar
+    // ─────────────────────────────────────────────────────────────
     public function hasilBySesi(int $sesiId)
     {
         $siswaId = Auth::user()->siswa->id ?? null;
@@ -494,28 +493,52 @@ class KuisController extends Controller
             ];
         }
 
+        // ── Generate teknik belajar sesuai rekomendasi sesi ini ──
+        $rekomendasiSesi = $hasilAnalisa->rekomendasi ?? '';
+        $teknikBelajar   = $this->getTeknikBelajar($rekomendasiSesi);
+
         return response()->json([
-            'riskTotal'      => $hasilAnalisa->risk_level ?? 'Medium',
-            'rekomendasi'    => $hasilAnalisa->rekomendasi ?? '',
-            'riskPerKategori'=> $riskPerKategori,
-            'attendanceNum'  => $hasilAnalisa->attendance ?? 0,
-            'hoursStudiedNum'=> $hasilAnalisa->hours_studied ?? 0,
-            'previousScoreNum'=> $hasilAnalisa->previous_scores ?? 0,
-            'attendanceCat'  => $this->numToAttendanceCat($hasilAnalisa->attendance ?? 0),
-            'hoursCat'       => $this->numToHoursCat($hasilAnalisa->hours_studied ?? 0),
-            'scoreCat'       => $this->numToScoreCat($hasilAnalisa->previous_scores ?? 0),
-            'tanggal'        => \Carbon\Carbon::parse($sesi->tanggal_kuis)->translatedFormat('d F Y, H.i') . ' WIB',
+            'riskTotal'        => $hasilAnalisa->risk_level ?? 'Medium',
+            'rekomendasi'      => $rekomendasiSesi,
+            'riskPerKategori'  => $riskPerKategori,
+            'attendanceNum'    => $hasilAnalisa->attendance ?? 0,
+            'hoursStudiedNum'  => $hasilAnalisa->hours_studied ?? 0,
+            'previousScoreNum' => $hasilAnalisa->previous_scores ?? 0,
+            'attendanceCat'    => $this->numToAttendanceCat($hasilAnalisa->attendance ?? 0),
+            'hoursCat'         => $this->numToHoursCat($hasilAnalisa->hours_studied ?? 0),
+            'scoreCat'         => $this->numToScoreCat($hasilAnalisa->previous_scores ?? 0),
+            'tanggal'          => \Carbon\Carbon::parse($sesi->tanggal_kuis)->translatedFormat('d F Y, H.i') . ' WIB',
+            'teknikBelajar'    => $teknikBelajar, // ← TAMBAHAN: kirim teknik belajar ke frontend
         ]);
     }
 
-    // Helper tambahan untuk konversi angka → kategori (dari data DB)
-    private function numToAttendanceCat(float $n): string {
-        return match(true) { $n >= 85 => 'LOW', $n >= 70 => 'MEDIUM', default => 'HIGH' };
+    // ─────────────────────────────────────────────────────────────
+    // HELPER: Konversi angka → kategori (dari data DB)
+    // ─────────────────────────────────────────────────────────────
+    private function numToAttendanceCat(float $n): string
+    {
+        return match (true) {
+            $n >= 85 => 'LOW',
+            $n >= 70 => 'MEDIUM',
+            default  => 'HIGH',
+        };
     }
-    private function numToHoursCat(float $n): string {
-        return match(true) { $n >= 7 => 'LOW', $n >= 4 => 'MEDIUM', default => 'HIGH' };
+
+    private function numToHoursCat(float $n): string
+    {
+        return match (true) {
+            $n >= 7 => 'LOW',
+            $n >= 4 => 'MEDIUM',
+            default => 'HIGH',
+        };
     }
-    private function numToScoreCat(float $n): string {
-        return match(true) { $n >= 75 => 'LOW', $n >= 50 => 'MEDIUM', default => 'HIGH' };
+
+    private function numToScoreCat(float $n): string
+    {
+        return match (true) {
+            $n >= 75 => 'LOW',
+            $n >= 50 => 'MEDIUM',
+            default  => 'HIGH',
+        };
     }
 }
