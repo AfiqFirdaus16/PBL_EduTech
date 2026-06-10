@@ -144,6 +144,7 @@ class KuisController extends Controller
                 'motivation_cat' => strtoupper($riskPerKategori['Motivation_Level']['risk']),
                 'tutor_cat'      => strtoupper($riskPerKategori['Les']['risk']),
                 'score_cat'      => $siakadData['scoreCat'],
+                'kesulitan_cat'  => strtoupper($riskPerKategori['Kesulitan_Belajar']['risk']),
             ]);
 
             $riskTotal   = $hasilForward['risk'] ?? $riskTotal;
@@ -451,5 +452,70 @@ class KuisController extends Controller
         }
 
         return $hasil;
+    }
+    
+    public function hasilBySesi(int $sesiId)
+    {
+        $siswaId = Auth::user()->siswa->id ?? null;
+
+        // Pastikan sesi ini milik siswa yang login
+        $sesi = DB::table('sesi_kuis')
+            ->where('id', $sesiId)
+            ->where('siswa_id', $siswaId)
+            ->first();
+
+        if (!$sesi) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $hasilAnalisa = DB::table('hasil_analisa')
+            ->where('sesi_id', $sesiId)
+            ->first();
+
+        $jawabanDB = DB::table('jawaban_kuis')
+            ->join('pertanyaan', 'jawaban_kuis.pertanyaan_id', '=', 'pertanyaan.id')
+            ->join('pilihan_jawaban', 'jawaban_kuis.pilihan_id', '=', 'pilihan_jawaban.id')
+            ->where('jawaban_kuis.sesi_id', $sesiId)
+            ->select('pertanyaan.kategori', 'pilihan_jawaban.risk_level')
+            ->get();
+
+        $riskPerKategori = [];
+        foreach ($this->kategoriUrutan as $kategori) {
+            $skor = ['Low' => 0, 'Medium' => 0, 'High' => 0];
+            foreach ($jawabanDB as $j) {
+                if ($j->kategori === $kategori && isset($skor[$j->risk_level])) {
+                    $skor[$j->risk_level]++;
+                }
+            }
+            arsort($skor);
+            $riskPerKategori[$kategori] = [
+                'risk'  => array_key_first($skor),
+                'label' => $this->labelKategori($kategori),
+            ];
+        }
+
+        return response()->json([
+            'riskTotal'      => $hasilAnalisa->risk_level ?? 'Medium',
+            'rekomendasi'    => $hasilAnalisa->rekomendasi ?? '',
+            'riskPerKategori'=> $riskPerKategori,
+            'attendanceNum'  => $hasilAnalisa->attendance ?? 0,
+            'hoursStudiedNum'=> $hasilAnalisa->hours_studied ?? 0,
+            'previousScoreNum'=> $hasilAnalisa->previous_scores ?? 0,
+            'attendanceCat'  => $this->numToAttendanceCat($hasilAnalisa->attendance ?? 0),
+            'hoursCat'       => $this->numToHoursCat($hasilAnalisa->hours_studied ?? 0),
+            'scoreCat'       => $this->numToScoreCat($hasilAnalisa->previous_scores ?? 0),
+            'tanggal'        => \Carbon\Carbon::parse($sesi->tanggal_kuis)->translatedFormat('d F Y, H.i') . ' WIB',
+        ]);
+    }
+
+    // Helper tambahan untuk konversi angka → kategori (dari data DB)
+    private function numToAttendanceCat(float $n): string {
+        return match(true) { $n >= 85 => 'LOW', $n >= 70 => 'MEDIUM', default => 'HIGH' };
+    }
+    private function numToHoursCat(float $n): string {
+        return match(true) { $n >= 7 => 'LOW', $n >= 4 => 'MEDIUM', default => 'HIGH' };
+    }
+    private function numToScoreCat(float $n): string {
+        return match(true) { $n >= 75 => 'LOW', $n >= 50 => 'MEDIUM', default => 'HIGH' };
     }
 }

@@ -99,6 +99,9 @@ Route::middleware(['auth', 'user'])->group(function () {
 
     Route::view('/hasil', 'page.hasil')
         ->name('hasil');
+    
+    Route::get('/kuis/hasil/{sesiId}', [KuisController::class, 'hasilBySesi'])
+        ->name('kuis.hasil.sesi')->middleware('auth');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'index'])
