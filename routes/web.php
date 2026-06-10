@@ -76,7 +76,7 @@ Route::middleware(['auth', 'user'])->group(function () {
 
     //Kuis
     Route::get('/kuis', function () {
-        return redirect()->route('kuis.show', 1);
+    return redirect()->route('kuis.show', 1);
     })->name('kuis');
 
     Route::get('/kuis/{step}', [KuisController::class, 'show'])
@@ -86,6 +86,10 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::post('/kuis/{step}', [KuisController::class, 'store'])
         ->where('step', '[1-5]')
         ->name('kuis.store');
+
+    Route::get('/kuis/hasil/{sesiId}', [KuisController::class, 'hasilBySesi'])
+        ->where('sesiId', '[0-9]+')
+        ->name('kuis.hasil.sesi');
 
     Route::get('/kuis/hasil', [KuisController::class, 'hasil'])
         ->name('kuis.hasil');
@@ -100,8 +104,6 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::view('/hasil', 'page.hasil')
         ->name('hasil');
     
-    Route::get('/kuis/hasil/{sesiId}', [KuisController::class, 'hasilBySesi'])
-        ->name('kuis.hasil.sesi')->middleware('auth');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'index'])
