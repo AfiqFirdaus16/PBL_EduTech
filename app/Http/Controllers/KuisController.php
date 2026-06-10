@@ -18,7 +18,7 @@ class KuisController extends Controller
         1 => 'Sleep_Hours',
         2 => 'Access_to_Resources',
         3 => 'Motivation_Level',
-        4 => 'Les',
+        4 => 'Tutoring_Sessions',
         5 => 'Kesulitan_Belajar',
     ];
 
@@ -156,7 +156,7 @@ class KuisController extends Controller
         );
 
         $tutorCat = strtoupper(
-            $riskPerKategori['Les']['risk']
+            $riskPerKategori['Tutoring_Sessions']['risk']
         );
 
         $kesulitanBelajar = strtoupper(
@@ -238,7 +238,7 @@ class KuisController extends Controller
             'Sleep_Hours'          => 'Pola Tidur',
             'Access_to_Resources'  => 'Akses Sumber Belajar',
             'Motivation_Level'     => 'Motivasi Belajar',
-            'Les'                  => 'Les / Bimbingan Belajar',
+            'Tutoring_Sessions'    => 'Les / Bimbingan Belajar',
             'Kesulitan_Belajar'    => 'Kesulitan Belajar',
             default                => $kategori,
         };
