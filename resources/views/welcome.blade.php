@@ -106,6 +106,9 @@
             align-items:stretch !important;
             gap:28px;
             justify-content:flex-start !important;
+            position:absolute;
+            left:50%;
+
         }
 
         .hamburger{
@@ -128,6 +131,17 @@
 
         .nav-menu a:hover{
             color:#3C3489;
+        }
+
+        /* DESKTOP SAJA */
+        @media(min-width:769px){
+
+            .nav-menu{
+                position:absolute;
+                left:50%;
+                transform:translateX(-50%);
+            }
+
         }
 
         /* ================= NAVBAR GUEST BUTTONS ================= */
