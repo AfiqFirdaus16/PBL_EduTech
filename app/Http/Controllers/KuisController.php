@@ -7,13 +7,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pertanyaan;
 use App\Services\ForwardChainingService;
+use Illuminate\Support\Facades\Http;
 
 class KuisController extends Controller
 {
-    /**
-     * Daftar kategori kuis secara berurutan.
-     * Urutan ini menentukan halaman ke-1 s/d ke-5.
-     */
+    // =========================================================================
+    // PROPERTY: Urutan kategori kuis (step 1 s/d step 5)
+    // =========================================================================
     private array $kategoriUrutan = [
         1 => 'Sleep_Hours',
         2 => 'Access_to_Resources',
@@ -23,7 +23,7 @@ class KuisController extends Controller
     ];
 
     // ─────────────────────────────────────────────────────────────
-    // Halaman kuis per kategori  →  GET /kuis/{step}
+    // METHOD: show()
     // ─────────────────────────────────────────────────────────────
     public function show(int $step)
     {
@@ -33,13 +33,14 @@ class KuisController extends Controller
 
         $kategori = $this->kategoriUrutan[$step];
 
-        $pertanyaan = \App\Models\Pertanyaan::with('pilihanJawaban')
+        $pertanyaan = Pertanyaan::with('pilihanJawaban')
             ->where('kategori', $kategori)
             ->get();
 
-        $totalStep    = 5;
-        $persen       = round((($step - 1) / $totalStep) * 100);
-        $stepBerikut  = $step + 1;
+        $totalStep      = 5;
+        $persen         = round((($step - 1) / $totalStep) * 100);
+        $stepBerikut    = $step + 1;
+
         $jawabanSession = session('jawaban', []);
 
         return view('page.kuis', compact(
@@ -54,15 +55,13 @@ class KuisController extends Controller
     }
 
     // ─────────────────────────────────────────────────────────────
-    // Simpan jawaban satu halaman  →  POST /kuis/{step}
+    // METHOD: store()
     // ─────────────────────────────────────────────────────────────
     public function store(Request $request, int $step)
     {
-        // Ambil pertanyaan untuk step ini agar bisa validasi dinamis
-        $kategori    = $this->kategoriUrutan[$step];
-        $pertanyaan  = \App\Models\Pertanyaan::where('kategori', $kategori)->get();
+        $kategori   = $this->kategoriUrutan[$step];
+        $pertanyaan = Pertanyaan::where('kategori', $kategori)->get();
 
-        // Buat aturan validasi: setiap q_{id} wajib diisi
         $rules = [];
         foreach ($pertanyaan as $p) {
             $rules["q_{$p->id}"] = 'required|integer|exists:pilihan_jawaban,id';
@@ -70,14 +69,12 @@ class KuisController extends Controller
 
         $validated = $request->validate($rules);
 
-        // Gabungkan jawaban ke session
         $jawaban = session('jawaban', []);
         foreach ($validated as $key => $pilihanId) {
             $jawaban[$key] = (int) $pilihanId;
         }
         session(['jawaban' => $jawaban]);
 
-        // Langkah terakhir → ke halaman hasil
         if ($step === 5) {
             return redirect()->route('kuis.hasil');
         }
@@ -86,161 +83,462 @@ class KuisController extends Controller
     }
 
     // ─────────────────────────────────────────────────────────────
-    // Halaman hasil  →  GET /kuis/hasil
+    // METHOD: hasil()
     // ─────────────────────────────────────────────────────────────
     public function hasil()
     {
+        $siswaId = Auth::check() ? (Auth::user()->siswa->id ?? null) : null;
         $jawaban = session('jawaban', []);
 
-        if (empty($jawaban)) {
-            return redirect()->route('kuis.show', 1);
-        }
+        // Ambil data dari SIAKAD terlebih dahulu (digunakan di semua skenario)
+        $siakadData = $this->fetchSiakadData();
 
-        // Hitung risk per kategori
-        $riskPerKategori = [];
+        // =========================================================================
+        // SKENARIO A: SISWA BARU SAJA SELESAI KUIS (Session 'jawaban' Terisi)
+        // =========================================================================
+        if (!empty($jawaban)) {
 
-        foreach ($this->kategoriUrutan as $step => $kategori) {
-            $pertanyaan = \App\Models\Pertanyaan::with('pilihanJawaban')
-                ->where('kategori', $kategori)
-                ->get();
+            // ── TAHAP 1: Hitung risk per kategori dari jawaban session ──
+            $riskPerKategori = [];
 
-            $skor = ['Low' => 0, 'Medium' => 0, 'High' => 0];
+            foreach ($this->kategoriUrutan as $step => $kategori) {
+                $pertanyaan = Pertanyaan::with('pilihanJawaban')
+                    ->where('kategori', $kategori)
+                    ->get();
 
-            foreach ($pertanyaan as $p) {
-                $pilihanId = $jawaban["q_{$p->id}"] ?? null;
-                if ($pilihanId) {
-                    $pilihan = $p->pilihanJawaban->firstWhere('id', $pilihanId);
-                    if ($pilihan) {
-                        $skor[$pilihan->risk_level]++;
+                $skor = ['Low' => 0, 'Medium' => 0, 'High' => 0];
+
+                foreach ($pertanyaan as $p) {
+                    $pilihanId = $jawaban["q_{$p->id}"] ?? null;
+                    if ($pilihanId) {
+                        $pilihan = $p->pilihanJawaban->firstWhere('id', $pilihanId);
+                        if ($pilihan && isset($skor[$pilihan->risk_level])) {
+                            $skor[$pilihan->risk_level]++;
+                        }
                     }
                 }
-            }
 
-            // Tentukan risk dominan
-            arsort($skor);
-            $riskDominan = array_key_first($skor);
+                arsort($skor);
+                $riskDominan = array_key_first($skor);
 
-            $riskPerKategori[$kategori] = [
-                'skor'        => $skor,
-                'risk'        => $riskDominan,
-                'label'       => $this->labelKategori($kategori),
-            ];
-        }
-
-        // Risk keseluruhan (majority vote)
-        $allRisks    = array_column($riskPerKategori, 'risk');
-        $riskCounts  = array_count_values($allRisks);
-        arsort($riskCounts);
-        $riskTotal   = array_key_first($riskCounts);
-
-        // ====================================================
-        // DUMMY DATA SIAKAD (sementara)
-        // Nanti diganti API SIAKAD
-        // ====================================================
-
-        $attendanceCat = 'HIGH';
-        $hoursCat      = 'MEDIUM';
-        $scoreCat      = 'HIGH';
-
-        // dari hasil kuis
-        $sleepCat = strtoupper(
-            $riskPerKategori['Sleep_Hours']['risk']
-        );
-
-        $resourceCat = strtoupper(
-            $riskPerKategori['Access_to_Resources']['risk']
-        );
-
-        $motivationCat = strtoupper(
-            $riskPerKategori['Motivation_Level']['risk']
-        );
-
-        $tutorCat = strtoupper(
-            $riskPerKategori['Tutoring_Sessions']['risk']
-        );
-
-        $kesulitanBelajar = strtoupper(
-            $riskPerKategori['Kesulitan_Belajar']['risk']
-        );
-
-        // ─────────────────────────────────────────────────────────────
-        // Function Model: Forward Chaining
-        // ─────────────────────────────────────────────────────────────
-        $forward = new ForwardChainingService();
-
-        $hasilForward = $forward->proses([
-            'attendance_cat' => $attendanceCat,
-            'sleep_cat'      => $sleepCat,
-            'hours_cat'      => $hoursCat,
-            'resource_cat'   => $resourceCat,
-            'motivation_cat' => $motivationCat,
-            'tutor_cat'      => $tutorCat,
-            'score_cat'      => $scoreCat,
-        ]);
-
-        $riskTotal = $hasilForward['risk'] ?? $riskTotal;
-        $rekomendasi = $hasilForward['rekomendasi'] ?? null;
-
-        // ====================================================
-        // 🚀 PROSES SIMPAN KE DATABASE (SESUAI SKEMA GAMBAR)
-        // ====================================================
-        $siswaId = \Illuminate\Support\Facades\Auth::user()->siswa->id ?? null;
-
-        if ($siswaId) {
-
-            // 1. Buat Data Sesi Kuis
-            $sesiId = \Illuminate\Support\Facades\DB::table('sesi_kuis')->insertGetId([
-                'siswa_id' => $siswaId,
-                'tanggal_kuis' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            // 2. Simpan Detail Jawaban Kuis per Pertanyaan
-            $insertJawaban = [];
-            foreach ($jawaban as $key => $pilihanId) {
-                // $key bentuknya "q_1", "q_2", dst. Kita ambil angkanya saja untuk pertanyaan_id.
-                $pertanyaanId = str_replace('q_', '', $key);
-
-                $insertJawaban[] = [
-                    'sesi_id' => $sesiId,
-                    'pertanyaan_id' => $pertanyaanId,
-                    'pilihan_id' => $pilihanId,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                $riskPerKategori[$kategori] = [
+                    'skor'  => $skor,
+                    'risk'  => $riskDominan,
+                    'label' => $this->labelKategori($kategori),
                 ];
             }
-            // Insert massal ke tabel jawaban_kuis
-            \Illuminate\Support\Facades\DB::table('jawaban_kuis')->insert($insertJawaban);
 
-            // 3. Simpan Hasil Analisa Akhir
-            \Illuminate\Support\Facades\DB::table('hasil_analisa')->insert([
-                'sesi_id' => $sesiId, // Di gambar Anda nama kolomnya sesi_id
-                'risk_level' => $riskTotal,
-                'rekomendasi' => $rekomendasi,
-                'created_at' => now(),
-                'updated_at' => now(),
+            // ── TAHAP 2: Hitung risk total awal menggunakan majority vote ──
+            $allRisks   = array_column($riskPerKategori, 'risk');
+            $riskCounts = array_count_values($allRisks);
+            arsort($riskCounts);
+            $riskTotal  = array_key_first($riskCounts);
+
+            // ── TAHAP 3: Jalankan Forward Chaining Service ──
+            $forward      = new ForwardChainingService();
+            $hasilForward = $forward->proses([
+                'attendance_cat' => $siakadData['attendanceCat'],
+                'sleep_cat'      => strtoupper($riskPerKategori['Sleep_Hours']['risk']),
+                'hours_cat'      => $siakadData['hoursCat'],
+                'resource_cat'   => strtoupper($riskPerKategori['Access_to_Resources']['risk']),
+                'motivation_cat' => strtoupper($riskPerKategori['Motivation_Level']['risk']),
+                'tutor_cat'      => strtoupper($riskPerKategori['Les']['risk']),
+                'score_cat'      => $siakadData['scoreCat'],
+                'kesulitan_cat'  => strtoupper($riskPerKategori['Kesulitan_Belajar']['risk']),
             ]);
+
+            $riskTotal   = $hasilForward['risk'] ?? $riskTotal;
+            $rekomendasi = $hasilForward['rekomendasi'] ?? null;
+
+            // ── TAHAP 4: Ambil teknik belajar rekomendasi ──
+            $teknikBelajar = $this->getTeknikBelajar($rekomendasi ?? '');
+
+            // ── TAHAP 5: Simpan ke Database sesuai struktur ERD gambar ──
+            if ($siswaId) {
+                $sesiId = DB::table('sesi_kuis')->insertGetId([
+                    'siswa_id'     => $siswaId,
+                    'tanggal_kuis' => now(),
+                    'created_at'   => now(),
+                    'updated_at'   => now(),
+                ]);
+
+                $insertJawaban = [];
+                foreach ($jawaban as $key => $pilihanId) {
+                    $pertanyaanId    = (int) str_replace('q_', '', $key);
+                    $insertJawaban[] = [
+                        'sesi_id'       => $sesiId,
+                        'pertanyaan_id' => $pertanyaanId,
+                        'pilihan_id'    => $pilihanId,
+                        'created_at'    => now(),
+                        'updated_at'    => now(),
+                    ];
+                }
+                DB::table('jawaban_kuis')->insert($insertJawaban);
+
+                // Insert ke hasil_analisa disesuaikan penuh dengan field di gambar database Anda
+                DB::table('hasil_analisa')->insert([
+                    'sesi_id'             => $sesiId,
+                    'attendance'          => $siakadData['attendanceNum'],
+                    'previous_scores'     => $siakadData['previousScoreNum'],
+                    'hours_studied'       => $siakadData['hoursStudiedNum'],
+                    'sleep_hours'         => $riskPerKategori['Sleep_Hours']['risk'],
+                    'access_to_resources' => $riskPerKategori['Access_to_Resources']['risk'],
+                    'motivation_level'    => $riskPerKategori['Motivation_Level']['risk'],
+                    'tutoring_sessions'   => $riskPerKategori['Les']['risk'],
+                    'kesulitan_belajar'   => $riskPerKategori['Kesulitan_Belajar']['risk'],
+                    'risk_level'          => $riskTotal,
+                    'rekomendasi'         => $rekomendasi,
+                    'created_at'          => now(),
+                    'updated_at'          => now(),
+                ]);
+            }
+
+            // Hapus session jawaban setelah selesai kuis
+            session()->forget('jawaban');
+
+            return view('page.hasil', array_merge(compact(
+                'riskPerKategori',
+                'riskTotal',
+                'rekomendasi',
+                'teknikBelajar'
+            ), $siakadData));
         }
 
-        // Hapus session setelah selesai
-        session()->forget('jawaban');
+        // =========================================================================
+        // SKENARIO B: SISWA LIHAT RIWAYAT HASIL (Session Kosong, Data dari DB)
+        // =========================================================================
+        if ($siswaId) {
+            $latestSesi = DB::table('sesi_kuis')
+                ->where('siswa_id', $siswaId)
+                ->orderByDesc('tanggal_kuis')
+                ->first();
 
-        return view('page.hasil', compact('riskPerKategori', 'riskTotal', 'rekomendasi'));
+            if ($latestSesi) {
+                $hasilAnalisa = DB::table('hasil_analisa')
+                    ->where('sesi_id', $latestSesi->id)
+                    ->first();
+
+                $riskTotal   = $hasilAnalisa->risk_level ?? 'Medium';
+                $rekomendasi = $hasilAnalisa->rekomendasi ?? null;
+                $teknikBelajar = $this->getTeknikBelajar($rekomendasi ?? '');
+
+                // Ambil data jawaban dari DB untuk menyusun ulang $riskPerKategori
+                $jawabanDB = DB::table('jawaban_kuis')
+                    ->join('pertanyaan', 'jawaban_kuis.pertanyaan_id', '=', 'pertanyaan.id')
+                    ->join('pilihan_jawaban', 'jawaban_kuis.pilihan_id', '=', 'pilihan_jawaban.id')
+                    ->where('jawaban_kuis.sesi_id', $latestSesi->id)
+                    ->select('pertanyaan.kategori', 'pilihan_jawaban.risk_level')
+                    ->get();
+
+                $riskPerKategori = [];
+                foreach ($this->kategoriUrutan as $kategori) {
+                    $skor = ['Low' => 0, 'Medium' => 0, 'High' => 0];
+
+                    foreach ($jawabanDB as $j) {
+                        if ($j->kategori === $kategori && isset($skor[$j->risk_level])) {
+                            $skor[$j->risk_level]++;
+                        }
+                    }
+
+                    arsort($skor);
+                    $riskDominan = array_key_first($skor);
+
+                    $riskPerKategori[$kategori] = [
+                        'skor'  => $skor,
+                        'risk'  => $riskDominan,
+                        'label' => $this->labelKategori($kategori),
+                    ];
+                }
+
+                return view('page.hasil', array_merge(compact(
+                    'riskPerKategori',
+                    'riskTotal',
+                    'rekomendasi',
+                    'teknikBelajar'
+                ), $siakadData));
+            }
+        }
+
+        // =========================================================================
+        // SKENARIO C: BELUM PERNAH KUIS SAMA SEKALI
+        // =========================================================================
+        return redirect()->route('kuis.show', 1)
+            ->with('info', 'Silakan selesaikan kuis terlebih dahulu.');
     }
 
     // ─────────────────────────────────────────────────────────────
-    // Helper: label ramah untuk nama kategori DB
+    // HELPER PRIVATE METHOD: fetchSiakadData()
+    // ─────────────────────────────────────────────────────────────
+    private function fetchSiakadData(): array
+    {
+        $dataSia = [
+            'attendanceNum'    => 0,
+            'hoursStudiedNum'  => 0,
+            'previousScoreNum' => 0,
+            'attendanceCat'    => 'MEDIUM',
+            'hoursCat'         => 'MEDIUM',
+            'scoreCat'         => 'MEDIUM',
+        ];
+
+        $nisn = Auth::check() ? (Auth::user()->siswa->nisn ?? null) : null;
+
+        if ($nisn) {
+            try {
+                $baseUrl   = config('services.siakad.base_url', 'https://siakad-production-523b.up.railway.app');
+                $siakadUrl = rtrim($baseUrl, '/') . '/api/student/' . $nisn;
+
+                $response  = Http::timeout(8)->get($siakadUrl);
+
+                if ($response->successful() && $response->json('status') === 'success') {
+                    $siakad = $response->json('data');
+
+                    $dataSia['attendanceNum']    = $siakad['attendance'] ?? 0;
+                    $dataSia['hoursStudiedNum']  = $siakad['hours_studied'] ?? 0;
+                    $dataSia['previousScoreNum'] = $siakad['previous_scores'] ?? 0;
+
+                    $dataSia['attendanceCat'] = match (true) {
+                        $dataSia['attendanceNum'] >= 85 => 'LOW',
+                        $dataSia['attendanceNum'] >= 70 => 'MEDIUM',
+                        default                         => 'HIGH',
+                    };
+
+                    $dataSia['hoursCat'] = match (true) {
+                        $dataSia['hoursStudiedNum'] >= 7 => 'LOW',
+                        $dataSia['hoursStudiedNum'] >= 4 => 'MEDIUM',
+                        default                          => 'HIGH',
+                    };
+
+                    $dataSia['scoreCat'] = match (true) {
+                        $dataSia['previousScoreNum'] >= 75 => 'LOW',
+                        $dataSia['previousScoreNum'] >= 50 => 'MEDIUM',
+                        default                            => 'HIGH',
+                    };
+                }
+            } catch (\Exception $e) {
+                // Tetap menggunakan data fallback agar aplikasi tidak crash total saat API mati
+            }
+        }
+
+        return $dataSia;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // HELPER: labelKategori()
     // ─────────────────────────────────────────────────────────────
     private function labelKategori(string $kategori): string
     {
         return match ($kategori) {
-            'Sleep_Hours'          => 'Pola Tidur',
-            'Access_to_Resources'  => 'Akses Sumber Belajar',
-            'Motivation_Level'     => 'Motivasi Belajar',
-            'Tutoring_Sessions'    => 'Les / Bimbingan Belajar',
-            'Kesulitan_Belajar'    => 'Kesulitan Belajar',
-            default                => $kategori,
+            'Sleep_Hours'         => 'Pola Tidur',
+            'Access_to_Resources' => 'Akses Sumber Belajar',
+            'Motivation_Level'    => 'Motivasi Belajar',
+            'Les'                 => 'Les / Bimbingan Belajar',
+            'Kesulitan_Belajar'   => 'Kesulitan Belajar',
+            default               => $kategori,
+        };
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // HELPER: getTeknikBelajar()
+    // ─────────────────────────────────────────────────────────────
+    private function getTeknikBelajar(string $rekomendasi): array
+    {
+        $semua = [
+            [
+                'nama'       => 'Pomodoro',
+                'desc'       => 'Belajar fokus 25 menit, istirahat 5 menit.',
+                'penjelasan' => 'Teknik Pomodoro membantu menjaga konsentrasi dengan membagi waktu belajar menjadi sesi pendek yang terstruktur sehingga otak tidak mudah lelah.',
+                'img'        => 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600',
+                'cara'       => [
+                    'Siapkan timer selama 25 menit',
+                    'Fokus penuh tanpa gangguan selama timer berjalan',
+                    'Istirahat 5 menit setelah satu sesi selesai',
+                    'Setiap 4 sesi, ambil istirahat panjang 15–30 menit',
+                ],
+            ],
+            [
+                'nama'       => 'Active Recall',
+                'desc'       => 'Mengingat kembali materi tanpa melihat catatan.',
+                'penjelasan' => 'Aktif mengambil informasi dari memori terbukti jauh lebih efektif daripada sekadar membaca ulang catatan.',
+                'img'        => 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600',
+                'cara'       => [
+                    'Pelajari materi selama 20–30 menit',
+                    'Tutup semua catatan dan buku',
+                    'Tulis atau ucapkan kembali apa yang kamu ingat',
+                    'Cek dan koreksi bagian yang salah atau terlupa',
+                ],
+            ],
+            [
+                'nama'       => 'Spaced Repetition',
+                'desc'       => 'Ulang materi di interval waktu yang makin panjang.',
+                'penjelasan' => 'Mengulang materi secara berkala sebelum benar-benar lupa akan memperkuat memori jangka panjang secara signifikan.',
+                'img'        => 'https://images.unsplash.com/photo-1512314889357-e157c22f938d?w=600',
+                'cara'       => [
+                    'Pelajari materi baru hari ini',
+                    'Ulang keesokan harinya, lalu 3 hari lagi, lalu seminggu lagi',
+                    'Gunakan flashcard atau aplikasi seperti Anki',
+                    'Fokus lebih lama pada materi yang sering terlupa',
+                ],
+            ],
+            [
+                'nama'       => 'Feynman Technique',
+                'desc'       => 'Jelaskan materi seolah mengajar orang lain.',
+                'penjelasan' => 'Dengan menjelaskan konsep menggunakan bahasa sederhana, kamu akan tahu persis bagian mana yang belum benar-benar dipahami.',
+                'img'        => 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600',
+                'cara'       => [
+                    'Pilih satu konsep yang ingin dipahami',
+                    'Jelaskan konsep itu dengan kata-kata sendiri seperti mengajar anak SD',
+                    'Identifikasi bagian yang masih bingung atau macet',
+                    'Kembali ke sumber belajar dan pelajari ulang bagian tersebut',
+                ],
+            ],
+            [
+                'nama'       => 'Mind Mapping',
+                'desc'       => 'Visualisasi konsep dalam diagram cabang.',
+                'penjelasan' => 'Mind map membantu melihat hubungan antar konsep secara menyeluruh sehingga lebih mudah dipahami dan diingat.',
+                'img'        => 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600',
+                'cara'       => [
+                    'Tulis topik utama di tengah halaman',
+                    'Buat cabang untuk setiap subtopik',
+                    'Tambahkan detail kecil di tiap cabang',
+                    'Gunakan warna dan gambar agar lebih mudah diingat',
+                ],
+            ],
+            [
+                'nama'       => 'Interleaving',
+                'desc'       => 'Campur beberapa topik dalam satu sesi belajar.',
+                'penjelasan' => 'Belajar dengan mengganti-ganti topik membuat otak bekerja lebih keras sehingga pemahaman dan retensi menjadi lebih kuat.',
+                'img'        => 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=600',
+                'cara'       => [
+                    'Siapkan 2–3 topik berbeda yang ingin dipelajari',
+                    'Belajar topik pertama selama 20 menit',
+                    'Beralih ke topik kedua tanpa jeda panjang',
+                    'Rotasi antar topik hingga semua selesai',
+                ],
+            ],
+            [
+                'nama'       => 'SQ3R',
+                'desc'       => 'Survey, Question, Read, Recite, Review.',
+                'penjelasan' => 'Metode membaca aktif yang terstruktur agar setiap halaman yang dibaca benar-benar dipahami dan tersimpan dalam memori.',
+                'img'        => 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600',
+                'cara'       => [
+                    'Survey: baca judul, subjudul, dan gambar secara cepat',
+                    'Question: ubah setiap subjudul menjadi pertanyaan',
+                    'Read: baca untuk menjawab pertanyaan yang sudah dibuat',
+                    'Recite & Review: rangkum jawabannya lalu tinjau ulang',
+                ],
+            ],
+        ];
+
+        $hasil = [];
+        foreach ($semua as $teknik) {
+            if (stripos($rekomendasi, $teknik['nama']) !== false) {
+                $hasil[] = $teknik;
+            }
+        }
+
+        if (count($hasil) < 3) {
+            foreach ($semua as $teknik) {
+                $sudahAda = array_filter($hasil, fn($t) => $t['nama'] === $teknik['nama']);
+                if (empty($sudahAda)) {
+                    $hasil[] = $teknik;
+                }
+                if (count($hasil) === 3) break;
+            }
+        }
+
+        return $hasil;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // METHOD: hasilBySesi()
+    // Dipanggil via AJAX saat klik riwayat test di sidebar
+    // ─────────────────────────────────────────────────────────────
+    public function hasilBySesi(int $sesiId)
+    {
+        $siswaId = Auth::user()->siswa->id ?? null;
+
+        // Pastikan sesi ini milik siswa yang login
+        $sesi = DB::table('sesi_kuis')
+            ->where('id', $sesiId)
+            ->where('siswa_id', $siswaId)
+            ->first();
+
+        if (!$sesi) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $hasilAnalisa = DB::table('hasil_analisa')
+            ->where('sesi_id', $sesiId)
+            ->first();
+
+        $jawabanDB = DB::table('jawaban_kuis')
+            ->join('pertanyaan', 'jawaban_kuis.pertanyaan_id', '=', 'pertanyaan.id')
+            ->join('pilihan_jawaban', 'jawaban_kuis.pilihan_id', '=', 'pilihan_jawaban.id')
+            ->where('jawaban_kuis.sesi_id', $sesiId)
+            ->select('pertanyaan.kategori', 'pilihan_jawaban.risk_level')
+            ->get();
+
+        $riskPerKategori = [];
+        foreach ($this->kategoriUrutan as $kategori) {
+            $skor = ['Low' => 0, 'Medium' => 0, 'High' => 0];
+            foreach ($jawabanDB as $j) {
+                if ($j->kategori === $kategori && isset($skor[$j->risk_level])) {
+                    $skor[$j->risk_level]++;
+                }
+            }
+            arsort($skor);
+            $riskPerKategori[$kategori] = [
+                'risk'  => array_key_first($skor),
+                'label' => $this->labelKategori($kategori),
+            ];
+        }
+
+        // ── Generate teknik belajar sesuai rekomendasi sesi ini ──
+        $rekomendasiSesi = $hasilAnalisa->rekomendasi ?? '';
+        $teknikBelajar   = $this->getTeknikBelajar($rekomendasiSesi);
+
+        return response()->json([
+            'riskTotal'        => $hasilAnalisa->risk_level ?? 'Medium',
+            'rekomendasi'      => $rekomendasiSesi,
+            'riskPerKategori'  => $riskPerKategori,
+            'attendanceNum'    => $hasilAnalisa->attendance ?? 0,
+            'hoursStudiedNum'  => $hasilAnalisa->hours_studied ?? 0,
+            'previousScoreNum' => $hasilAnalisa->previous_scores ?? 0,
+            'attendanceCat'    => $this->numToAttendanceCat($hasilAnalisa->attendance ?? 0),
+            'hoursCat'         => $this->numToHoursCat($hasilAnalisa->hours_studied ?? 0),
+            'scoreCat'         => $this->numToScoreCat($hasilAnalisa->previous_scores ?? 0),
+            'tanggal'          => \Carbon\Carbon::parse($sesi->tanggal_kuis)->translatedFormat('d F Y, H.i') . ' WIB',
+            'teknikBelajar'    => $teknikBelajar, // ← TAMBAHAN: kirim teknik belajar ke frontend
+        ]);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // HELPER: Konversi angka → kategori (dari data DB)
+    // ─────────────────────────────────────────────────────────────
+    private function numToAttendanceCat(float $n): string
+    {
+        return match (true) {
+            $n >= 85 => 'LOW',
+            $n >= 70 => 'MEDIUM',
+            default  => 'HIGH',
+        };
+    }
+
+    private function numToHoursCat(float $n): string
+    {
+        return match (true) {
+            $n >= 7 => 'LOW',
+            $n >= 4 => 'MEDIUM',
+            default => 'HIGH',
+        };
+    }
+
+    private function numToScoreCat(float $n): string
+    {
+        return match (true) {
+            $n >= 75 => 'LOW',
+            $n >= 50 => 'MEDIUM',
+            default  => 'HIGH',
         };
     }
 }

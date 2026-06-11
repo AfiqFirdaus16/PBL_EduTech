@@ -3,24 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SesiKuis extends Model
 {
     protected $table = 'sesi_kuis';
 
-    public function siswa()
+    public function siswa(): BelongsTo
     {
-        return $this->belongsTo(
-            Siswa::class,
-            'siswa_id'
-        );
-    }
-
-    public function hasilAnalisa()
-    {
-        return $this->hasOne(
-            HasilAnalisa::class,
-            'sesi_id'
-        );
+        return $this->belongsTo(Siswa::class, 'siswa_id', 'id');
     }
 }

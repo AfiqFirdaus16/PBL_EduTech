@@ -175,11 +175,25 @@
         }
         .kat-card .kat-title { font-size: 12px; font-weight: 600; color: #555; margin-bottom: 10px; }
         .kat-card .kat-icon  { font-size: 26px; margin-bottom: 10px; }
+        .kat-card .kat-value { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 4px; }
         .kat-card .kat-risk-label { font-size: 11px; color: #888; margin-bottom: 6px; }
+
+        /* Siakad badge */
+        .siakad-badge {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: #EEF0FF;
+            color: var(--primary);
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
 
         /* Progress bar */
         .risk-bar-wrap { height: 8px; background: #EBEBEB; border-radius: 99px; overflow: hidden; }
-        .risk-bar      { height: 8px; border-radius: 99px; }
+        .risk-bar      { height: 8px; border-radius: 99px; transition: width 0.6s ease; }
         .risk-bar.low    { background: var(--success); width: 30%; }
         .risk-bar.medium { background: var(--warning); width: 60%; }
         .risk-bar.high   { background: var(--danger);  width: 90%; }
@@ -189,84 +203,152 @@
         .kat-risk-text.medium { color: var(--warning); }
         .kat-risk-text.high   { color: var(--danger);  }
 
-        /* ===== TOP 3 TEKNIK ===== */
+        /* ===== TOP 3 TEKNIK BELAJAR ===== */
         .teknik-section { margin-top: 24px; }
-        .teknik-section h3 { font-size: 20px; font-weight: 800; color: #222; margin-bottom: 18px; }
+        .teknik-section h3 { font-size: 20px; font-weight: 800; color: #222; margin-bottom: 4px; }
+        .teknik-section .teknik-subtitle {
+            font-size: 12px; color: #888; margin-bottom: 18px;
+            font-style: italic;
+        }
         .teknik-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 
+        /* Kartu bergambar */
         .teknik-card {
-            background: #fff;
-            border: 1px solid #EEEEEE;
+            position: relative;
             border-radius: 16px;
             overflow: hidden;
+            cursor: pointer;
+            height: 200px;
+            box-shadow: 0 4px 16px rgba(0,0,0,.10);
         }
-        .teknik-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px 0;
-        }
-        .teknik-num {
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            background: var(--secondary);
-            color: #fff;
-            font-size: 15px; font-weight: 800;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .teknik-num.n2 { background: var(--primary); }
-        .teknik-num.n3 { background: #6C63FF; }
-        .teknik-toggle {
-            width: 28px; height: 28px; border-radius: 8px;
-            border: 1px solid #EBEBEB;
-            background: #fff; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; color: #aaa; transition: 0.2s;
-        }
-        .teknik-toggle:hover { background: #F3F2FF; color: var(--primary); }
-
         .teknik-img {
-            width: 100%; height: 120px;
+            width: 100%; height: 100%;
             object-fit: cover;
-            margin-top: 10px;
             display: block;
+            transition: transform 0.4s ease;
         }
-        .teknik-img-placeholder {
-            width: 100%; height: 120px;
-            background: linear-gradient(135deg, #f0eefc 0%, #e0dcfb 100%);
+        .teknik-card:hover .teknik-img { transform: scale(1.06); }
+        .teknik-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(30,20,80,.80) 40%, rgba(0,0,0,.15) 100%);
+        }
+
+        /* Badge nomor urut */
+        .teknik-rank {
+            position: absolute;
+            top: 12px; left: 12px;
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            font-size: 14px; font-weight: 800;
+            color: #fff;
             display: flex; align-items: center; justify-content: center;
-            font-size: 40px;
-            margin-top: 10px;
+        }
+        .teknik-rank.r1 { background: var(--secondary); }
+        .teknik-rank.r2 { background: var(--primary); }
+        .teknik-rank.r3 { background: #6C63FF; }
+
+        /* Tombol info */
+        .teknik-info-btn {
+            position: absolute;
+            top: 12px; right: 12px;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,.7);
+            background: rgba(255,255,255,.15);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 13px; font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
+        }
+        .teknik-info-btn:hover { background: rgba(255,255,255,.35); }
+
+        /* Label nama di bawah kartu */
+        .teknik-label {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 14px 14px 16px;
+        }
+        .teknik-label h4 {
+            font-size: 15px; font-weight: 800;
+            color: #fff; margin-bottom: 3px;
+        }
+        .teknik-label p {
+            font-size: 11px; color: rgba(255,255,255,.75);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .teknik-body { padding: 14px 16px; }
-        .teknik-name {
+        /* ===== MODAL TEKNIK ===== */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.55);
+            backdrop-filter: blur(3px);
+            z-index: 99998;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease;
+            padding: 20px;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: all; }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 520px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,.25);
+            transform: translateY(20px);
+            transition: transform 0.25s ease;
+        }
+        .modal-overlay.show .modal-box { transform: translateY(0); }
+
+        .modal-img {
+            width: 100%; height: 200px;
+            object-fit: cover; display: block;
+        }
+        .modal-content { padding: 24px; }
+        .modal-title {
+            font-size: 20px; font-weight: 800;
+            color: var(--primary); margin-bottom: 12px;
+        }
+        .modal-desc {
+            font-size: 13px; color: #555;
+            line-height: 1.75; margin-bottom: 18px;
+        }
+        .modal-cara-title {
+            font-size: 13px; font-weight: 700;
+            color: #333; margin-bottom: 10px;
+        }
+        .modal-cara-list { padding-left: 0; margin-bottom: 20px; }
+        .modal-cara-list li {
+            font-size: 13px; color: #555;
+            padding: 5px 0 5px 20px;
+            position: relative; line-height: 1.5;
+        }
+        .modal-cara-list li::before {
+            content: '';
+            position: absolute; left: 0; top: 11px;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--secondary);
+        }
+        .modal-close {
+            display: block; width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: #fff;
+            border: none; border-radius: 12px;
             font-size: 14px; font-weight: 700;
-            color: var(--primary);
-            text-decoration: underline;
-            margin-bottom: 6px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer; transition: 0.2s;
         }
-        .teknik-desc { font-size: 12px; color: #666; line-height: 1.6; }
-
-        .teknik-cara {
-            padding: 12px 16px;
-            border-top: 1px dashed #EBEBEB;
-            background: #FAFAFA;
-            display: none;
-        }
-        .teknik-cara.open { display: block; }
-        .teknik-cara h5 { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 8px; }
-        .teknik-cara ul { padding-left: 0; }
-        .teknik-cara ul li {
-            font-size: 12px; color: #555;
-            padding: 3px 0 3px 16px;
-            position: relative;
-        }
-        .teknik-cara ul li::before {
-            content: '•';
-            position: absolute; left: 0;
-            color: var(--secondary);
-        }
+        .modal-close:hover { background: #2d2770; }
 
         /* ===== SIDEBAR ===== */
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
@@ -301,7 +383,6 @@
         .riwayat-tanggal { font-size: 11px; color: #AAA; font-weight: 500; margin-bottom: 4px; }
         .riwayat-level   { font-size: 13px; font-weight: 700; color: #333; }
         .riwayat-waktu   { font-size: 11px; color: #888; }
-
         .riwayat-note { font-size: 11px; color: #AAA; text-align: center; margin-top: 8px; }
 
         /* CTA Card */
@@ -401,34 +482,26 @@
             <div class="card" style="margin-bottom:24px;">
 
                 <div class="hasil-utama">
-
-                    {{-- Donut ring sesuai risk --}}
                     @php
                         $riskLower = strtolower($riskTotal);
                         $donutColor = match($riskLower) {
-                            'low'    => '#27AE60',
-                            'high'   => '#E53535',
-                            default  => '#EF9F27',
+                            'low'  => '#27AE60',
+                            'high' => '#E53535',
+                            default => '#EF9F27',
                         };
-                        // Lingkaran penuh = 283 (circumference untuk r=45)
                         $circumference = 283;
                         $fillPercent = match($riskLower) {
-                            'low'    => 0.30,
-                            'high'   => 0.90,
-                            default  => 0.60,
+                            'low'  => 0.30,
+                            'high' => 0.90,
+                            default => 0.60,
                         };
-                        $dasharray  = round($circumference * $fillPercent);
-                        $dashoffset = $circumference - $dasharray;
+                        $dasharray = round($circumference * $fillPercent);
                     @endphp
 
                     <div class="donut-wrap">
                         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            {{-- Track --}}
                             <circle cx="50" cy="50" r="45"
-                                fill="none"
-                                stroke="#EBEBEB"
-                                stroke-width="10"/>
-                            {{-- Fill --}}
+                                fill="none" stroke="#EBEBEB" stroke-width="10"/>
                             <circle cx="50" cy="50" r="45"
                                 fill="none"
                                 stroke="{{ $donutColor }}"
@@ -448,15 +521,15 @@
                         <h2>Hasil Resiko Belajar</h2>
                         <p>
                             Berdasarkan pola aktivitas Anda, tingkat risiko burnout berada
-                            pada level {{ strtolower($riskTotal) }}.
+                            pada level <strong>{{ strtolower($riskTotal) }}</strong>.
                             @if($rekomendasi)
-                                {{ $rekomendasi }}
+                                Rekomendasi teknik belajar untuk Anda: <em>{{ $rekomendasi }}</em>
                             @endif
                         </p>
                     </div>
                 </div>
 
-                {{-- ── GRID 6 KATEGORI ── --}}
+                {{-- ── GRID KATEGORI ── --}}
                 @php
                     $ikonKategori = [
                         'Sleep_Hours'         => '🌙',
@@ -465,34 +538,73 @@
                         'Les'                 => '📊',
                         'Kesulitan_Belajar'   => '🧠',
                     ];
-                    // Tambah "Jam Belajar" (dari SIAKAD) — dummy
-                    $extraKategori = [
-                        [
-                            'label' => 'Jam Belajar',
-                            'ikon'  => '🕐',
-                            'risk'  => 'Medium',
-                        ]
-                    ];
+
+                    $siakadRiskClass = fn(string $cat): string => match(strtolower($cat)) {
+                        'low'  => 'low',
+                        'high' => 'high',
+                        default => 'medium',
+                    };
+
+                    $siakadRiskLabel = fn(string $cat): string => match(strtolower($cat)) {
+                        'low'  => 'Resiko Rendah',
+                        'high' => 'Resiko Tinggi',
+                        default => 'Resiko Normal',
+                    };
                 @endphp
 
                 <div class="grid-kategori">
 
-                    {{-- Jam Belajar (dummy SIAKAD) --}}
+                    {{-- ── 3 KARTU DATA SIAKAD ── --}}
+                    {{-- Kehadiran --}}
+                    <div class="kat-card">
+                        <div class="kat-title">Kehadiran</div>
+                        <div class="kat-icon">🏫</div>
+                        <div class="kat-value">{{ $attendanceNum ?? '-' }}%</div>
+                        <div class="kat-risk-label">{{ $siakadRiskLabel($attendanceCat) }}</div>
+                        <div class="risk-bar-wrap">
+                            <div class="risk-bar {{ $siakadRiskClass($attendanceCat) }}"></div>
+                        </div>
+                        <div class="kat-risk-text {{ $siakadRiskClass($attendanceCat) }}">
+                            {{ ucfirst(strtolower($attendanceCat)) }}
+                        </div>
+                    </div>
+
+                    {{-- Jam Belajar --}}
                     <div class="kat-card">
                         <div class="kat-title">Jam Belajar</div>
                         <div class="kat-icon">🕐</div>
-                        <div class="kat-risk-label">Resiko Normal</div>
-                        <div class="risk-bar-wrap"><div class="risk-bar medium"></div></div>
+                        <div class="kat-value">{{ $hoursStudiedNum ?? '-' }} jam/hari</div>
+                        <div class="kat-risk-label">{{ $siakadRiskLabel($hoursCat) }}</div>
+                        <div class="risk-bar-wrap">
+                            <div class="risk-bar {{ $siakadRiskClass($hoursCat) }}"></div>
+                        </div>
+                        <div class="kat-risk-text {{ $siakadRiskClass($hoursCat) }}">
+                            {{ ucfirst(strtolower($hoursCat)) }}
+                        </div>
                     </div>
 
-                    {{-- Dari hasil kuis --}}
+                    {{-- Nilai Sebelumnya --}}
+                    <div class="kat-card">
+                        <div class="kat-title">Nilai Sebelumnya</div>
+                        <div class="kat-icon">📝</div>
+                        <div class="kat-value">{{ $previousScoreNum ?? '-' }}</div>
+                        <div class="kat-risk-label">{{ $siakadRiskLabel($scoreCat) }}</div>
+                        <div class="risk-bar-wrap">
+                            <div class="risk-bar {{ $siakadRiskClass($scoreCat) }}"></div>
+                        </div>
+                        <div class="kat-risk-text {{ $siakadRiskClass($scoreCat) }}">
+                            {{ ucfirst(strtolower($scoreCat)) }}
+                        </div>
+                    </div>
+
+                    {{-- ── 5 KARTU DATA KUIS ── --}}
                     @foreach($riskPerKategori as $key => $item)
                         @php
                             $riskClass = strtolower($item['risk']);
                             $riskLabel = match($riskClass) {
-                                'low'    => 'Resiko Rendah',
-                                'high'   => 'Resiko Tinggi',
-                                default  => 'Resiko Normal',
+                                'low'  => 'Resiko Rendah',
+                                'high' => 'Resiko Tinggi',
+                                default => 'Resiko Normal',
                             };
                             $ikon = $ikonKategori[$key] ?? '📋';
                         @endphp
@@ -503,6 +615,9 @@
                             <div class="risk-bar-wrap">
                                 <div class="risk-bar {{ $riskClass }}"></div>
                             </div>
+                            <div class="kat-risk-text {{ $riskClass }}">
+                                {{ $item['risk'] }}
+                            </div>
                         </div>
                     @endforeach
 
@@ -510,75 +625,56 @@
             </div>
 
             {{-- ── TOP 3 TEKNIK BELAJAR ── --}}
-            @php
-                $teknikList = [
-                    [
-                        'nama'  => 'Pomodoro',
-                        'ikon'  => '🍅',
-                        'desc'  => 'Teknik Pomodoro adalah metode belajar atau bekerja dengan membagi waktu menjadi sesi fokus singkat yang diselingi istirahat.',
-                        'cara'  => [
-                            'Belajar 25 menit (fokus penuh)',
-                            'Istirahat 5 menit',
-                            'Ulangi 4 kali, lalu istirahat lebih lama (15–30 menit)',
-                        ],
-                    ],
-                    [
-                        'nama'  => 'Feynman',
-                        'ikon'  => '🧑‍🏫',
-                        'desc'  => 'Metode belajar cepat untuk memahami konsep rumit secara mendalam dengan cara mengajarkannya kembali menggunakan bahasa yang sangat sederhana.',
-                        'cara'  => [
-                            'Pilih konsep yang ingin dipahami',
-                            'Jelaskan konsep seolah mengajar anak kecil',
-                            'Identifikasi celah pemahaman dan pelajari ulang',
-                        ],
-                    ],
-                    [
-                        'nama'  => 'Active Recall',
-                        'ikon'  => '🔁',
-                        'desc'  => 'Teknik belajar dengan cara menguji ingatan secara aktif, bukan sekadar membaca ulang materi.',
-                        'cara'  => [
-                            'Baca materi satu kali',
-                            'Tutup buku dan coba ingat poin-poin utama',
-                            'Ulangi proses hingga materi benar-benar hafal',
-                        ],
-                    ],
-                ];
-            @endphp
-
             <div class="teknik-section">
                 <h3>Top 3 Teknik Belajar</h3>
+                <p class="teknik-subtitle">
+                    Dipilih berdasarkan hasil analisa risiko Anda: <em>"{{ $rekomendasi }}"</em>
+                </p>
                 <div class="teknik-grid">
-                    @foreach($teknikList as $idx => $teknik)
-                        @php $n = $idx + 1; @endphp
-                        <div class="teknik-card">
-
-                            <div class="teknik-header">
-                                <div class="teknik-num {{ $n === 2 ? 'n2' : ($n === 3 ? 'n3' : '') }}">{{ $n }}</div>
-                                <button class="teknik-toggle" onclick="toggleCara(this)">
-                                    <i class="fa-solid fa-chevron-{{ $n === 1 ? 'up' : 'down' }}"></i>
-                                </button>
+                    @foreach($teknikBelajar as $idx => $teknik)
+                        @php
+                            $n       = $idx + 1;
+                            $rankCls = 'r' . $n;
+                            $img     = $teknik['img'] ?? 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600';
+                            $modalId = 'modal-' . $idx;
+                        @endphp
+                        <div class="teknik-card" onclick="openModal('{{ $modalId }}')">
+                            <img src="{{ $img }}" alt="{{ $teknik['nama'] }}" class="teknik-img">
+                            <div class="teknik-overlay"></div>
+                            <div class="teknik-rank {{ $rankCls }}">{{ $n }}</div>
+                            <button class="teknik-info-btn" onclick="event.stopPropagation(); openModal('{{ $modalId }}')">i</button>
+                            <div class="teknik-label">
+                                <h4>{{ $teknik['nama'] }}</h4>
+                                <p>{{ $teknik['desc'] }}</p>
                             </div>
-
-                            <div class="teknik-img-placeholder">{{ $teknik['ikon'] }}</div>
-
-                            <div class="teknik-body">
-                                <div class="teknik-name">{{ $teknik['nama'] }}</div>
-                                <div class="teknik-desc">{{ $teknik['desc'] }}</div>
-                            </div>
-
-                            <div class="teknik-cara {{ $n === 1 ? 'open' : '' }}">
-                                <h5>Cara :</h5>
-                                <ul>
-                                    @foreach($teknik['cara'] as $step)
-                                        <li>{{ $step }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-
                         </div>
                     @endforeach
                 </div>
             </div>
+
+            {{-- ── MODAL TEKNIK (satu per teknik) ── --}}
+            @foreach($teknikBelajar as $idx => $teknik)
+                @php
+                    $modalId = 'modal-' . $idx;
+                    $img     = $teknik['img'] ?? 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600';
+                @endphp
+                <div class="modal-overlay" id="{{ $modalId }}" onclick="closeModal('{{ $modalId }}')">
+                    <div class="modal-box" onclick="event.stopPropagation()">
+                        <img src="{{ $img }}" alt="{{ $teknik['nama'] }}" class="modal-img">
+                        <div class="modal-content">
+                            <div class="modal-title">{{ $teknik['nama'] }}</div>
+                            <div class="modal-desc">{{ $teknik['penjelasan'] ?? $teknik['desc'] }}</div>
+                            <div class="modal-cara-title">Cara Menggunakan :</div>
+                            <ul class="modal-cara-list">
+                                @foreach($teknik['cara'] as $step)
+                                    <li>{{ $step }}</li>
+                                @endforeach
+                            </ul>
+                            <button class="modal-close" onclick="closeModal('{{ $modalId }}')">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
 
         </div>
 
@@ -593,17 +689,17 @@
 
                 <div class="riwayat-list">
                     @php
-                        // Ambil riwayat 30 hari terakhir dari database
                         $siswaId = Auth::user()->siswa->id ?? null;
                         $riwayat = [];
 
                         if ($siswaId) {
-                            $riwayat = \Illuminate\Support\Facades\DB::table('hasil_analisa')
+                            $riwayat = DB::table('hasil_analisa')
                                 ->join('sesi_kuis', 'hasil_analisa.sesi_id', '=', 'sesi_kuis.id')
                                 ->where('sesi_kuis.siswa_id', $siswaId)
                                 ->where('sesi_kuis.tanggal_kuis', '>=', now()->subDays(30))
                                 ->orderByDesc('sesi_kuis.tanggal_kuis')
                                 ->select(
+                                    'hasil_analisa.sesi_id',
                                     'hasil_analisa.risk_level',
                                     'sesi_kuis.tanggal_kuis'
                                 )
@@ -613,16 +709,29 @@
 
                     @forelse($riwayat as $r)
                         @php
-                            $rl       = strtolower($r->risk_level);
-                            $tanggal  = \Carbon\Carbon::parse($r->tanggal_kuis);
-                            $dotClass = $rl;
+                            $rl = strtolower($r->risk_level);
+                            $tanggal = \Carbon\Carbon::parse($r->tanggal_kuis);
                             $activeClass = 'active-' . $rl;
                         @endphp
-                        <div class="riwayat-item {{ $activeClass }}">
-                            <div class="riwayat-dot {{ $dotClass }}"></div>
-                            <div class="riwayat-tanggal">{{ $tanggal->translatedFormat('d F Y') }}</div>
-                            <div class="riwayat-level">Level Resiko {{ ucfirst($rl) }}</div>
-                            <div class="riwayat-waktu">Mulai Test : {{ $tanggal->format('H.i') }} WIB</div>
+
+                        <div class="riwayat-item {{ $activeClass }}"
+                            data-sesi-id="{{ $r->sesi_id }}"
+                            onclick="loadHasilSesi(this)">
+
+                            <div class="riwayat-dot {{ $rl }}"></div>
+
+                            <div class="riwayat-tanggal">
+                                {{ $tanggal->translatedFormat('d F Y') }}
+                            </div>
+
+                            <div class="riwayat-level">
+                                Level Resiko {{ ucfirst($rl) }}
+                            </div>
+
+                            <div class="riwayat-waktu">
+                                Mulai Test : {{ $tanggal->format('H.i') }} WIB
+                            </div>
+
                         </div>
                     @empty
                         <p style="font-size:13px;color:#AAA;text-align:center;padding:20px 0;">
@@ -636,7 +745,7 @@
 
             {{-- ── CTA CARD ── --}}
             <div class="cta-card">
-                <h3>Kurang puas dengan hasil nya?</h3>
+                <h3>Kurang puas dengan hasilnya?</h3>
                 <p>Lakukan penilaian mendalam untuk mendapatkan rekomendasi belajar yang dipersonalisasi.</p>
                 <a href="{{ route('kuis.show', 1) }}" class="btn-ulang">Mulai Test Ulang</a>
             </div>
@@ -663,15 +772,189 @@
             dropdown.addEventListener('click', e => e.stopPropagation());
         }
 
-        // ===== TOGGLE CARA BELAJAR =====
-        function toggleCara(btn) {
-            const card = btn.closest('.teknik-card');
-            const cara = card.querySelector('.teknik-cara');
-            const icon = btn.querySelector('i');
-            cara.classList.toggle('open');
-            icon.className = cara.classList.contains('open')
-                ? 'fa-solid fa-chevron-up'
-                : 'fa-solid fa-chevron-down';
+        // ===== MODAL TEKNIK =====
+        function openModal(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+        // Tutup modal dengan ESC
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.show').forEach(el => {
+                    el.classList.remove('show');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Simpan URL base untuk fetch
+        const hasilSesiUrl = "{{ url('kuis/hasil') }}";
+
+        function loadHasilSesi(el) {
+            const sesiId = el.dataset.sesiId;
+            if (!sesiId) return;
+
+            // Tandai item aktif
+            document.querySelectorAll('.riwayat-item').forEach(i => i.style.opacity = '1');
+            el.style.opacity = '0.6';
+
+            fetch(`${hasilSesiUrl}/${sesiId}`)
+                .then(r => r.json())
+                .then(data => {
+                    updateHasil(data);
+                    el.style.opacity = '1';
+                })
+                .catch(() => {
+                    el.style.opacity = '1';
+                    alert('Gagal memuat data. Coba lagi.');
+                });
+        }
+
+        function updateHasil(data) {
+            const risk = data.riskTotal.toLowerCase();
+
+            // ── Warna & label donut ──
+            const colorMap = { low: '#27AE60', medium: '#EF9F27', high: '#E53535' };
+            const fillMap  = { low: 0.30, medium: 0.60, high: 0.90 };
+            const circ     = 283;
+            const fill     = Math.round(circ * (fillMap[risk] ?? 0.60));
+
+            const donutCircle = document.querySelector('.donut-wrap svg circle:last-child');
+            if (donutCircle) {
+                donutCircle.setAttribute('stroke', colorMap[risk] ?? '#EF9F27');
+                donutCircle.setAttribute('stroke-dasharray', `${fill} ${circ - fill}`);
+            }
+
+            const donutLabel = document.querySelector('.donut-center strong');
+            if (donutLabel) {
+                donutLabel.textContent  = data.riskTotal.toUpperCase();
+                donutLabel.className    = risk;
+            }
+
+            // ── Teks hasil ──
+            const hasilP = document.querySelector('.hasil-text p');
+            if (hasilP) {
+                hasilP.innerHTML = `Berdasarkan pola aktivitas Anda, tingkat risiko burnout berada
+                    pada level <strong>${risk}</strong>.
+                    ${data.rekomendasi ? `Rekomendasi teknik belajar untuk Anda: <em>${data.rekomendasi}</em>` : ''}`;
+            }
+
+            // ── Update kartu SIAKAD ──
+            const siakadCards = document.querySelectorAll('.kat-card');
+            const siakadData = [
+                { num: data.attendanceNum + '%', cat: data.attendanceCat },
+                { num: data.hoursStudiedNum + ' jam/hari', cat: data.hoursCat },
+                { num: data.previousScoreNum, cat: data.scoreCat },
+            ];
+            const labelMap = { low: 'Resiko Rendah', medium: 'Resiko Normal', high: 'Resiko Tinggi' };
+
+            siakadData.forEach((s, i) => {
+                const cat   = s.cat.toLowerCase();
+                const card  = siakadCards[i];
+                if (!card) return;
+                card.querySelector('.kat-value').textContent      = s.num;
+                card.querySelector('.kat-risk-label').textContent = labelMap[cat] ?? 'Resiko Normal';
+                const bar  = card.querySelector('.risk-bar');
+                const text = card.querySelector('.kat-risk-text');
+                bar.className  = `risk-bar ${cat}`;
+                text.className = `kat-risk-text ${cat}`;
+                text.textContent = s.cat.charAt(0) + s.cat.slice(1).toLowerCase();
+            });
+
+            // ── Update kartu kuis (indeks 3–7) ──
+            const kuisKeys = ['Sleep_Hours','Access_to_Resources','Motivation_Level','Les','Kesulitan_Belajar'];
+            kuisKeys.forEach((key, i) => {
+                const card = siakadCards[3 + i];
+                const item = data.riskPerKategori[key];
+                if (!card || !item) return;
+                const rc = item.risk.toLowerCase();
+                card.querySelector('.kat-risk-label').textContent = labelMap[rc] ?? 'Resiko Normal';
+                const bar  = card.querySelector('.risk-bar');
+                const text = card.querySelector('.kat-risk-text');
+                bar.className  = `risk-bar ${rc}`;
+                text.className = `kat-risk-text ${rc}`;
+                text.textContent = item.risk;
+            });
+
+            // ── Tambah / update badge tanggal di hasil-text ──
+            const badge = document.getElementById('tanggal-badge');
+            if (badge) {
+                badge.textContent = '📅 ' + data.tanggal;
+            } else {
+                const newBadge = document.createElement('p');
+                newBadge.id = 'tanggal-badge';
+                newBadge.style.cssText = 'font-size:11px;color:#AAA;margin-top:6px;';
+                newBadge.textContent = '📅 ' + data.tanggal;
+                document.querySelector('.hasil-text').appendChild(newBadge);
+            }
+
+            // ── RENDER ULANG Top 3 Teknik Belajar ──
+            if (data.teknikBelajar && data.teknikBelajar.length) {
+
+                // Update subtitle
+                const subtitle = document.querySelector('.teknik-subtitle');
+                if (subtitle) {
+                    subtitle.innerHTML = `Dipilih berdasarkan hasil analisa risiko Anda: <em>"${data.rekomendasi}"</em>`;
+                }
+
+                // Hapus semua modal lama (baik dari Blade maupun dari JS sebelumnya)
+                document.querySelectorAll('.modal-overlay').forEach(el => el.remove());
+
+                // Render ulang kartu teknik di dalam .teknik-grid
+                const rankCls = ['r1', 'r2', 'r3'];
+                const grid = document.querySelector('.teknik-grid');
+                if (grid) {
+                    grid.innerHTML = data.teknikBelajar.map((teknik, idx) => {
+                        const n       = idx + 1;
+                        const img     = teknik.img || 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600';
+                        const modalId = 'modal-dyn-' + idx;
+                        return `
+                            <div class="teknik-card" onclick="openModal('${modalId}')">
+                                <img src="${img}" alt="${teknik.nama}" class="teknik-img">
+                                <div class="teknik-overlay"></div>
+                                <div class="teknik-rank ${rankCls[idx]}">${n}</div>
+                                <button class="teknik-info-btn" onclick="event.stopPropagation(); openModal('${modalId}')">i</button>
+                                <div class="teknik-label">
+                                    <h4>${teknik.nama}</h4>
+                                    <p>${teknik.desc}</p>
+                                </div>
+                            </div>`;
+                    }).join('');
+                }
+
+                // Buat modal baru sesuai teknik belajar yang diupdate
+                data.teknikBelajar.forEach((teknik, idx) => {
+                    const modalId  = 'modal-dyn-' + idx;
+                    const img      = teknik.img || 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600';
+                    const caraHtml = (teknik.cara || []).map(step => `<li>${step}</li>`).join('');
+                    const modalEl  = document.createElement('div');
+                    modalEl.className = 'modal-overlay';
+                    modalEl.id        = modalId;
+                    modalEl.onclick   = () => closeModal(modalId);
+                    modalEl.innerHTML = `
+                        <div class="modal-box" onclick="event.stopPropagation()">
+                            <img src="${img}" alt="${teknik.nama}" class="modal-img">
+                            <div class="modal-content">
+                                <div class="modal-title">${teknik.nama}</div>
+                                <div class="modal-desc">${teknik.penjelasan || teknik.desc}</div>
+                                <div class="modal-cara-title">Cara Menggunakan :</div>
+                                <ul class="modal-cara-list">${caraHtml}</ul>
+                                <button class="modal-close" onclick="closeModal('${modalId}')">Tutup</button>
+                            </div>
+                        </div>`;
+                    document.body.appendChild(modalEl);
+                });
+            }
         }
     </script>
 

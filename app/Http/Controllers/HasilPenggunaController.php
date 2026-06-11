@@ -21,14 +21,27 @@ class HasilPenggunaController extends Controller
 
     private function applyFilters($query, Request $request)
     {
+        // Filter Tingkat Risiko
         if ($request->filled('risk_level')) {
             $query->where('risk_level', $request->risk_level);
         }
 
+        // Search Server-Side Fallback (Jika admin pindah halaman paginasi)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('sesiKuis.siswa', function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($qu) use ($search) {
+                        $qu->where('username', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Pengurutan Variabel
         if ($request->filled('sort_by') && in_array($request->sort_by, $this->allowedSortColumns)) {
             $query->orderBy($request->sort_by, 'asc');
         } else {
-            $query->latest();
+            $query->latest('created_at');
         }
 
         return $query;
@@ -36,7 +49,8 @@ class HasilPenggunaController extends Controller
 
     public function index(Request $request)
     {
-        $query = HasilAnalisa::with(['sesi.siswa.user']);
+        // Memanggil Eager Loading yang sudah diperbaiki relasinya
+        $query = HasilAnalisa::with(['sesiKuis.siswa.user']);
 
         $this->applyFilters($query, $request);
 
@@ -71,28 +85,38 @@ class HasilPenggunaController extends Controller
             'Rekomendasi 3',
         ];
 
-        $csvData = implode(',', array_map(fn($h) => '"' . $h . '"', $headers)) . "\n";
+        // Format CSV agar kompatibel dengan Excel (UTF-8 BOM)
+        $csvData = "\xEF\xBB\xBF";
+        $csvData .= implode(',', array_map(fn($h) => '"' . $h . '"', $headers)) . "\n";
 
         foreach ($data as $index => $item) {
-            $rekomendasi = collect(
-                is_array(json_decode($item->rekomendasi, true))
-                    ? json_decode($item->rekomendasi, true)
-                    : explode(',', $item->rekomendasi)
-            );
+
+            // Pengamanan parsing rekomendasi teknik belajar dari KuisController
+            $rawRec = $item->rekomendasi;
+            $decoded = json_decode($rawRec, true);
+
+            if (is_array($decoded)) {
+                $rekomendasi = collect($decoded);
+            } elseif (!empty($rawRec)) {
+                // jika tersimpan string koma bersambung atau teks mentah campuran
+                $rekomendasi = collect(explode(',', $rawRec));
+            } else {
+                $rekomendasi = collect([]);
+            }
 
             $row = [
                 $index + 1,
                 $item->sesiKuis->siswa->nama ?? '-',
                 $item->sesiKuis->siswa->user->username ?? '-',
-                $item->attendance ?? '-',
+                $item->attendance ?? '0',
                 $item->sleep_hours ?? '-',
-                $item->hours_studied ?? '-',
+                $item->hours_studied ?? '0',
                 $item->access_to_resources ?? '-',
                 $item->motivation_level ?? '-',
                 $item->tutoring_sessions ?? '-',
-                $item->previous_scores ?? '-',
+                $item->previous_scores ?? '0',
                 $item->kesulitan_belajar ?? '-',
-                $item->risk_level,
+                $item->risk_level ?? 'Medium',
                 trim($rekomendasi->get(0, '-')),
                 trim($rekomendasi->get(1, '-')),
                 trim($rekomendasi->get(2, '-')),
