@@ -18,7 +18,7 @@ class KuisController extends Controller
         1 => 'Sleep_Hours',
         2 => 'Access_to_Resources',
         3 => 'Motivation_Level',
-        4 => 'Tutoring_Sessions',
+        4 => 'Les',
         5 => 'Kesulitan_Belajar',
     ];
 
@@ -184,7 +184,7 @@ class KuisController extends Controller
                     'sleep_hours'         => $riskPerKategori['Sleep_Hours']['risk'],
                     'access_to_resources' => $riskPerKategori['Access_to_Resources']['risk'],
                     'motivation_level'    => $riskPerKategori['Motivation_Level']['risk'],
-                    'Les'   => $riskPerKategori['Les']['risk'],
+                    'tutoring_sessions'   => $riskPerKategori['Les']['risk'],
                     'kesulitan_belajar'   => $riskPerKategori['Kesulitan_Belajar']['risk'],
                     'risk_level'          => $riskTotal,
                     'rekomendasi'         => $rekomendasi,
