@@ -408,16 +408,71 @@
         }
         .btn-ulang:hover { background: #F3F2FF; }
 
+        /* ===== HAMBURGER ===== */
+
+        .hamburger{
+            display:none;
+            font-size:24px;
+            color:#3C3489;
+            cursor:pointer;
+        }
+
+        .mobile-menu{
+            position:fixed;
+            top:70px;
+            left:-100%;
+            width:260px;
+            height:calc(100vh - 70px);
+            background:#fff;
+            box-shadow:0 10px 25px rgba(0,0,0,.1);
+            transition:.3s;
+            z-index:9998;
+
+            display:flex;
+            flex-direction:column;
+            padding:20px;
+            gap:15px;
+        }
+
+        .mobile-menu.show{
+            left:0;
+        }
+
+        .mobile-menu a{
+            color:#333;
+            font-weight:600;
+            padding:10px;
+            border-radius:8px;
+        }
+
+        .mobile-menu a:hover{
+            background:#F3F2FF;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
             .page-wrapper { grid-template-columns: 1fr; }
             .grid-kategori { grid-template-columns: repeat(2, 1fr); }
             .teknik-grid   { grid-template-columns: 1fr; }
         }
-        @media (max-width: 500px) {
+        @media (max-width: 768px) {
             .grid-kategori { grid-template-columns: 1fr; }
             .hasil-utama   { flex-direction: column; text-align: center; }
-            .profile-info, .profile-trigger .fa-chevron-down { display: none; }
+            .hamburger{
+                display:block;
+            }
+
+            .nav-menu{
+                display:none;
+            }
+
+            .profile-info{
+                display:none;
+            }
+
+            .profile-trigger .fa-chevron-down{
+                display:none;
+            }
         }
     </style>
 </head>
@@ -432,14 +487,14 @@
             </div>
 
             <!-- HAMBURGER -->
-            <button class="hamburger" id="hamburgerBtn">
+            <div class="hamburger" id="hamburgerBtn">
                 <i class="fa-solid fa-bars"></i>
-            </button>
-
-            <ul class="nav-menu" id="mobileMenu">
-                <li><a href="{{ url('/#beranda') }}">Beranda</a></li>
-                <li><a href="{{ url('/#fitur') }}">Fitur</a></li>
-                <li><a href="{{ url('/#faq') }}">FAQ</a></li>
+            </div>
+        
+            <ul class="nav-menu">
+                <a href="#">Beranda</a>
+                <a href="#">Fitur</a>
+                <a href="#">FAQ</a>
                 <li><a href="{{ route('kuis.hasil') }}" class="active">Hasil Analisa</a></li>
             </ul>
 
@@ -962,6 +1017,17 @@
                     document.body.appendChild(modalEl);
                 });
             }
+        }
+
+        
+        // HAMBURGER
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        if(hamburgerBtn){
+            hamburgerBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('show');
+            });
         }
     </script>
 
