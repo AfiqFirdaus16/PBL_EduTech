@@ -43,18 +43,26 @@
             z-index: 9999;
             border-bottom: 1px solid #EBEBEB;
         }
-        .nav-wrapper {
-            width: 90%;
-            max-width: 1200px;
-            margin: auto;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
+
+        .nav-wrapper{
+            width:90%;
+            max-width:1200px;
+            margin:auto;
+            height:70px;
+
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
         }
+
         .logo img { height: 95px; object-fit: contain; }
-        .nav-menu { display: flex; align-items: center; gap: 4px; position: absolute; left: 50%; transform: translateX(-50%); }
+
+        .nav-menu{
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+
         .nav-menu a {
             color: #666;
             font-size: 13px;
@@ -412,9 +420,10 @@
 
         .hamburger{
             display:none;
-            font-size:24px;
+            font-size:22px;
             color:#3C3489;
             cursor:pointer;
+            margin-right:12px;
         }
 
         .mobile-menu{
@@ -449,30 +458,84 @@
             background:#F3F2FF;
         }
 
+        .mobile-left{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
             .page-wrapper { grid-template-columns: 1fr; }
             .grid-kategori { grid-template-columns: repeat(2, 1fr); }
             .teknik-grid   { grid-template-columns: 1fr; }
         }
-        @media (max-width: 768px) {
-            .grid-kategori { grid-template-columns: 1fr; }
-            .hasil-utama   { flex-direction: column; text-align: center; }
-            .hamburger{
-                display:block;
-            }
+        
+        @media (max-width:768px){
 
             .nav-menu{
                 display:none;
             }
 
-            .profile-info{
-                display:none;
+            .hamburger{
+                display:flex;
+                align-items:center;
+                justify-content:center;
             }
 
+            .profile-info,
             .profile-trigger .fa-chevron-down{
                 display:none;
             }
+
+            .logo img{
+                height:65px;
+            }
+
+            .profile-trigger{
+                padding:0;
+                background:none;
+            }
+
+            .profile-avatar{
+                width:40px;
+                height:40px;
+            }
+
+            .mobile-menu{
+                position:fixed;
+                top:70px;
+                left:-100%;
+
+                width:260px;
+                height:calc(100vh - 70px);
+
+                background:#fff;
+
+                display:flex;
+                flex-direction:column;
+
+                padding:20px 0;
+
+                box-shadow:0 10px 30px rgba(0,0,0,.15);
+
+                transition:.3s ease;
+                z-index:9999;
+            }
+
+            .mobile-menu.show{
+                left:0;
+            }
+
+            .mobile-menu a{
+                padding:15px 25px;
+                color:#333;
+                font-size:14px;
+                font-weight:600;
+                border-bottom:1px solid #f2f2f2;
+            }
+
         }
     </style>
 </head>
@@ -482,24 +545,32 @@
     @auth
     <nav class="navbar">
         <div class="nav-wrapper">
-            <div class="logo">
-                <img src="{{ asset('images/edutrace.png') }}" alt="EduTrace">
+
+            {{-- KIRI : HAMBURGER + LOGO --}}
+            <div class="mobile-left">
+
+                <div class="hamburger" id="hamburgerBtn">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+
+                <div class="logo">
+                    <img src="{{ asset('images/edutrace.png') }}" alt="EduTrace">
+                </div>
+
             </div>
 
-            <!-- HAMBURGER -->
-            <div class="hamburger" id="hamburgerBtn">
-                <i class="fa-solid fa-bars"></i>
+            {{-- TENGAH : MENU DESKTOP --}}
+            <div class="nav-menu">
+                <a href="{{ url('/#hero') }}">Beranda</a>
+                <a href="{{ url('/#fitur') }}">Fitur</a>
+                <a href="{{ url('/#faq') }}">FAQ</a>
+                <a href="{{ route('kuis.hasil') }}" class="active">Hasil Analisa</a>
             </div>
-        
-            <ul class="nav-menu">
-                <a href="#">Beranda</a>
-                <a href="#">Fitur</a>
-                <a href="#">FAQ</a>
-                <li><a href="{{ route('kuis.hasil') }}" class="active">Hasil Analisa</a></li>
-            </ul>
 
+            {{-- KANAN : PROFILE --}}
             <div class="nav-auth">
                 <div class="profile-trigger" id="profileTrigger">
+
                     <div class="profile-avatar">
                         @if(Auth::user()->siswa && Auth::user()->siswa->foto)
                             <img src="{{ asset('storage/' . Auth::user()->siswa->foto) }}" alt="Foto">
@@ -507,29 +578,51 @@
                             <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->siswa->nama ?? 'User') }}&background=3C3489&color=fff" alt="Avatar">
                         @endif
                     </div>
+
                     <div class="profile-info">
-                        <span class="profile-name">{{ Auth::user()->siswa->nama ?? 'User' }}</span>
-                        <span class="profile-level">{{ Auth::user()->siswa->jenjang ?? '-' }}</span>
+                        <span class="profile-name">
+                            {{ Auth::user()->siswa->nama ?? 'User' }}
+                        </span>
+                        <span class="profile-level">
+                            {{ Auth::user()->siswa->jenjang ?? '-' }}
+                        </span>
                     </div>
+
                     <i class="fa-solid fa-chevron-down"></i>
 
                     <div class="profile-dropdown" id="profileDropdown">
+
                         <a href="{{ route('profile.edit') }}" class="dropdown-item edit">
-                            <i class="fa-solid fa-pen-to-square"></i> Edit Profil
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            Edit Profil
                         </a>
+
                         <div class="dropdown-divider"></div>
+
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="dropdown-item keluar"
+                            <button
+                                type="submit"
+                                class="dropdown-item keluar"
                                 style="width:100%;border:none;background:none;font-family:'Poppins',sans-serif;cursor:pointer;">
-                                <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                Keluar
                             </button>
                         </form>
+
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
     </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="{{ url('/#hero') }}">Beranda</a>
+        <a href="{{ url('/#fitur') }}">Fitur</a>
+        <a href="{{ url('/#faq') }}">FAQ</a>
+        <a href="{{ route('kuis.hasil') }}">Hasil Analisa</a>
+    </div>
+
     @endauth
 
     {{-- ===== PAGE WRAPPER ===== --}}
@@ -1018,18 +1111,25 @@
                 });
             }
         }
+    </script>
 
-        
-        // HAMBURGER
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
+    <script>
+        const hamburgerBtn = document.getElementById("hamburgerBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
 
         if(hamburgerBtn){
-            hamburgerBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('show');
+
+            hamburgerBtn.addEventListener("click",(e)=>{
+                e.stopPropagation();
+                mobileMenu.classList.toggle("show");
+            });
+
+            document.addEventListener("click",(e)=>{
+                if(!mobileMenu.contains(e.target)){
+                    mobileMenu.classList.remove("show");
+                }
             });
         }
     </script>
-
 </body>
 </html>
