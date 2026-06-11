@@ -102,13 +102,10 @@
         }
 
         .nav-menu{
-            position:absolute;
-            left:50%;
-            transform:translateX(-50%);
-
             display:flex;
-            align-items:center;
+            align-items:stretch !important;
             gap:28px;
+            justify-content:flex-start !important;
         }
 
         .hamburger{
@@ -126,7 +123,7 @@
 
         .nav-menu a.active{
             background:#EF9F27;
-            color:#FFFFFF;
+            color:#FFFFFF !important;
         }
 
         .nav-menu a:hover{
@@ -1082,22 +1079,50 @@
                 display:flex;
                 flex-direction:column;
 
+                justify-content:flex-start;
+                align-items:stretch;
+
+                padding:20px;
+                gap:0;
+
+                box-shadow:0 10px 30px rgba(0,0,0,.15);
+
                 transition:.3s ease;
+                z-index:9999;
             }
 
             .nav-menu.show{
                 left:0;
             }
 
-            .nav-menu a{
+            .nav-menu li{
                 width:100%;
+                list-style:none;
+            }
+
+            .nav-menu a{
                 display:block;
+                width:100%;
+
+                color:#333 !important;
+                background:transparent !important;
+
                 padding:14px 16px;
+
+                font-size:14px;
+                font-weight:600;
+
                 border-radius:10px;
             }
 
             .nav-menu a:hover{
-                background:#EEEDFE;
+                background:#EEEDFE !important;
+                color:#3C3489 !important;
+            }
+
+            .nav-menu a.active{
+                background:#EF9F27 !important;
+                color:#fff !important;
             }
 
             .nav-auth{
@@ -1545,6 +1570,12 @@
                 width:100%;
                 display:block;
                 padding:14px 16px;
+                color:#333 !important; 
+                background:transparent;
+
+                border-radius:10px;
+                font-size:14px;
+                font-weight:600;
             }
             .hero-content h1{ font-size:32px; }
             .hero-content p{ font-size:15px; }
