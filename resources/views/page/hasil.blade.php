@@ -278,6 +278,8 @@
             font-size: 11px; color: rgba(255,255,255,.75);
             line-height: 1.4;
             display: -webkit-box;
+            /* Standard property for compatibility */
+            line-clamp: 2;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
@@ -429,7 +431,12 @@
                 <img src="{{ asset('images/edutrace.png') }}" alt="EduTrace">
             </div>
 
-            <ul class="nav-menu">
+            <!-- HAMBURGER -->
+            <button class="hamburger" id="hamburgerBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-menu" id="mobileMenu">
                 <li><a href="{{ url('/#beranda') }}">Beranda</a></li>
                 <li><a href="{{ url('/#fitur') }}">Fitur</a></li>
                 <li><a href="{{ url('/#faq') }}">FAQ</a></li>

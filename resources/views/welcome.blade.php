@@ -14,6 +14,17 @@
     {{-- LOTTIE PLAYER --}}
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
+    <script>
+
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburgerBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('show');
+    });
+
+    </script>
+
     <style>
 
         *{
@@ -984,17 +995,199 @@
             line-height:1.9;
         }
 
-        /* ================= MOBILE ================= */
+        /* ================= HAMBURGER ================= */
 
-        @media(max-width:992px){
-
-            .cara-grid{
-                grid-template-columns:repeat(2,1fr);
-            }
-
+        .hamburger{
+            display:none;
+            border:none;
+            background:none;
+            font-size:24px;
+            color:#3C3489;
+            cursor:pointer;
         }
 
-        @media(max-width:768px){
+        /* ================= MOBILE ================= */
+
+        @media (max-width:768px){
+
+            /* ---------- CONTAINER ---------- */
+
+            .container{
+                width:92%;
+            }
+
+            /* ---------- NAVBAR ---------- */
+
+            .navbar{
+                height:70px;
+            }
+
+            .nav-wrapper{
+                height:70px;
+                justify-content:space-between;
+            }
+
+            .logo{
+                position:static;
+            }
+
+            .logo img{
+                height:55px;
+            }
+
+            /* HAMBURGER */
+
+            .hamburger{
+                display:block;
+                background:none;
+                border:none;
+                font-size:24px;
+                color:#3C3489;
+                cursor:pointer;
+                margin-left:auto;
+                margin-right:12px;
+            }
+
+            /* MOBILE MENU */
+
+            .nav-menu{
+                position:fixed;
+                top:70px;
+                left:-100%;
+
+                width:260px;
+                height:100vh;
+
+                background:#FFFFFF;
+
+                display:flex;
+                flex-direction:column;
+                align-items:flex-start;
+
+                padding:20px;
+                gap:10px;
+
+                box-shadow:0 10px 30px rgba(0,0,0,.15);
+
+                transition:.3s ease;
+
+                z-index:9999;
+            }
+
+            .nav-menu.show{
+                left:0;
+            }
+
+            .nav-menu a{
+                width:100%;
+                display:block;
+                padding:14px 16px;
+                border-radius:10px;
+            }
+
+            .nav-menu a:hover{
+                background:#EEEDFE;
+            }
+
+            .nav-auth{
+                position:static;
+            }
+
+            .profile-info{
+                display:none;
+            }
+
+            .profile-trigger .fa-chevron-down{
+                display:none;
+            }
+
+            .btn-daftar,
+            .btn-masuk{
+                font-size:11px;
+                padding:7px 12px;
+            }
+
+            /* ---------- HERO ---------- */
+
+            .hero{
+                min-height:100vh;
+                padding:100px 15px 40px;
+            }
+
+            .hero-content img{
+                width:110px;
+                margin-bottom:15px;
+            }
+
+            .hero-content h1{
+                font-size:34px;
+                line-height:1.25;
+                margin-bottom:20px;
+            }
+
+            .hero-content p{
+                font-size:15px;
+                line-height:1.8;
+                margin-bottom:30px;
+            }
+
+            .hero-btn{
+                font-size:17px;
+                padding:13px 35px;
+            }
+
+            /* ---------- TITLE ---------- */
+
+            .section-title{
+                font-size:26px;
+                margin-bottom:40px;
+            }
+
+            /* ---------- FITUR ---------- */
+
+            .fitur{
+                padding:70px 0;
+            }
+
+            .fitur-grid{
+                grid-template-columns:1fr;
+                gap:20px;
+            }
+
+            /* ---------- ANALISA ---------- */
+
+            .analisa{
+                padding:60px 0;
+            }
+
+            .analisa-grid{
+                grid-template-columns:1fr;
+            }
+
+            .hasil-top{
+                flex-direction:column;
+                text-align:center;
+            }
+
+            .stat-row{
+                grid-template-columns:1fr;
+            }
+
+            /* ---------- TEKNIK ---------- */
+
+            .teknik-grid{
+                grid-template-columns:1fr;
+            }
+
+            .teknik-img{
+                height:220px;
+            }
+
+            /* ---------- CARA KERJA ---------- */
+
+            .cara-kerja{
+                padding:80px 0;
+            }
 
             .cara-title{
                 font-size:32px;
@@ -1012,6 +1205,57 @@
             .cara-lottie{
                 width:100px;
                 height:100px;
+            }
+
+            /* ---------- TUJUAN ---------- */
+
+            .tujuan{
+                padding:70px 0;
+            }
+
+            .tujuan-title{
+                width:100%;
+                text-align:center;
+                font-size:22px;
+            }
+
+            .tujuan-item{
+                flex-direction:column;
+                text-align:center;
+            }
+
+            .tujuan-item p{
+                font-size:14px;
+            }
+
+            /* ---------- FAQ ---------- */
+
+            .faq{
+                padding:70px 0;
+            }
+
+            .faq h2{
+                font-size:36px;
+            }
+
+            .faq-question span{
+                font-size:15px;
+                padding-right:10px;
+            }
+
+            .faq-answer{
+                font-size:14px;
+            }
+
+            /* ---------- FOOTER ---------- */
+
+            .footer-wrapper{
+                flex-direction:column;
+                gap:30px;
+            }
+
+            .footer-brand p{
+                max-width:100%;
             }
 
         }
