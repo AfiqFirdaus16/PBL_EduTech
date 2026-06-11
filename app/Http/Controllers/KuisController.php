@@ -18,7 +18,7 @@ class KuisController extends Controller
         1 => 'Sleep_Hours',
         2 => 'Access_to_Resources',
         3 => 'Motivation_Level',
-        4 => 'Tutoring_Sessions',
+        4 => 'Les',
         5 => 'Kesulitan_Belajar',
     ];
 
