@@ -10,6 +10,9 @@
 
     {{-- FONT AWESOME --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    
+    {{-- LOTTIE PLAYER --}}
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
     <style>
 
@@ -868,6 +871,152 @@
             color:#555;
         }
 
+        /* ================= CARA KERJA ================= */
+
+        .cara-kerja{
+            padding:120px 0;
+            background:#F8F9FF;
+        }
+
+        .cara-title{
+            text-align:center;
+            font-size:46px;
+            font-weight:800;
+            margin-bottom:70px;
+
+            background:linear-gradient(
+                90deg,
+                #3C3489,
+                #5B4CD8,
+                #EF9F27
+            );
+
+            background-clip:text;
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        .cara-grid{
+            display:grid;
+            grid-template-columns:repeat(4,1fr);
+            gap:28px;
+        }
+
+        .cara-card{
+            background:#FFFFFF;
+            border-radius:24px;
+            padding:30px 24px;
+
+            text-align:center;
+
+            border:1px solid #ECE9FF;
+
+            box-shadow:
+                0 10px 30px rgba(60,52,137,0.08);
+
+            transition:.35s ease;
+
+            position:relative;
+            overflow:hidden;
+        }
+
+        .cara-card:hover{
+            transform:translateY(-10px);
+
+            box-shadow:
+                0 18px 40px rgba(60,52,137,0.15);
+        }
+
+        .cara-card::before{
+            content:'';
+            position:absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:5px;
+
+            background:linear-gradient(
+                90deg,
+                #3C3489,
+                #5B4CD8,
+                #EF9F27
+            );
+        }
+
+        .step-badge{
+            display:inline-block;
+
+            background:#EEEDFE;
+            color:#3C3489;
+
+            font-size:12px;
+            font-weight:700;
+
+            padding:7px 16px;
+            border-radius:999px;
+
+            margin-bottom:18px;
+        }
+
+        .cara-lottie{
+            width:120px;
+            height:120px;
+
+            margin:0 auto 20px;
+        }
+
+        .cara-lottie lottie-player{
+            width:100%;
+            height:100%;
+        }
+
+        .cara-card h3{
+            font-size:22px;
+            font-weight:700;
+            color:#222;
+
+            margin-bottom:12px;
+        }
+
+        .cara-card p{
+            font-size:14px;
+            color:#666;
+            line-height:1.9;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media(max-width:992px){
+
+            .cara-grid{
+                grid-template-columns:repeat(2,1fr);
+            }
+
+        }
+
+        @media(max-width:768px){
+
+            .cara-title{
+                font-size:32px;
+                margin-bottom:40px;
+            }
+
+            .cara-grid{
+                grid-template-columns:1fr;
+            }
+
+            .cara-card{
+                padding:25px;
+            }
+
+            .cara-lottie{
+                width:100px;
+                height:100px;
+            }
+
+        }
+
+
         /* ================= TUJUAN ================= */
 
         .tujuan{
@@ -1220,6 +1369,119 @@
             @else
                 <a href="{{ route('login') }}" class="hero-btn">Mulai Test</a>
             @endauth
+
+        </div>
+
+    </section>
+
+    {{-- ================= CARA KERJA ================= --}}
+    <section class="cara-kerja">
+
+        <div class="container">
+
+            <h2 class="cara-title">
+                Cara Kerjanya Gampang!
+            </h2>
+
+            <div class="cara-grid">
+
+                <!-- STEP 1 -->
+                <div class="cara-card">
+
+                    <span class="step-badge">STEP 1</span>
+
+                    <div class="cara-lottie">
+                        <lottie-player
+                            src="{{ asset('lottie/Form.json') }}"
+                            background="transparent"
+                            speed="1"
+                            loop
+                            autoplay>
+                        </lottie-player>
+                    </div>
+
+                    <h3>Isi Kuesioner</h3>
+
+                    <p>
+                        Jawab beberapa pertanyaan mengenai
+                        kebiasaan belajar yang kamu lakukan sehari-hari.
+                    </p>
+
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="cara-card">
+
+                    <span class="step-badge">STEP 2</span>
+
+                    <div class="cara-lottie">
+                        <lottie-player
+                            src="{{ asset('lottie/Robot.json') }}"
+                            background="transparent"
+                            speed="1"
+                            loop
+                            autoplay>
+                        </lottie-player>
+                    </div>
+
+                    <h3>Analisis AI</h3>
+
+                    <p>
+                        Sistem akan menganalisis pola belajar
+                        dan menghitung tingkat risiko akademikmu.
+                    </p>
+
+                </div>
+
+                <!-- STEP 3 -->
+                <div class="cara-card">
+
+                    <span class="step-badge">STEP 3</span>
+
+                    <div class="cara-lottie">
+                        <lottie-player
+                            src="{{ asset('lottie/Visualisasi.json') }}"
+                            background="transparent"
+                            speed="1"
+                            loop
+                            autoplay>
+                        </lottie-player>
+                    </div>
+
+                    <h3>Hasil Risiko</h3>
+
+                    <p>
+                        Dapatkan hasil analisis risiko akademik
+                        secara otomatis dan mudah dipahami.
+                    </p>
+
+                </div>
+
+                <!-- STEP 4 -->
+                <div class="cara-card">
+
+                    <span class="step-badge">STEP 4</span>
+
+                    <div class="cara-lottie">
+                        <lottie-player
+                            src="{{ asset('lottie/Learning.json') }}"
+                            background="transparent"
+                            speed="1"
+                            loop
+                            autoplay>
+                        </lottie-player>
+                    </div>
+
+                    <h3>Rekomendasi Teknik</h3>
+
+                    <p>
+                        Sistem memberikan teknik belajar yang
+                        paling sesuai berdasarkan hasil analisismu.
+                    </p>
+
+                </div>
+
+            </div>
 
         </div>
 
