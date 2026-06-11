@@ -78,12 +78,16 @@
         }
 
         .nav-wrapper{
-            width:100%;
             height:75px;
-            position:relative;
             display:flex;
             align-items:center;
-            justify-content:center;
+            justify-content:space-between;
+            position:relative;
+        }
+
+        .mobile-left{
+            display:flex;
+            align-items:center;
         }
 
         .logo{
@@ -94,14 +98,21 @@
         }
 
         .logo img{
-            height:100px;
-            object-fit:contain;
+            height:90px;
         }
 
         .nav-menu{
+            position:absolute;
+            left:50%;
+            transform:translateX(-50%);
+
             display:flex;
             align-items:center;
             gap:28px;
+        }
+
+        .hamburger{
+            display:none;
         }
 
         .nav-menu a{
@@ -1064,22 +1075,14 @@
                 left:-100%;
 
                 width:260px;
-                height:100vh;
+                height:calc(100vh - 70px);
 
-                background:#FFFFFF;
+                background:#fff;
 
-                display:none;
+                display:flex;
                 flex-direction:column;
-                align-items:flex-start;
-
-                padding:20px;
-                gap:10px;
-
-                box-shadow:0 10px 30px rgba(0,0,0,.15);
 
                 transition:.3s ease;
-
-                z-index:9999;
             }
 
             .nav-menu.show{
@@ -1475,6 +1478,74 @@
         /* ================= RESPONSIVE ================= */
 
         @media(max-width:768px){
+            .nav-wrapper{
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+            }
+
+            .logo{
+                position:static;
+            }
+
+            .logo img{
+                height:60px;
+            }
+
+            .mobile-left{
+                display:flex;
+                align-items:center;
+                gap:12px;
+            }
+
+            .hamburger{
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                width:40px;
+                height:40px;
+                font-size:22px;
+                color:#3C3489;
+                cursor:pointer;
+            }
+
+            .nav-menu{
+                position:fixed;
+                top:70px;
+                left:-100%;
+
+                width:260px;
+                height:calc(100vh - 70px);
+
+                background:#fff;
+
+                display:flex;
+                flex-direction:column;
+                align-items:flex-start;
+
+                padding:20px;
+                gap:10px;
+
+                box-shadow:0 10px 30px rgba(0,0,0,.15);
+
+                transition:.3s ease;
+                z-index:9999;
+            }
+
+            .nav-menu.show{
+                left:0;
+            }
+
+            .nav-menu li{
+                width:100%;
+                list-style:none;
+            }
+
+            .nav-menu a{
+                width:100%;
+                display:block;
+                padding:14px 16px;
+            }
             .hero-content h1{ font-size:32px; }
             .hero-content p{ font-size:15px; }
             .hero-btn{ font-size:16px; padding:12px 36px; }
@@ -1496,14 +1567,22 @@
 
     {{-- ================= NAVBAR ================= --}}
     <nav class="navbar">
-
         <div class="container nav-wrapper">
 
-            <div class="logo">
-                <img src="{{ asset('images/edutrace.png') }}" alt="logo">
+            {{-- KIRI : HAMBURGER + LOGO --}}
+            <div class="mobile-left">
+
+                <div class="hamburger" id="hamburgerBtn">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+
+                <div class="logo">
+                    <img src="{{ asset('images/edutrace.png') }}" alt="EduTrace">
+                </div>
+
             </div>
 
-            <ul class="nav-menu">
+            <ul class="nav-menu" id="navMenu">
                 <li><a href="#beranda" class="nav-link active">Beranda</a></li>
                 <li><a href="#fitur" class="nav-link">Fitur</a></li>
                 <li><a href="#faq" class="nav-link">FAQ</a></li>
@@ -1516,74 +1595,73 @@
                 </li>
             </ul>
 
-            {{-- AUTH: sudah login --}}
-            @auth
-            <div class="nav-auth">
-                <div class="profile-trigger" id="profileTrigger">
+                {{-- AUTH: sudah login --}}
+                @auth
+                <div class="nav-auth">
+                    <div class="profile-trigger" id="profileTrigger">
 
-                    <div class="profile-avatar">
+                        <div class="profile-avatar">
 
-                        @if(Auth::user()->siswa && Auth::user()->siswa->foto)
-                            <img
-                                src="{{ asset('storage/' . Auth::user()->siswa->foto) }}"
-                                alt="Profile"
-                                style="
-                                    width:100%;
-                                    height:100%;
-                                    object-fit:cover;
-                                    border-radius:50%;
-                                ">
-                        @else
-                            <img
-                                src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->siswa->nama ?? 'User') }}"
-                                alt="Profile"
-                                style="
-                                    width:100%;
-                                    height:100%;
-                                    object-fit:cover;
-                                    border-radius:50%;
-                                ">
-                        @endif
+                            @if(Auth::user()->siswa && Auth::user()->siswa->foto)
+                                <img
+                                    src="{{ asset('storage/' . Auth::user()->siswa->foto) }}"
+                                    alt="Profile"
+                                    style="
+                                        width:100%;
+                                        height:100%;
+                                        object-fit:cover;
+                                        border-radius:50%;
+                                    ">
+                            @else
+                                <img
+                                    src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->siswa->nama ?? 'User') }}"
+                                    alt="Profile"
+                                    style="
+                                        width:100%;
+                                        height:100%;
+                                        object-fit:cover;
+                                        border-radius:50%;
+                                    ">
+                            @endif
 
+                        </div>
+
+                        <div class="profile-info">
+                        <span class="profile-name">
+                            {{ Auth::user()->siswa->nama ?? 'User' }}
+                        </span>
+
+                        <span class="profile-level">
+                            {{ Auth::user()->siswa->jenjang ?? '-' }}
+                        </span>
                     </div>
 
-                    <div class="profile-info">
-                    <span class="profile-name">
-                        {{ Auth::user()->siswa->nama ?? 'User' }}
-                    </span>
+                        <i class="fa-solid fa-chevron-down"></i>
 
-                    <span class="profile-level">
-                        {{ Auth::user()->siswa->jenjang ?? '-' }}
-                    </span>
-                </div>
+                        <div class="profile-dropdown" id="profileDropdown">
 
-                    <i class="fa-solid fa-chevron-down"></i>
+                            <a href="{{ route('profile.edit') }}" class="dropdown-item edit">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                Edit Profil
+                            </a>
 
-                    <div class="profile-dropdown" id="profileDropdown">
+                            <div class="dropdown-divider"></div>
 
-                        <a href="{{ route('profile.edit') }}" class="dropdown-item edit">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                            Edit Profil
-                        </a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button
+                                    type="submit"
+                                    class="dropdown-item keluar"
+                                    style="width:100%;border:none;background:none;font-family:'Poppins',sans-serif;cursor:pointer;"
+                                >
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                    Keluar
+                                </button>
+                            </form>
 
-                        <div class="dropdown-divider"></div>
-
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button
-                                type="submit"
-                                class="dropdown-item keluar"
-                                style="width:100%;border:none;background:none;font-family:'Poppins',sans-serif;cursor:pointer;"
-                            >
-                                <i class="fa-solid fa-right-from-bracket"></i>
-                                Keluar
-                            </button>
-                        </form>
-
+                        </div>
                     </div>
-
                 </div>
-            </div>
             @endauth
 
             {{-- GUEST: belum login --}}
@@ -2226,6 +2304,17 @@
         });
 
     </script>
+
+<script>
+    const hamburgerBtnNav = document.getElementById('hamburgerBtn');
+    const navMenu = document.getElementById('navMenu');
+
+    if (hamburgerBtnNav && navMenu) {
+        hamburgerBtnNav.addEventListener('click', () => {
+            navMenu.classList.toggle('show');
+        });
+    }
+</script>
 
 </body>
 </html>
