@@ -36,7 +36,7 @@ class HasilPenggunaController extends Controller
 
     public function index(Request $request)
     {
-        $query = HasilAnalisa::with(['sesiKuis.siswa.user']);
+        $query = HasilAnalisa::with(['sesi.siswa.user']);
 
         $this->applyFilters($query, $request);
 
@@ -47,7 +47,7 @@ class HasilPenggunaController extends Controller
 
     public function export(Request $request)
     {
-        $query = HasilAnalisa::with(['sesiKuis.siswa.user']);
+        $query = HasilAnalisa::with(['sesi.siswa.user']);
 
         $this->applyFilters($query, $request);
 
