@@ -1023,6 +1023,8 @@
             }
 
             .nav-wrapper{
+                display:flex;
+                align-items:center;
                 height:70px;
                 justify-content:space-between;
             }
@@ -1035,17 +1037,23 @@
                 height:55px;
             }
 
+            .mobile-left{
+                display:flex;
+                align-items:center;
+                gap:12px;
+            }
+
             /* HAMBURGER */
 
             .hamburger{
-                display:block;
-                background:none;
-                border:none;
-                font-size:24px;
+                display:flex;
+                width:40px;
+                height:40px;
+                align-items:center;
+                justify-content:center;
+                font-size:22px;
                 color:#3C3489;
                 cursor:pointer;
-                margin-left:auto;
-                margin-right:12px;
             }
 
             /* MOBILE MENU */
@@ -1060,7 +1068,7 @@
 
                 background:#FFFFFF;
 
-                display:flex;
+                display:none;
                 flex-direction:column;
                 align-items:flex-start;
 
